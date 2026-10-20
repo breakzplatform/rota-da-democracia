@@ -152,3 +152,11 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+.route-hero .route-note {
+  max-width: 38rem;
+  padding: 0.8rem 1rem;
+  border-left: 6px solid #ffe403;
+  background: rgba(0, 0, 0, 0.22);
+  font-weight: 500;
+}
