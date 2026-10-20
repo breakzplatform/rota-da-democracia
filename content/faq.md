@@ -99,7 +99,7 @@ Fonte: [TSE: Manual do Eleitor 2026, capítulo 2](https://www.tse.jus.br/eleicoe
 
 ## Que dados vocês guardam e quando são apagados?
 
-Só os dados da oferta de carona: primeiro nome ou apelido, WhatsApp, ponto de encontro (bairro e referência, não o endereço de casa), horário, vagas, local de votação e, se você quiser, uma observação. De quem procura carona não guardamos nada, só um código criptografado do IP para limitar abusos. Tudo é apagado automaticamente na segunda-feira, 26 de outubro, às 12h (horário de Brasília), e o site passa a mostrar uma página de agradecimento. A geolocalização, quando você usa "perto de mim", fica só no seu celular e nunca sai dele. Veja a página de privacidade.
+Só os dados da oferta de carona: primeiro nome ou apelido, WhatsApp, ponto de encontro (bairro e referência, não o endereço de casa), horário, vagas, local de votação e, se você quiser, uma observação. De quem procura carona não guardamos nada, só um código criptografado do IP para limitar abusos. Tudo é apagado automaticamente no domingo, 25 de outubro, às 17h, quando a votação termina (horário de Brasília), e o site passa a mostrar uma página de agradecimento. A geolocalização, quando você usa "perto de mim", fica só no seu celular e nunca sai dele. Veja a página de privacidade.
 
 Fonte: regra do próprio site (página de privacidade).
 
