@@ -1,6 +1,5 @@
 // Município typeahead, shard loading, section lookup, name search and "near me".
 import { $, foldText, titleCase } from "./common.js";
-import { showHours } from "./hours.js";
 
 let municipiosPromise;
 export function loadMunicipios() {
@@ -289,7 +288,7 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {}, ci
   function choosePlace(local, section = null) {
     state.local = local;
     state.section = section;
-    onPlace(local, state.shard);
+    onPlace(local, state.shard, section);
     go("resultado");
   }
 
@@ -297,7 +296,7 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {}, ci
     if (!state.local) return;
     state.local = null;
     state.section = null;
-    onPlace(null, state.shard);
+    onPlace(null, state.shard, null);
   }
 
   function placeButtons(rows) {
@@ -503,22 +502,6 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {}, ci
     resultado() {
       const local = state.local;
       const [progress, heading] = stepHead(3, "Seu local de votação");
-      const hours = h("div", {});
-      const sectionPicker = h("div", { class: "field" });
-      sectionPicker.hidden = state.section !== null;
-      if (state.section === null) {
-        const select = h("select", { id: "secao-movimento" },
-          h("option", { value: "", text: "Escolha sua seção" }),
-          local.secoes.map((section) => h("option", { value: section, text: `Seção ${section}` })),
-        );
-        select.addEventListener("change", () => {
-          showHours(hours, state.shard.cd, local.zona, Number(select.value));
-        });
-        sectionPicker.append(
-          h("label", { for: "secao-movimento", text: "Veja o movimento na sua seção" }),
-          select,
-        );
-      }
       body.replaceChildren(
         progress,
         heading,
@@ -528,11 +511,8 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {}, ci
           h("p", { class: "hint", text: `${titleCase(local.bairro)}${local.cep ? ` - CEP ${local.cep.slice(0, 5)}-${local.cep.slice(5)}` : ""} - zona ${local.zona}` }),
           h("p", { class: "offer-access", text: local.acessivel ? "Este local tem seções com acessibilidade." : "O TSE não informa acessibilidade neste local." }),
         ),
-        sectionPicker,
-        hours,
         h("button", { type: "button", class: "btn", text: "Trocar local", onclick: () => { clearPlace(); go("conhece"); } }),
       );
-      showHours(hours, state.shard.cd, local.zona, state.section);
       return heading;
     },
   };

@@ -1,39 +1,25 @@
 import { $, copyText, titleCase, safeHref } from "./common.js";
 import { initPlacePicker } from "./places.js";
+import {
+  buildIcs,
+  loadHours,
+  renderQuandoIr,
+  clockShift,
+  googleMapsTransitUrl,
+  routeHint,
+  aggregateHours,
+  aggregateChangeStatus,
+  sectionChangeStatus,
+  changeWarning,
+  validHours,
+  calmestHours,
+} from "./hours.js";
 
 const result = $("resultado-local");
 const status = $("estado-local");
+const quandoIrEl = $("quando-ir");
 let tarifas = [];
 let plan = null;
-
-function icsEscape(text) {
-  return text.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n");
-}
-
-function buildIcs({ name, address }) {
-  const lines = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "PRODID:-//Rota da Democracia//PT",
-    "BEGIN:VEVENT",
-    `UID:votar-2026-10-25-${Date.now()}@rota-da-democracia`,
-    `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`,
-    // 08:00 BRT = 11:00 UTC; polls close 17:00 BRT = 20:00 UTC.
-    "DTSTART:20261025T110000Z",
-    "DTEND:20261025T200000Z",
-    "SUMMARY:Votar no 2º turno",
-    `LOCATION:${icsEscape(`${name}, ${address}`)}`,
-    "DESCRIPTION:Leve documento oficial com foto ou o e-Título. As seções abrem às 8h e fecham às 17h (horário de Brasília).",
-    "BEGIN:VALARM",
-    "TRIGGER:-PT1H",
-    "ACTION:DISPLAY",
-    "DESCRIPTION:Hora de sair para votar",
-    "END:VALARM",
-    "END:VEVENT",
-    "END:VCALENDAR",
-  ];
-  return `${lines.join("\r\n")}\r\n`;
-}
 
 $("baixar-ics").addEventListener("click", () => {
   if (!plan) return;
@@ -51,8 +37,14 @@ $("baixar-ics").addEventListener("click", () => {
 
 $("compartilhar-plano").addEventListener("click", async () => {
   if (!plan) return;
+  let hourPart = "";
+  if (plan.hour !== null && plan.hour !== undefined) {
+    const localH = plan.hour - (plan.shift || 0);
+    const suffix = plan.shift ? " (horário local)" : "";
+    hourPart = `Chegar ao local às ${localH}h${suffix}. `;
+  }
   const text =
-    `Meu plano para votar no domingo, 25 de outubro (2º turno): ${plan.name}, ${plan.address}. ` +
+    `Meu plano para votar no domingo, 25 de outubro (2º turno): ${plan.name}, ${plan.address}. ${hourPart}` +
     "As seções abrem às 8h e fecham às 17h (horário de Brasília). Levar documento oficial com foto ou o e-Título. " +
     "O ônibus é de graça no domingo, pela Resolução TSE 23.751/2026. Quer ir junto? " +
     `Veja como chegar: ${location.origin}/como-chegar`;
@@ -77,10 +69,18 @@ const picker = initPlacePicker({
   onPlace: showPlace,
 });
 
-function showPlace(local, shard) {
+function showPlace(local, shard, initialSection = null) {
   if (!local) {
     result.hidden = true;
     status.textContent = "O endereço aparece aqui depois da busca.";
+    if (quandoIrEl) {
+      quandoIrEl.hidden = true;
+      quandoIrEl.replaceChildren();
+    }
+    const planoHorario = $("plano-horario");
+    if (planoHorario) planoHorario.textContent = "Horário em que vou sair: ______";
+    const dicaRota = $("dica-rota");
+    if (dicaRota) dicaRota.textContent = routeHint(null);
     return;
   }
   const municipio = picker.municipio();
@@ -103,11 +103,103 @@ function showPlace(local, shard) {
   $("local-mapa").href = hasCoords
     ? `https://www.google.com/maps/search/?api=1&query=${local.lat},${local.lon}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressText)}`;
-  plan = { name: titleCase(local.nome), address: `${titleCase(local.endereco)}, ${titleCase(shard.nome)} - ${shard.uf}` };
+
+  plan = { name: titleCase(local.nome), address: `${titleCase(local.endereco)}, ${titleCase(shard.nome)} - ${shard.uf}`, hour: null };
+  const planoHorario = $("plano-horario");
+  if (planoHorario) planoHorario.textContent = "Horário em que vou sair: ______";
+  const dicaRota = $("dica-rota");
+  if (dicaRota) dicaRota.textContent = routeHint(null);
 
   result.hidden = false;
   status.textContent = `Local encontrado: ${titleCase(local.nome)}.`;
   if (municipio) renderTarifaFor(municipio);
+
+  if (quandoIrEl) {
+    const request = {};
+    quandoIrEl.hoursRequest = request;
+    quandoIrEl.hidden = true;
+    quandoIrEl.replaceChildren();
+
+    loadHours(shard.cd)
+      .then(([data, changes]) => {
+        if (quandoIrEl.hoursRequest !== request || !quandoIrEl.isConnected) return;
+        setupQuandoIrFlow({ local, shard, addressText, data, changes, initialSection });
+      })
+      .catch(() => {
+        if (quandoIrEl.hoursRequest !== request) return;
+        // Requirement 6: No data -> hide "Quando ir" entirely and keep current route links.
+        quandoIrEl.hidden = true;
+        quandoIrEl.replaceChildren();
+      });
+  }
+}
+
+function setupQuandoIrFlow({ local, shard, addressText, data, changes, initialSection }) {
+  let activeSection = initialSection;
+  const shift = clockShift(shard.uf, shard.cd);
+
+  function applyHour(h) {
+    if (plan) {
+      plan.hour = h;
+      plan.shift = shift;
+    }
+    const localH = h - shift;
+    const planoHorario = $("plano-horario");
+    if (planoHorario) planoHorario.textContent = `Chegar ao local às ${localH}h`;
+    $("rota-google").href = googleMapsTransitUrl(local, addressText, h, shift);
+    const dicaRota = $("dica-rota");
+    if (dicaRota) dicaRota.textContent = routeHint(h, shift);
+  }
+
+  function refresh(targetHour = null) {
+    let hours;
+    let scopeText;
+    let changeStatus;
+
+    if (activeSection !== null) {
+      const key = `${local.zona}-${activeSection}`;
+      hours = data?.[key];
+      scopeText = `Seção ${activeSection} · Zona ${local.zona}`;
+      changeStatus = sectionChangeStatus(changes, local.zona, activeSection);
+    } else {
+      hours = aggregateHours(data, local.zona, local.secoes);
+      const total = local.secoes?.length || 0;
+      scopeText = `Movimento somado das ${total} seções deste local`;
+      changeStatus = aggregateChangeStatus(changes, local.zona, local.secoes);
+    }
+
+    if (!validHours(hours)) {
+      quandoIrEl.hidden = true;
+      quandoIrEl.replaceChildren();
+      return;
+    }
+
+    quandoIrEl.hidden = false;
+    const warning = changeWarning(changeStatus);
+
+    renderQuandoIr(quandoIrEl, {
+      hours,
+      selectedHour: targetHour,
+      warning,
+      scopeText,
+      sections: initialSection === null ? local.secoes : null,
+      currentSection: activeSection,
+      shift,
+      onSelectSection(sec) {
+        activeSection = sec;
+        refresh();
+      },
+      onSelectHour(h) {
+        applyHour(h);
+      },
+    });
+
+    const calmest = calmestHours(hours, 3);
+    const chosen = targetHour !== null ? targetHour : calmest[0];
+    applyHour(chosen);
+  }
+
+  refresh();
 }
 
 // ---- Tarifa zero -----------------------------------------------------
