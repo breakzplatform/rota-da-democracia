@@ -1298,3 +1298,7 @@ dialog p {
   display: grid;
   gap: 1.35rem;
 }
+
+.hero .deadline-banner {
+  margin-top: 1.35rem;
+}

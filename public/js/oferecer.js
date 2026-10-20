@@ -1,9 +1,10 @@
 import {
-  $, api, maskWhatsapp, guardClosed, showSignupClosed, signupIsClosed, clearInvalid, copyText, createTurnstile, describeError, focusField,
+  $, api, maskWhatsapp, guardClosed, showSignupClosed, signupIsClosed, updateSignupDeadline, clearInvalid, copyText, createTurnstile, describeError, focusField,
   NO_TURNSTILE_MESSAGE, ApiFailure, setBusy, showMessage, spokenTime, timeToIso, titleCase,
 } from "./common.js";
 import { initPlacePicker } from "./places.js";
 
+updateSignupDeadline();
 const picker = initPlacePicker();
 const form = $("form-oferta");
 const errorBox = $("erro-oferta");
