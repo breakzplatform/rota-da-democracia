@@ -1375,3 +1375,15 @@ dialog p {
 #tarifa-zero-outras summary {
   cursor: pointer;
 }
+
+/* Seven nav links need the hamburger, or tighter spacing, below wide desktop. */
+@media (min-width: 60rem) and (max-width: 79.99rem) {
+  .nav-panel {
+    gap: 0.75rem;
+  }
+
+  .nav-links {
+    gap: 0.2rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}
