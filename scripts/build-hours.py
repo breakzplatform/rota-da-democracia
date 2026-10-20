@@ -197,7 +197,7 @@ def download(state, work, budget, connections=4):
     if path.exists():
         if path.stat().st_size != size:
             raise ValueError(f'{path} has unexpected size; retain for inspection')
-        return path, metadata
+        return path, metadata, 0
     if partial.exists() and (not marker.exists() or json.loads(marker.read_text()) != metadata):
         raise ValueError(f'{partial} belongs to a different source; retain for inspection')
     write_json(marker, metadata)
@@ -205,6 +205,8 @@ def download(state, work, budget, connections=4):
     if remaining < 0:
         raise ValueError(f'{partial} exceeds the source size; retain for inspection')
     budget.reserve(remaining)
+    # The caller releases the reservation only after deleting the ZIP: until then
+    # it still occupies the disk space this download reserved.
     try:
         for attempt in range(4):
             offset = partial.stat().st_size if partial.exists() else 0
@@ -234,9 +236,10 @@ def download(state, work, budget, connections=4):
                 time.sleep(2)
         partial.replace(path)
         print(f'{state}: downloaded {size / GIB:.2f} GiB', flush=True)
-        return path, metadata
-    finally:
+        return path, metadata, remaining
+    except BaseException:
         budget.release(remaining)
+        raise
 
 
 def process_state(state, work, budget, connections=4):
@@ -260,7 +263,14 @@ def process_state(state, work, budget, connections=4):
         write_json(result_path, cached)
         print(f'{state}: resume from completed result ({len(remaining_errors)} rejected)', flush=True)
         return cached
-    path, metadata = download(state, work, budget, connections)
+    path, metadata, reserved = download(state, work, budget, connections)
+    try:
+        return extract_state(state, work, path, metadata, result_path)
+    finally:
+        budget.release(reserved)
+
+
+def extract_state(state, work, path, metadata, result_path):
     digest = hashlib.sha256()
     with path.open('rb') as stream:
         while block := stream.read(4 * 1024 * 1024):
@@ -364,8 +374,8 @@ def publish(results, data):
         write_json(data / 'h-changes' / f'{municipality}.json', changes.get(municipality, {}))
     report = dict(version=VERSION, source=SOURCE, date='2026-10-04', complete=set(states) == set(STATES),
                   totals=dict(totals), states=states,
-                  matchRate=totals['matchedSections'] / totals['logSections'],
-                  coverage=totals['matchedSections'] / totals['siteSections'],
+                  matchRate=totals['matchedSections'] / max(totals['logSections'], 1),
+                  coverage=totals['matchedSections'] / max(totals['siteSections'], 1),
                   bytes=sum(p.stat().st_size for p in (data / 'h').glob('*.json')))
     write_json(data / 'hours-audit.json', report)
     print(json.dumps({key: value for key, value in report.items() if key != 'states'}, indent=2), flush=True)
