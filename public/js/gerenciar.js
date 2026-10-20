@@ -46,7 +46,7 @@ async function load() {
   status.textContent = "Carregando sua oferta...";
   try {
     const [offer, municipios] = await Promise.all([
-      api(`/api/ofertas/${encodeURIComponent(id)}?token=${encodeURIComponent(token)}`),
+      api(`/api/ofertas/${encodeURIComponent(id)}`, { token }),
       loadMunicipios().catch(() => []),
     ]);
     const entry = municipios.find((m) => m.cd === offer.municipio);

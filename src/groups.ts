@@ -8,6 +8,7 @@ import { ApiError, json, readJsonObject } from "./http";
 import { isMunicipioCode, loadMunicipio } from "./places";
 import { withQuota } from "./rate-limit";
 import {
+  bearerToken,
   closed,
   quotaExhausted,
   reportReason,
@@ -189,8 +190,7 @@ export async function joinGroup(request: Request, env: Env, deps: Deps, id: stri
 }
 
 export async function getOwnedGroup(request: Request, env: Env, id: string): Promise<Response> {
-  const token = new URL(request.url).searchParams.get("token");
-  return json(ownerView(await authorize(env, id, token)));
+  return json(ownerView(await authorize(env, id, bearerToken(request))));
 }
 
 export async function deleteGroup(request: Request, env: Env, id: string): Promise<Response> {

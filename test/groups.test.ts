@@ -209,7 +209,7 @@ describe("group owner and reports", () => {
   it("owner can read and delete with the token only", async () => {
     const first = await createGroup({ link: LINK });
     const second = await createGroup();
-    const owner = await readJson(await call("GET", `/api/grupos/${first.id}?token=${first.token}`));
+    const owner = await readJson(await call("GET", `/api/grupos/${first.id}`, { token: first.token }));
     expect(owner).toMatchObject({ id: first.id, link: LINK, municipio: "25313", denuncias: 0, oculto: false });
     await expectError(await call("GET", `/api/grupos/${first.id}`), 401, "token_ausente");
     await expectError(await call("DELETE", `/api/grupos/${first.id}`, { body: { token: second.token } }), 403, "token_invalido");
@@ -229,7 +229,7 @@ describe("group owner and reports", () => {
     }
     expect(await listGroups()).toHaveLength(1);
     expect((await enter(id)).status).toBe(200);
-    expect(await readJson(await call("GET", `/api/grupos/${id}?token=${token}`))).toMatchObject({ denuncias: 12, oculto: false });
+    expect(await readJson(await call("GET", `/api/grupos/${id}`, { token: token }))).toMatchObject({ denuncias: 12, oculto: false });
   });
 
   it("validates reports", async () => {

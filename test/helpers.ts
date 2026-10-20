@@ -99,6 +99,8 @@ export interface CallOptions {
   body?: unknown;
   rawBody?: string;
   ip?: string;
+  // Sent as the Authorization bearer, like the manage pages do.
+  token?: string;
 }
 
 export function send(request: Request): Promise<Response> {
@@ -111,6 +113,7 @@ export async function call(method: string, path: string, options: CallOptions = 
   if (options.rawBody !== undefined) body = options.rawBody;
   else if (options.body !== undefined) body = JSON.stringify(options.body);
   if (body !== undefined) headers.set("Content-Type", "application/json");
+  if (options.token !== undefined) headers.set("Authorization", `Bearer ${options.token}`);
   return handleApi(new Request(`${ORIGIN}${path}`, { method, headers, body }), testEnv, deps);
 }
 

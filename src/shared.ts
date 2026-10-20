@@ -32,6 +32,15 @@ export function turnstile(request: Request, env: Env, deps: Deps, token: unknown
   );
 }
 
+/**
+ * The management token of a GET request, read from the Authorization header.
+ * Never from the query string: URLs end up in request logs and Referer headers.
+ */
+export function bearerToken(request: Request): string | null {
+  const header = request.headers.get("Authorization") ?? "";
+  return header.startsWith("Bearer ") ? header.slice(7) : null;
+}
+
 export function requireTokenShape(token: unknown): asserts token is string {
   if (typeof token !== "string" || token.length < 16 || token.length > 128) {
     throw new ApiError(401, "token_ausente", "Use o link de gerenciamento que você recebeu.");

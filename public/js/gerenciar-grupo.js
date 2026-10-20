@@ -21,7 +21,7 @@ async function load() {
   status.textContent = "Carregando seu grupo...";
   try {
     const [group, municipios] = await Promise.all([
-      api(`/api/grupos/${encodeURIComponent(id)}?token=${encodeURIComponent(token)}`),
+      api(`/api/grupos/${encodeURIComponent(id)}`, { token }),
       loadMunicipios().catch(() => []),
     ]);
     const entry = municipios.find((m) => m.cd === group.municipio);

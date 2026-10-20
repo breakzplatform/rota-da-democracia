@@ -399,7 +399,7 @@ describe("contact types", () => {
       valor: "@maria.silva_81",
       aviso: "A carona só é confirmada entre as pessoas, pelo contato combinado. O site não organiza, confirma, nem garante caronas.",
     });
-    const owner = await readJson(await call("GET", `/api/ofertas/${id}?token=${token}`));
+    const owner = await readJson(await call("GET", `/api/ofertas/${id}`, { token: token }));
     expect(owner).toMatchObject({ contatoTipo: "whatsapp_usuario", contato: "@maria.silva_81" });
   });
 
@@ -417,7 +417,7 @@ describe("contact types", () => {
     const body = await reveal(id);
     expect(body).toMatchObject({ tipo: "email", valor: "maria.silva+carona@exemplo.com.br" });
     expect(body.link).toBe("mailto:maria.silva+carona@exemplo.com.br?subject=Carona%20para%20votar%20no%20domingo");
-    const owner = await readJson(await call("GET", `/api/ofertas/${id}?token=${token}`));
+    const owner = await readJson(await call("GET", `/api/ofertas/${id}`, { token: token }));
     expect(owner).toMatchObject({ contatoTipo: "email", contato: "maria.silva+carona@exemplo.com.br" });
   });
 
@@ -455,7 +455,7 @@ describe("contact types", () => {
 describe("owner endpoints", () => {
   it("GET returns the full offer with the contact for the right token", async () => {
     const { id, token } = await createOffer();
-    const response = await call("GET", `/api/ofertas/${id}?token=${token}`);
+    const response = await call("GET", `/api/ofertas/${id}`, { token: token });
     expect(response.status).toBe(200);
     expect(response.headers.get("Cache-Control")).toBe("no-store");
     const body = await readJson(response);
@@ -477,15 +477,17 @@ describe("owner endpoints", () => {
     const first = await createOffer();
     const second = await createOffer();
     await expectError(await call("GET", `/api/ofertas/${first.id}`), 401, "token_ausente");
-    await expectError(await call("GET", `/api/ofertas/${first.id}?token=${"x".repeat(32)}`), 403, "token_invalido");
-    await expectError(await call("GET", `/api/ofertas/${first.id}?token=${second.token}`), 403, "token_invalido");
+    // The query string lands in request logs, so a token there is ignored.
+    await expectError(await call("GET", `/api/ofertas/${first.id}?token=${first.token}`), 401, "token_ausente");
+    await expectError(await call("GET", `/api/ofertas/${first.id}`, { token: "x".repeat(32) }), 403, "token_invalido");
+    await expectError(await call("GET", `/api/ofertas/${first.id}`, { token: second.token }), 403, "token_invalido");
     await expectError(
       await call("PATCH", `/api/ofertas/${first.id}`, { body: { token: second.token, vagasLivres: 1 } }),
       403,
       "token_invalido",
     );
     await expectError(await call("DELETE", `/api/ofertas/${first.id}`, { body: { token: second.token } }), 403, "token_invalido");
-    await expectError(await call("GET", `/api/ofertas/doesnotexist?token=${first.token}`), 404, "oferta_nao_encontrada");
+    await expectError(await call("GET", `/api/ofertas/doesnotexist`, { token: first.token }), 404, "oferta_nao_encontrada");
   });
 
   it("PATCH updates seats, time, meeting point and note", async () => {
@@ -530,7 +532,7 @@ describe("owner endpoints", () => {
     const response = await call("DELETE", `/api/ofertas/${id}`, { body: { token } });
     expect(response.status).toBe(200);
     expect(await list("municipio=25313")).toEqual([]);
-    await expectError(await call("GET", `/api/ofertas/${id}?token=${token}`), 404, "oferta_nao_encontrada");
+    await expectError(await call("GET", `/api/ofertas/${id}`, { token: token }), 404, "oferta_nao_encontrada");
     const reports = await env.DB.prepare("SELECT COUNT(*) AS total FROM reports").first<{ total: number }>();
     expect(reports?.total).toBe(0);
   });
@@ -546,7 +548,7 @@ describe("POST /api/ofertas/:id/denuncia", () => {
     for (let index = 2; index <= 20; index += 1) expect((await report(`192.0.2.${index}`)).status).toBe(202);
     expect(await list("municipio=25313")).toHaveLength(1);
     expect((await call("POST", `/api/ofertas/${id}/contato`, { body: { turnstile: TURNSTILE.contato, ciente: true } })).status).toBe(200);
-    const owner = await readJson(await call("GET", `/api/ofertas/${id}?token=${token}`));
+    const owner = await readJson(await call("GET", `/api/ofertas/${id}`, { token: token }));
     expect(owner).toMatchObject({ denuncias: 20, oculta: false, moderada: false });
   });
 
@@ -732,7 +734,7 @@ describe("review hardening", () => {
     await report("2001:db8:1:2:ffff:ffff:ffff:ffff");
     await report("2001:db8:1:3::1");
     await report("203.0.113.77");
-    expect(await readJson(await call("GET", `/api/ofertas/${id}?token=${token}`))).toMatchObject({ denuncias: 3 });
+    expect(await readJson(await call("GET", `/api/ofertas/${id}`, { token: token }))).toMatchObject({ denuncias: 3 });
   });
 
   it("refuses inserts once the purge flag is set, even before the purge instant", async () => {

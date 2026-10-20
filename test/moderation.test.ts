@@ -99,7 +99,7 @@ describe("moderation", () => {
     expect(await readJson(hidden)).toEqual({ ok: true, id, oculta: true });
     expect((await readJson<{ ofertas: unknown[] }>(await call("GET", "/api/ofertas?municipio=25313"))).ofertas).toEqual([]);
     expect((await call("POST", `/api/ofertas/${id}/contato`, { body: { turnstile: TURNSTILE.contato, ciente: true } })).status).toBe(404);
-    expect(await readJson(await call("GET", `/api/ofertas/${id}?token=${token}`))).toMatchObject({ oculta: true, moderada: true });
+    expect(await readJson(await call("GET", `/api/ofertas/${id}`, { token: token }))).toMatchObject({ oculta: true, moderada: true });
     expect((await readJson<{ denuncias: unknown[] }>(await admin("GET", "/api/admin/denuncias"))).denuncias).toEqual([]);
 
     await admin("POST", `/api/admin/ofertas/${id}/restaurar`);

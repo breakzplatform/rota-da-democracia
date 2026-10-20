@@ -17,6 +17,7 @@ import { isMunicipioCode, loadMunicipio } from "./places";
 import { withQuota } from "./rate-limit";
 import { cleanText, foldForSearch } from "./text";
 import {
+  bearerToken,
   closed,
   quotaExhausted,
   reportReason,
@@ -293,8 +294,7 @@ export async function revealContact(request: Request, env: Env, deps: Deps, id: 
 }
 
 export async function getOwnedOffer(request: Request, env: Env, id: string): Promise<Response> {
-  const token = new URL(request.url).searchParams.get("token");
-  return json(ownerView(await authorize(env, id, token)));
+  return json(ownerView(await authorize(env, id, bearerToken(request))));
 }
 
 export async function updateOffer(request: Request, env: Env, deps: Deps, id: string): Promise<Response> {
