@@ -1,5 +1,13 @@
 import { LIMITS, SITE_NAME } from "./config";
 import { NOT_PURGED, isPurged } from "./cleanup";
+import {
+  CONTACT_ERRORS,
+  contactLink,
+  displayContact,
+  isContactType,
+  normalizeContact,
+  type ContactType,
+} from "./contact";
 import { clientIp, hashIp, randomToken, sha256Hex, tokenMatches } from "./crypto";
 import { electionDayTime } from "./election";
 import type { Deps, Env } from "./env";
@@ -18,13 +26,13 @@ import {
   screenNeutrality,
   seats,
 } from "./validation";
-import { normalizeWhatsapp } from "./whatsapp";
 
 interface OfferRow {
   id: string;
   token_hash: string;
   nome: string;
-  whatsapp: string;
+  contato_tipo: ContactType;
+  contato: string;
   municipio: string;
   local_id: string;
   local_nome: string;
@@ -41,7 +49,7 @@ interface OfferRow {
 }
 
 export const CONFIRMATION_NOTICE =
-  "A carona só é confirmada entre as pessoas, pelo WhatsApp. O site não confirma nem garante caronas.";
+  "A carona só é confirmada entre as pessoas, pelo contato combinado. O site não confirma nem garante caronas.";
 const LOCAL_ID = /^\d{1,4}-\d{1,6}$/;
 const MAX_RESULTS = 200;
 const REPORT_REASONS = new Set(["cobranca", "campanha", "falsa", "outro"]);
@@ -72,7 +80,8 @@ function publicView(row: OfferRow) {
 function ownerView(row: OfferRow) {
   return {
     ...publicView(row),
-    whatsapp: row.whatsapp,
+    contatoTipo: row.contato_tipo,
+    contato: displayContact(row.contato_tipo, row.contato),
     municipio: row.municipio,
     vagas: row.vagas,
     denuncias: row.denuncias,
@@ -122,7 +131,7 @@ async function authorize(env: Env, id: string, token: unknown): Promise<OfferRow
 const DECLARATIONS = [
   ["aceite", "Para oferecer carona, é preciso aceitar as regras: carona gratuita, sem pedir voto e sem material de campanha."],
   ["semVinculo", "Para oferecer carona, é preciso declarar que você não tem vínculo com candidato, partido ou campanha."],
-  ["combinaWhatsapp", "Para oferecer carona, é preciso confirmar que só vai levar quem combinar antes com você pelo WhatsApp."],
+  ["combinaWhatsapp", "Para oferecer carona, é preciso confirmar que só vai levar quem combinar antes com você pelo contato que deixou."],
   ["veiculoParticular", "Para oferecer carona, é preciso confirmar que o carro é particular, seu ou da sua família, e sem propaganda."],
   ["semPagamento", "Para oferecer carona, é preciso confirmar que você não recebe nada por ela e que não é caravana."],
   ["maiorHabilitado", "Para oferecer carona, é preciso confirmar que você tem mais de 18 anos e carteira de motorista válida."],
@@ -139,9 +148,12 @@ export async function createOffer(request: Request, env: Env, deps: Deps): Promi
   requireDeclarations(body);
 
   const nome = requiredText(body, "nome", LIMITS.nome, "nome");
-  const rawWhatsapp = body.whatsapp;
-  const whatsapp = typeof rawWhatsapp === "string" ? normalizeWhatsapp(rawWhatsapp) : null;
-  if (!whatsapp) throw invalid("whatsapp", "Informe um celular brasileiro com DDD, como (81) 91234-5678.");
+  const contatoTipo = body.contatoTipo;
+  if (!isContactType(contatoTipo)) {
+    throw invalid("contatoTipo", "Escolha como as pessoas vão falar com você: WhatsApp, usuário do WhatsApp ou e-mail.");
+  }
+  const contato = typeof body.contato === "string" ? normalizeContact(contatoTipo, body.contato) : null;
+  if (!contato) throw invalid("contato", CONTACT_ERRORS[contatoTipo]);
   if (!isMunicipioCode(body.municipio)) throw invalid("municipio", "Escolha o município.");
   const municipio = body.municipio;
   const localId = body.localId;
@@ -159,6 +171,7 @@ export async function createOffer(request: Request, env: Env, deps: Deps): Promi
     ["pontoEncontro", pontoEncontro],
     ["bairroSaida", bairroSaida],
     ["nota", nota],
+    ["contato", contatoTipo === "whatsapp" ? null : contato],
   ]);
 
   const ipHash = await hashIp(clientIp(request), env.IP_SALT);
@@ -177,17 +190,18 @@ export async function createOffer(request: Request, env: Env, deps: Deps): Promi
 
     const timestamp = now.toISOString();
     const inserted = await env.DB.prepare(
-      `INSERT INTO offers (id, token_hash, nome, whatsapp, municipio, local_id, local_nome, ponto_encontro,
+      `INSERT INTO offers (id, token_hash, nome, contato_tipo, contato, municipio, local_id, local_nome, ponto_encontro,
          bairro_saida, bairro_busca, saida, vagas, vagas_livres, nota, acessivel, aceite, sem_vinculo,
          combina_whatsapp, veiculo_particular, sem_pagamento, maior_habilitado, declarado_em, created_at, updated_at)
-       SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, 1, 1, 1, 1, ?, ?, ?
+       SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, 1, 1, 1, 1, ?, ?, ?
        WHERE ${NOT_PURGED}`,
     )
       .bind(
         id,
         await sha256Hex(token),
         nome,
-        whatsapp,
+        contatoTipo,
+        contato,
         municipio,
         local.id,
         local.nome,
@@ -270,11 +284,13 @@ export async function revealContact(request: Request, env: Env, deps: Deps, id: 
     return offer;
   });
 
-  const digits = row.whatsapp.replace(/\D/g, "");
-  const message =
-    `Oi! Vi sua oferta de carona no ${SITE_NAME} para o local de votação ` +
-    `${row.local_nome} no domingo. Ainda tem vaga?`;
-  return json({ whatsapp: row.whatsapp, aviso: CONFIRMATION_NOTICE, waLink: `https://wa.me/${digits}?text=${encodeURIComponent(message)}` });
+  const link = contactLink(row.contato_tipo, row.contato, row.local_nome, SITE_NAME);
+  return json({
+    tipo: row.contato_tipo,
+    valor: displayContact(row.contato_tipo, row.contato),
+    ...(link ? { link } : {}),
+    aviso: CONFIRMATION_NOTICE,
+  });
 }
 
 export async function getOwnedOffer(request: Request, env: Env, id: string): Promise<Response> {

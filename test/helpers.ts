@@ -105,7 +105,8 @@ export function validOffer(overrides: Record<string, unknown> = {}): Record<stri
   return {
     turnstile: TURNSTILE.oferecer,
     nome: "Ana",
-    whatsapp: "(81) 99876-5432",
+    contatoTipo: "whatsapp",
+    contato: "(81) 99876-5432",
     municipio: "25313",
     localId: "1-1015",
     pontoEncontro: "Em frente à padaria da esquina",

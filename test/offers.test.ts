@@ -43,12 +43,14 @@ describe("POST /api/ofertas", () => {
     expect(response.headers.get("Cache-Control")).toBe("no-store");
   });
 
-  it("stores the token hash, never the token, and the normalized whatsapp", async () => {
+  it("stores the token hash, never the token, and the normalized contact", async () => {
     const { id, token } = await createOffer();
     const row = await env.DB.prepare("SELECT * FROM offers WHERE id = ?").bind(id).first<Record<string, unknown>>();
     expect(row?.token_hash).toBe(await sha256Hex(token));
     expect(Object.values(row ?? {})).not.toContain(token);
-    expect(row?.whatsapp).toBe("+5581998765432");
+    expect(row?.contato_tipo).toBe("whatsapp");
+    expect(row?.contato).toBe("+5581998765432");
+    expect(row).not.toHaveProperty("whatsapp");
     expect(row?.local_nome).toBe("ESCOLA PRAÇA 13 DE MAIO");
     expect(row?.saida).toBe("2026-10-25T13:00:00.000Z");
   });
@@ -111,8 +113,13 @@ describe("POST /api/ofertas", () => {
   });
 
   it.each([
-    ["whatsapp", { whatsapp: "(81) 3456-7890" }],
-    ["whatsapp", { whatsapp: 81998765432 }],
+    ["contatoTipo", { contatoTipo: undefined }],
+    ["contatoTipo", { contatoTipo: "telegram" }],
+    ["contato", { contato: undefined }],
+    ["contato", { contato: "(81) 3456-7890" }],
+    ["contato", { contato: 81998765432 }],
+    ["contato", { contatoTipo: "email", contato: "(81) 99876-5432" }],
+    ["contato", { contatoTipo: "whatsapp_usuario", contato: "maria@exemplo.com" }],
     ["municipio", { municipio: "99999" }],
     ["municipio", { municipio: "../etc" }],
     ["localId", { localId: "9-9999" }],
@@ -200,12 +207,18 @@ describe("POST /api/ofertas", () => {
 });
 
 describe("GET /api/ofertas", () => {
-  it("never exposes whatsapp or the token", async () => {
+  it("never exposes the contact (any type) or the token", async () => {
     const { token } = await createOffer();
+    await createOffer({ contatoTipo: "whatsapp_usuario", contato: "@motorista.secreta" });
+    await createOffer({ contatoTipo: "email", contato: "segredo@exemplo.com" });
     const response = await call("GET", "/api/ofertas?municipio=25313");
     const text = await response.text();
+    expect((JSON.parse(text) as { ofertas: unknown[] }).ofertas).toHaveLength(3);
+    expect(text).not.toContain("contato");
     expect(text).not.toContain("whatsapp");
     expect(text).not.toContain("99876");
+    expect(text).not.toContain("motorista.secreta");
+    expect(text).not.toContain("segredo");
     expect(text).not.toContain(token);
     expect(text).not.toContain("token");
   });
@@ -265,20 +278,21 @@ describe("GET /api/ofertas", () => {
 });
 
 describe("POST /api/ofertas/:id/contato", () => {
-  it("returns the whatsapp, a neutral wa.me link and the confirmation notice", async () => {
+  it("returns the number, a neutral wa.me link and the confirmation notice", async () => {
     const { id } = await createOffer();
     const response = await call("POST", `/api/ofertas/${id}/contato`, { body: { turnstile: TURNSTILE.contato, ciente: true } });
     expect(response.status).toBe(200);
     expect(response.headers.get("Cache-Control")).toBe("no-store");
-    const body = await readJson<{ whatsapp: string; waLink: string; aviso: string }>(response);
-    expect(body.whatsapp).toBe("+5581998765432");
-    const link = new URL(body.waLink);
+    const body = await readJson<{ tipo: string; valor: string; link: string; aviso: string }>(response);
+    expect(body.tipo).toBe("whatsapp");
+    expect(body.valor).toBe("+5581998765432");
+    const link = new URL(body.link);
     expect(`${link.origin}${link.pathname}`).toBe("https://wa.me/5581998765432");
     expect(link.searchParams.get("text")).toBe(
       "Oi! Vi sua oferta de carona no Rota da Democracia para o local de votação ESCOLA PRAÇA 13 DE MAIO no domingo. Ainda tem vaga?",
     );
     expect(body.aviso).toBe(
-      "A carona só é confirmada entre as pessoas, pelo WhatsApp. O site não confirma nem garante caronas.",
+      "A carona só é confirmada entre as pessoas, pelo contato combinado. O site não confirma nem garante caronas.",
     );
   });
 
@@ -333,8 +347,78 @@ describe("POST /api/ofertas/:id/contato", () => {
   });
 });
 
+describe("contact types", () => {
+  async function reveal(id: string) {
+    const response = await call("POST", `/api/ofertas/${id}/contato`, { body: { turnstile: TURNSTILE.contato, ciente: true } });
+    expect(response.status).toBe(200);
+    return readJson<Record<string, unknown>>(response);
+  }
+
+  it("WhatsApp username: normalized, revealed with @ and without a link", async () => {
+    const { id, token } = await createOffer({ contatoTipo: "whatsapp_usuario", contato: " @Maria.Silva_81 " });
+    const row = await env.DB.prepare("SELECT contato_tipo, contato FROM offers WHERE id = ?").bind(id).first();
+    expect(row).toEqual({ contato_tipo: "whatsapp_usuario", contato: "maria.silva_81" });
+    const body = await reveal(id);
+    expect(body).toEqual({
+      tipo: "whatsapp_usuario",
+      valor: "@maria.silva_81",
+      aviso: "A carona só é confirmada entre as pessoas, pelo contato combinado. O site não confirma nem garante caronas.",
+    });
+    const owner = await readJson(await call("GET", `/api/ofertas/${id}?token=${token}`));
+    expect(owner).toMatchObject({ contatoTipo: "whatsapp_usuario", contato: "@maria.silva_81" });
+  });
+
+  it.each(["ab", "@ab", "12345", "a".repeat(36), "maria silva", "maria-silva", "maria@silva", "@", ""])(
+    "rejects the username %j",
+    async (contato) => {
+      const response = await call("POST", "/api/ofertas", { body: validOffer({ contatoTipo: "whatsapp_usuario", contato }) });
+      expect(response.status).toBe(400);
+      expect(await readJson(response)).toMatchObject({ error: "campo_invalido", campo: "contato" });
+    },
+  );
+
+  it("e-mail: lowercased and revealed with a mailto link", async () => {
+    const { id, token } = await createOffer({ contatoTipo: "email", contato: "  Maria.Silva+carona@Exemplo.COM.br " });
+    const body = await reveal(id);
+    expect(body).toMatchObject({ tipo: "email", valor: "maria.silva+carona@exemplo.com.br" });
+    expect(body.link).toBe("mailto:maria.silva+carona@exemplo.com.br?subject=Carona%20para%20votar%20no%20domingo");
+    const owner = await readJson(await call("GET", `/api/ofertas/${id}?token=${token}`));
+    expect(owner).toMatchObject({ contatoTipo: "email", contato: "maria.silva+carona@exemplo.com.br" });
+  });
+
+  it.each([
+    "maria",
+    "maria@",
+    "@exemplo.com",
+    "maria@exemplo",
+    "maria..silva@exemplo.com",
+    ".maria@exemplo.com",
+    "maria@-exemplo.com",
+    "maria silva@exemplo.com",
+    "maria@exemplo.com>",
+    "mária@exemplo.com",
+    `${"a".repeat(90)}@exemplo.com`,
+  ])("rejects the e-mail %j", async (contato) => {
+    const response = await call("POST", "/api/ofertas", { body: validOffer({ contatoTipo: "email", contato }) });
+    expect(response.status).toBe(400);
+    expect(await readJson(response)).toMatchObject({ error: "campo_invalido", campo: "contato" });
+  });
+
+  it.each([
+    ["whatsapp_usuario", "@lula2026"],
+    ["whatsapp_usuario", "bolsonaro.oficial"],
+    ["email", "vote13@exemplo.com"],
+    ["email", "lula@exemplo.com"],
+    ["email", "maria@pt.org.br"],
+  ])("screens %s contacts for campaign content (%s)", async (contatoTipo, contato) => {
+    const response = await call("POST", "/api/ofertas", { body: validOffer({ contatoTipo, contato }) });
+    expect(response.status).toBe(422);
+    expect(await readJson(response)).toMatchObject({ error: "conteudo_de_campanha", campo: "contato" });
+  });
+});
+
 describe("owner endpoints", () => {
-  it("GET returns the full offer with whatsapp for the right token", async () => {
+  it("GET returns the full offer with the contact for the right token", async () => {
     const { id, token } = await createOffer();
     const response = await call("GET", `/api/ofertas/${id}?token=${token}`);
     expect(response.status).toBe(200);
@@ -342,7 +426,8 @@ describe("owner endpoints", () => {
     const body = await readJson(response);
     expect(body).toMatchObject({
       id,
-      whatsapp: "+5581998765432",
+      contatoTipo: "whatsapp",
+      contato: "+5581998765432",
       municipio: "25313",
       vagas: 3,
       vagasLivres: 3,
