@@ -56,11 +56,11 @@ describe("POST /api/ofertas", () => {
     expect(row?.saida).toBe("2026-10-25T13:00:00.000Z");
   });
 
-  it("records the six declarations with a timestamp", async () => {
+  it("records the seven declarations with a timestamp", async () => {
     const { id } = await createOffer();
     const row = await env.DB.prepare(
       `SELECT aceite, sem_vinculo, combina_whatsapp, veiculo_particular, sem_pagamento, maior_habilitado,
-         declarado_em FROM offers WHERE id = ?`,
+         um_trajeto, declarado_em FROM offers WHERE id = ?`,
     )
       .bind(id)
       .first<Record<string, unknown>>();
@@ -71,11 +71,12 @@ describe("POST /api/ofertas", () => {
       veiculo_particular: 1,
       sem_pagamento: 1,
       maior_habilitado: 1,
+      um_trajeto: 1,
       declarado_em: clock.now.toISOString(),
     });
   });
 
-  const declarations = ["aceite", "semVinculo", "combinaWhatsapp", "veiculoParticular", "semPagamento", "maiorHabilitado"];
+  const declarations = ["aceite", "semVinculo", "combinaWhatsapp", "veiculoParticular", "semPagamento", "maiorHabilitado", "umTrajeto"];
 
   it.each(declarations)("requires the %s declaration to be exactly true", async (field) => {
     for (const value of [undefined, false, "true", 1]) {

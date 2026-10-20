@@ -137,6 +137,7 @@ const DECLARATIONS = [
   ["veiculoParticular", "Para oferecer carona, é preciso confirmar que o carro é particular, seu ou da sua família, e sem propaganda."],
   ["semPagamento", "Para oferecer carona, é preciso confirmar que você não recebe nada por ela e que não é caravana."],
   ["maiorHabilitado", "Para oferecer carona, é preciso confirmar que você tem mais de 18 anos e carteira de motorista válida."],
+  ["umTrajeto", "Para oferecer carona, é preciso confirmar que vai dar carona só no seu trajeto, uma ida e uma volta, sem ficar indo e voltando para levar várias pessoas."],
 ] as const;
 
 export async function createOffer(request: Request, env: Env, deps: Deps): Promise<Response> {
@@ -188,8 +189,8 @@ export async function createOffer(request: Request, env: Env, deps: Deps): Promi
     const inserted = await env.DB.prepare(
       `INSERT INTO offers (id, token_hash, nome, contato_tipo, contato, municipio, local_id, local_nome, ponto_encontro,
          bairro_saida, bairro_busca, saida, vagas, vagas_livres, nota, acessivel, aceite, sem_vinculo,
-         combina_whatsapp, veiculo_particular, sem_pagamento, maior_habilitado, declarado_em, created_at, updated_at)
-       SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, 1, 1, 1, 1, ?, ?, ?
+         combina_whatsapp, veiculo_particular, sem_pagamento, maior_habilitado, um_trajeto, declarado_em, created_at, updated_at)
+       SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, 1, 1, 1, 1, 1, ?, ?, ?
        WHERE ${NOT_PURGED}`,
     )
       .bind(

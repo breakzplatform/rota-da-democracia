@@ -136,6 +136,7 @@ export function validOffer(overrides: Record<string, unknown> = {}): Record<stri
     veiculoParticular: true,
     semPagamento: true,
     maiorHabilitado: true,
+    umTrajeto: true,
     ...overrides,
   };
 }
