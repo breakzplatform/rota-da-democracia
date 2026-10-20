@@ -11,6 +11,7 @@ export default defineConfig({
         compatibilityDate: "2026-08-22",
         bindings: {
           TURNSTILE_SECRET: "1x0000000000000000000000000000000AA",
+          TURNSTILE_SITE_KEY: "1x00000000000000000000AA",
           IP_SALT: "test-salt",
           TEST_MIGRATIONS: await readD1Migrations(path.join(import.meta.dirname, "migrations")),
         },

@@ -13,8 +13,8 @@
   ],
   "triggers": { "crons": ["0 * * * *"] },
   "vars": {
-    // Cloudflare's always-pass test key; replaced with the real site key at deploy.
-    "TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
+    // Real widget; tests and wrangler dev use .dev.vars / test bindings.
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAFcZpTsTGKKJM9YZ",
     "ALLOWED_HOSTNAMES": "carona-pela-democracia.joselito.workers.dev,localhost"
   },
   "observability": { "enabled": true }
