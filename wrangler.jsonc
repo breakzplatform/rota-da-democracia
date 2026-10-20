@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "carona-pela-democracia",
+  "name": "rota-da-democracia",
   "main": "src/index.ts",
   "compatibility_date": "2026-10-01",
   "assets": {
@@ -15,7 +15,7 @@
   "vars": {
     // Real widget; tests and wrangler dev use .dev.vars / test bindings.
     "TURNSTILE_SITE_KEY": "0x4AAAAAAFcZpTsTGKKJM9YZ",
-    "ALLOWED_HOSTNAMES": "carona-pela-democracia.joselito.workers.dev,localhost"
+    "ALLOWED_HOSTNAMES": "rota-da-democracia.joselito.workers.dev,localhost"
   },
   "observability": { "enabled": true }
 }

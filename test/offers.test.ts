@@ -275,7 +275,7 @@ describe("POST /api/ofertas/:id/contato", () => {
     const link = new URL(body.waLink);
     expect(`${link.origin}${link.pathname}`).toBe("https://wa.me/5581998765432");
     expect(link.searchParams.get("text")).toBe(
-      "Oi! Vi sua oferta de carona no Carona pela Democracia para o local de votação ESCOLA PRAÇA 13 DE MAIO no domingo. Ainda tem vaga?",
+      "Oi! Vi sua oferta de carona no Rota da Democracia para o local de votação ESCOLA PRAÇA 13 DE MAIO no domingo. Ainda tem vaga?",
     );
     expect(body.aviso).toBe(
       "A carona só é confirmada entre as pessoas, pelo WhatsApp. O site não confirma nem garante caronas.",

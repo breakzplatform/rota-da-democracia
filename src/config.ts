@@ -31,4 +31,4 @@ export const CAMPAIGN_PATTERNS: readonly RegExp[] = [
   /\b(petista|bolsonarista|lulista|esquerdista|direitista|mito|lul[aã]o)\b/i,
 ];
 
-export const SITE_NAME = "Carona pela Democracia";
+export const SITE_NAME = "Rota da Democracia";
