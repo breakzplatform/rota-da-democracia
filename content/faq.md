@@ -74,6 +74,12 @@ Se o resultado aqui divergir do e-Título ou do TSE, vale o do TSE.
 
 Fonte: [TSE: Autoatendimento Eleitoral, Onde votar](https://www.tse.jus.br/servicos-eleitorais/autoatendimento-eleitoral#/atendimento-eleitor/onde-votar) · [TSE: Manual do Eleitor 2026](https://www.tse.jus.br/eleicoes/arquivos/manual-do-eleitor-2026/@@display-file/file/MANUAL%2520DO%2520ELEITOR%25202026.pdf)
 
+## Não votei no 1º turno. Posso votar no 2º?
+
+Pode, sim. Cada turno é uma votação separada: quem faltou ao 1º turno vota normalmente no 2º, no mesmo local, se o título estiver regular. A falta no 1º turno não impede o voto no 2º; ela se justifica à parte, pelo aplicativo e-Título ou pelo site de justificativa do TSE, em até 60 dias. Se esse prazo já estiver perto do fim, confira a data exata no e-Título.
+
+Fonte: [TSE: justificativa eleitoral](https://justifica.tse.jus.br) · [TSE: Manual do Eleitor 2026](https://www.tse.jus.br/eleicoes/arquivos/manual-do-eleitor-2026/@@display-file/file/MANUAL%2520DO%2520ELEITOR%25202026.pdf)
+
 ## O voto é obrigatório? E se eu não puder ir?
 
 É obrigatório dos 18 aos 69 anos. Para jovens de 16 e 17 anos, maiores de 70 e analfabetos, é facultativo. Quem não votar e não justificar fica sujeito a multa (até R$ 3,51 por turno) e a restrições, como não conseguir tirar passaporte. Cada turno conta separadamente, e o título pode ser cancelado depois de três faltas seguidas.
