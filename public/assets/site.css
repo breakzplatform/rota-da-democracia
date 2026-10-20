@@ -463,7 +463,7 @@ p {
   --focus: #f4f1ea;
   background: var(--field);
   color: var(--on-field);
-  padding: 1.75rem 0 3.4rem;
+  padding: 2.75rem 0 3.4rem;
 }
 
 .band h1 {
