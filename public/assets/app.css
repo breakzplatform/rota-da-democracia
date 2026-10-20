@@ -92,3 +92,63 @@
 .route-hero .eyebrow {
   color: #ffe403;
 }
+
+/* Spacing fixes (light only). */
+.field {
+  align-content: start;
+}
+
+.panel .eyebrow + h2 {
+  margin-top: 0.6rem;
+}
+
+.who-list + .btn,
+.who-list + .form-actions {
+  margin-top: 1.1rem;
+}
+
+.who-list + .btn {
+  margin-right: 7px;
+  margin-bottom: 7px;
+}
+
+.row-2 {
+  align-items: start;
+}
+
+.contact-type {
+  gap: 0;
+}
+
+.contact-type legend {
+  margin-bottom: 0.7rem;
+}
+
+.contact-type > .check {
+  align-items: center;
+  min-height: 44px;
+  margin: 0;
+}
+
+.contact-type > .check input {
+  margin-top: 0;
+}
+
+.contact-type > .field {
+  margin-top: 0.9rem;
+}
+
+.mode-choices {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.mode-choices .step-choice[aria-expanded="true"] {
+  background: var(--paper-2);
+}
+
+@media (min-width: 40rem) {
+  .mode-choices {
+    grid-template-columns: 1fr 1fr;
+  }
+}

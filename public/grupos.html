@@ -48,7 +48,17 @@
       </div>
     </section>
     <div class="wrap stack">
-      <form id="form-grupos" class="panel form" method="get">
+      <div class="mode-choices">
+        <button type="button" class="btn step-choice" id="modo-buscar" aria-expanded="false" aria-controls="form-grupos">
+          <span class="step-choice-title">Encontrar um grupo</span>
+          <span class="step-choice-detail">Busco um grupo da minha região</span>
+        </button>
+        <a class="btn step-choice" href="/cadastrar-grupo">
+          <span class="step-choice-title">Compartilhar um grupo</span>
+          <span class="step-choice-detail">Administro um grupo e quero listá-lo</span>
+        </a>
+      </div>
+      <form id="form-grupos" class="panel form" method="get" hidden>
         <div id="seletor-local" class="place-picker"><p class="hint">O seletor de cidade precisa de JavaScript.</p></div>
         <div class="field">
           <label for="q">Buscar por bairro ou nome do grupo <span class="hint-inline">(opcional)</span></label>
@@ -57,7 +67,6 @@
         <p id="erro-grupos" class="form-error" role="alert" hidden></p>
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">Buscar grupos</button>
-          <a class="btn" href="/cadastrar-grupo">Cadastrar um grupo</a>
         </div>
       </form>
       <p class="guarantee">A carona só é confirmada entre as pessoas, pelo contato combinado. O site não confirma nem garante caronas.</p>
@@ -65,7 +74,7 @@
         <p class="eyebrow">Aviso legal</p>
         <p>A carona é gratuita e espontânea. É proibido cobrar, inclusive dividir a gasolina. Também é proibido pedir voto, falar de candidato ou levar material de campanha. A carona vale para ir ao local de votação e para voltar. Em caso de dúvida, consulte a <a href="https://www.tse.jus.br/" target="_blank" rel="noopener noreferrer">Justiça Eleitoral<span class="sr-only"> (abre em nova aba)</span></a>.</p>
       </aside>
-      <section class="panel" aria-labelledby="titulo-grupos">
+      <section class="panel" id="resultados-grupos" aria-labelledby="titulo-grupos" hidden>
         <h2 id="titulo-grupos">Grupos</h2>
         <p id="estado-grupos" class="status" role="status">Escolha a cidade para ver os grupos.</p>
         <ul id="lista-grupos" class="offer-list"></ul>

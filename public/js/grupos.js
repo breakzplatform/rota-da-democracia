@@ -5,6 +5,20 @@ import {
 import { initPlacePicker } from "./places.js";
 
 const picker = initPlacePicker({ cityOnly: true });
+const modeButton = $("modo-buscar");
+function openSearch() {
+  $("form-grupos").hidden = false;
+  $("resultados-grupos").hidden = false;
+  modeButton.setAttribute("aria-expanded", "true");
+  const heading = document.querySelector("#seletor-local .step-title");
+  if (heading) {
+    heading.tabIndex = -1;
+    heading.focus();
+  }
+  $("form-grupos").scrollIntoView({ block: "start" });
+}
+modeButton.addEventListener("click", openSearch);
+if (location.hash === "#buscar") openSearch();
 const form = $("form-grupos");
 const list = $("lista-grupos");
 const status = $("estado-grupos");
