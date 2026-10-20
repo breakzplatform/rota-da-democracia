@@ -366,8 +366,8 @@ export function renderQuandoIr(container, {
     bar.style.height = `${pct}%`;
     track.append(bar);
 
-    const axisText = [8, 10, 12, 14, 16].includes(hour) ? `${localHour}h` : '';
-    const hourLabel = element('span', 'hours-hour', axisText);
+    const isMajorTick = [8, 10, 12, 14, 16].includes(hour);
+    const hourLabel = element('span', isMajorTick ? 'hours-hour' : 'hours-hour hours-hour-minor', `${localHour}h`);
     hourLabel.setAttribute('aria-hidden', 'true');
 
     btn.append(track, hourLabel);

@@ -383,9 +383,11 @@ describe('renderQuandoIr interactive component', () => {
       expect(notice.hidden).toBe(false);
       expect(notice.textContent).toBe('Chegue antes das 17h, quando a votação fecha.');
 
-      // Check axis labels: only 8, 10, 12, 14, 16 have labels
+      // Every hour is labeled; odd hours are minor ticks that CSS hides on narrow screens
       const hourLabels = container.querySelectorAll('.hours-hour').map((n) => n.textContent);
-      expect(hourLabels).toEqual(['8h', '', '10h', '', '12h', '', '14h', '', '16h']);
+      expect(hourLabels).toEqual(['8h', '9h', '10h', '11h', '12h', '13h', '14h', '15h', '16h']);
+      const minorLabels = container.querySelectorAll('.hours-hour-minor').map((n) => n.textContent);
+      expect(minorLabels).toEqual(['9h', '11h', '13h', '15h']);
 
       // Footnote mentions Brasília
       const hints = container.querySelectorAll('.hint');
@@ -427,9 +429,11 @@ describe('renderQuandoIr interactive component', () => {
         onSelectHour(h) { selectedHour = h; },
       });
 
-      // Axis labels must be local: 6h..14h (alternate columns empty)
+      // Axis labels must be local: 6h..14h, odd hours as minor ticks
       const hourLabels = container.querySelectorAll('.hours-hour').map((n) => n.textContent);
-      expect(hourLabels).toEqual(['6h', '', '8h', '', '10h', '', '12h', '', '14h']);
+      expect(hourLabels).toEqual(['6h', '7h', '8h', '9h', '10h', '11h', '12h', '13h', '14h']);
+      const minorLabels = container.querySelectorAll('.hours-hour-minor').map((n) => n.textContent);
+      expect(minorLabels).toEqual(['7h', '9h', '11h', '13h']);
 
       // Chips must show local hours
       const chips = container.querySelectorAll('.chip');

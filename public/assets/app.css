@@ -388,3 +388,54 @@
   font-size: 0.875rem;
   margin-top: 0.5rem;
 }
+
+/* Odd-hour labels only fit from tablet width up. */
+.hours-bar-btn .hours-hour-minor {
+  visibility: hidden;
+}
+
+@media (min-width: 48rem) {
+  .quando-ir {
+    max-width: 42rem;
+    padding: 1.25rem 1.4rem;
+  }
+
+  .hours-bars {
+    gap: 0.3rem;
+    margin: 1rem 0 0.75rem;
+  }
+
+  .hours-bar-btn .hours-hour-minor {
+    visibility: visible;
+  }
+
+  .hours-bar-btn .hours-track {
+    max-width: none;
+    height: 8.5rem;
+    border-bottom: 1px solid rgba(20, 32, 38, 0.35);
+  }
+
+  .hours-bar-btn .hours-bar {
+    max-width: none;
+    border-radius: 6px 6px 0 0;
+    background: rgba(0, 52, 210, 0.3);
+  }
+
+  .hours-bar-btn[aria-pressed="true"] .hours-bar,
+  .hours-bar-btn.is-selected .hours-bar {
+    background: var(--blue);
+  }
+
+  .hours-bar-btn .hours-hour {
+    font-size: 0.8125rem;
+  }
+
+  #resultado-local .place-actions {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  #resultado-local .place-actions .btn-primary {
+    grid-column: span 2;
+  }
+}
