@@ -185,7 +185,7 @@ class DiskBudget:
             raise RuntimeError('Disk guard stopped download before reaching 20 GiB free')
 
 
-def download(state, work, budget):
+def download(state, work, budget, connections=4):
     url = URL.format(state)
     with urllib.request.urlopen(urllib.request.Request(url, method='HEAD'), timeout=60) as response:
         size = int(response.headers['Content-Length'])
@@ -202,6 +202,8 @@ def download(state, work, budget):
         raise ValueError(f'{partial} belongs to a different source; retain for inspection')
     write_json(marker, metadata)
     remaining = size - (partial.stat().st_size if partial.exists() else 0)
+    if remaining < 0:
+        raise ValueError(f'{partial} exceeds the source size; retain for inspection')
     budget.reserve(remaining)
     try:
         for attempt in range(4):
@@ -209,12 +211,12 @@ def download(state, work, budget):
             if offset == size:
                 break
             try:
-                # Four bounded ranges avoid one slow CDN connection blocking a UF.
+                # Bounded ranges avoid one slow CDN connection blocking a UF.
                 # Append in order so an interrupted file is still a valid prefix.
                 chunk = 16 * 1024 * 1024
-                with ThreadPoolExecutor(max_workers=4) as transfers, partial.open('ab') as output:
+                with ThreadPoolExecutor(max_workers=connections) as transfers, partial.open('ab') as output:
                     while offset < size:
-                        starts = range(offset, min(offset + 4 * chunk, size), chunk)
+                        starts = range(offset, min(offset + connections * chunk, size), chunk)
                         futures = [transfers.submit(read_range, url, start, min(start + chunk, size) - 1, size, etag)
                                    for start in starts]
                         for future in futures:
@@ -237,7 +239,7 @@ def download(state, work, budget):
         budget.release(remaining)
 
 
-def process_state(state, work, budget):
+def process_state(state, work, budget, connections=4):
     result_path = work / f'{state}.json'
     if result_path.exists():
         cached = json.loads(result_path.read_text())
@@ -258,7 +260,7 @@ def process_state(state, work, budget):
         write_json(result_path, cached)
         print(f'{state}: resume from completed result ({len(remaining_errors)} rejected)', flush=True)
         return cached
-    path, metadata = download(state, work, budget)
+    path, metadata = download(state, work, budget, connections)
     digest = hashlib.sha256()
     with path.open('rb') as stream:
         while block := stream.read(4 * 1024 * 1024):
@@ -375,6 +377,7 @@ def main():
     parser.add_argument('--data-dir', type=Path, default=Path(__file__).resolve().parents[1] / 'public/data')
     parser.add_argument('--states', nargs='+', choices=STATES, default=STATES)
     parser.add_argument('--workers', type=int, choices=range(1, 4), default=2)
+    parser.add_argument('--connections', type=int, choices=range(1, 9), default=4)
     parser.add_argument('--publish-only', action='store_true')
     args = parser.parse_args()
     args.work_dir.mkdir(parents=True, exist_ok=True)
@@ -388,7 +391,7 @@ def main():
             results = [json.loads((args.work_dir / f'{state}.json').read_text()) for state in args.states]
         else:
             with ThreadPoolExecutor(max_workers=args.workers) as executor:
-                results = list(executor.map(lambda state: process_state(state, args.work_dir, budget), args.states))
+                results = list(executor.map(lambda state: process_state(state, args.work_dir, budget, args.connections), args.states))
         publish(results, args.data_dir)
 
 

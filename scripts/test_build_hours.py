@@ -117,6 +117,16 @@ class HoursTests(unittest.TestCase):
             response.read.return_value = b'abcd'
             self.assertEqual(hours.read_range('https://example.test/data', 0, 3, 8, '"original"'), b'abcd')
 
+    def test_oversize_partial_cannot_reduce_disk_reservation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            work = Path(directory)
+            (work / 'AC.zip.part').write_bytes(b'oversize')
+            hours.write_json(work / 'AC.download.json', {'url': hours.URL.format('AC'), 'bytes': 4, 'etag': '"a"'})
+            with patch.object(hours.urllib.request, 'urlopen') as request:
+                request.return_value.__enter__.return_value.headers = {'Content-Length': '4', 'ETag': '"a"'}
+                with self.assertRaisesRegex(ValueError, 'exceeds'):
+                    hours.download('AC', work, hours.DiskBudget(work))
+
 
 if __name__ == '__main__':
     unittest.main()
