@@ -1302,3 +1302,9 @@ dialog p {
 .hero .deadline-banner {
   margin-top: 1.35rem;
 }
+
+.route-note a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

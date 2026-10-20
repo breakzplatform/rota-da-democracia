@@ -63,6 +63,8 @@ form.addEventListener("submit", async (event) => {
 
   const submit = form.querySelector('[type="submit"]');
   setBusy(submit, true, "Buscando...");
+  // The results panel stays hidden until the first search, so an empty box never shows.
+  $("painel-ofertas").hidden = false;
   status.textContent = "Buscando caronas...";
   try {
     const { ofertas } = await api(`/api/ofertas?${params}`);
@@ -70,7 +72,7 @@ form.addEventListener("submit", async (event) => {
     const where = local ? `até ${titleCase(local.nome)}` : `em ${titleCase(municipio.nome)}`;
     status.textContent = ofertas.length
       ? `${ofertas.length === 1 ? "1 carona" : `${ofertas.length} caronas`} ${where}.`
-      : `Nenhuma carona ${where} por enquanto. Volte mais tarde, tente outro horário ou veja o ônibus gratuito em "Como chego".`;
+      : `Nenhuma carona encontrada ${where} por enquanto. Volte mais tarde, tente outro horário ou bairro, ou veja o ônibus gratuito em "Como chego".`;
   } catch (failure) {
     list.replaceChildren();
     status.textContent = "";
