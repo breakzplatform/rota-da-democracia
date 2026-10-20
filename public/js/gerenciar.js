@@ -29,7 +29,7 @@ function showView(offer, municipioName) {
 
 function describeVisibility(offer) {
   if (!offer.oculta) return "Sua oferta está visível na busca.";
-  if (offer.denuncias >= 3) return "Sua oferta está oculta da busca por denúncias.";
+  if (offer.moderada) return "Sua oferta foi ocultada pela moderação.";
   return "Sua oferta está fora da busca porque não tem vagas livres. Informe vagas livres para ela voltar.";
 }
 

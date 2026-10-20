@@ -67,6 +67,7 @@ describe("neutrality screen", () => {
     "13 confirma",
     "número 22",
     "bolsonaro2026",
+    "Alfredo Gaspar",
     "votem em quem quiser",
     "L\u200bula",
     "Bolso\u00adnaro",

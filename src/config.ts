@@ -28,7 +28,7 @@ export const CAMPAIGN_PATTERNS: readonly RegExp[] = [
   /\b(13|22)\W{0,3}(confirma|nele|neles|nela)\b/i,
   /\bvot(e|a|em|ar)\s+(n[oa]s?|em)\b/i,
   /\bvoto\s+(n[oa]|em)\b/i,
-  /\b(lula|bolsonaro|tarc[ií]sio|haddad|alckmin|mar[cç]al)/i,
+  /\b(lula|bolsonaro|alfredo\s+gaspar|tarc[ií]sio|haddad|alckmin|mar[cç]al)/i,
   /\b(pt|pl|psdb|mdb|psol|pdt|partido novo|uni[aã]o brasil|republicanos|psd|pcdob|pc do b|psb)\b/i,
   /\b(petista|bolsonarista|lulista|esquerdista|direitista|mito|lul[aã]o)\b/i,
 ];

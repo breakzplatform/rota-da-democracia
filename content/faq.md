@@ -109,9 +109,19 @@ Não. É uma iniciativa voluntária e apartidária, sem vínculo com candidato, 
 
 Fonte: página "Sobre" do site.
 
+## Posso entrar ou cadastrar um grupo de WhatsApp de carona?
+
+Sim, na página "Grupos". Quem administra um grupo da região pode cadastrá-lo com um link de convite, e quem procura carona entra pelo site, depois de aceitar as regras. O link do grupo só aparece depois dessa confirmação.
+
+As regras valem para o grupo inteiro: o grupo é apartidário (não se pede voto, não se fala de candidato, não circula material de campanha), as caronas são só em carro particular, com no máximo 4 pessoas, sem cobrança e sem caravana ou transporte em grupo organizado. Quem administra é responsável por remover quem fizer campanha. O site não modera as conversas do grupo e não confirma nem garante caronas.
+
+Viu um grupo que cobra, pede voto ou faz propaganda? Use o botão "Denunciar" no cartão do grupo. A moderação recebe um aviso, analisa e esconde o grupo se ele quebrar as regras. Denúncia sozinha não derruba ninguém. Quem cadastrou pode apagar o grupo a qualquer momento pelo link de gerenciamento.
+
+Fonte: [Lei 6.091/1974](https://www.planalto.gov.br/ccivil_03/leis/l6091.htm) e regra do próprio site.
+
 ## Como denunciar um problema?
 
-- **Oferta de carona suspeita** (cobrança, pedido de voto, propaganda, oferta falsa): use o botão "Denunciar" na própria oferta. Três denúncias de pessoas diferentes escondem a oferta.
+- **Oferta de carona suspeita** (cobrança, pedido de voto, propaganda, oferta falsa): use o botão "Denunciar" na própria oferta. A moderação recebe um aviso, analisa e esconde a oferta se ela quebrar as regras. Denúncia sozinha não derruba ninguém.
 - **Propaganda irregular e irregularidades na eleição**: use o aplicativo Pardal da Justiça Eleitoral (App Store e Google Play), com login gov.br ou e-Título.
 - **Crimes eleitorais, como compra de voto ou transporte de eleitores com finalidade eleitoral**: leve ao Ministério Público Eleitoral ou ao cartório eleitoral. Em emergência, ligue 190. Confirme com o cartório eleitoral qual canal o seu estado usa.
 - **Ônibus que não circulou ou serviço reduzido no domingo**: o TSE orienta encaminhar ao Ministério Público Eleitoral e à Defensoria Pública da União no seu estado.
