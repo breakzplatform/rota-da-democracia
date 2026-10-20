@@ -1194,6 +1194,18 @@ dialog p {
   color: #142026;
 }
 
+.deadline-banner {
+  background: #142026;
+  color: #ffffff;
+  border-color: #142026;
+  box-shadow: 7px 7px 0 #fd0200;
+  font-size: 1.0625rem;
+}
+
+.deadline-top {
+  padding-block: 1.25rem 1.6rem;
+}
+
 .guarantee {
   margin: 0;
   padding: 0.9rem 1rem;

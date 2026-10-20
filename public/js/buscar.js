@@ -1,6 +1,6 @@
 import {
   $, api, closeDialog, createTurnstile, describeError, isoToTime, NO_TURNSTILE_MESSAGE, openDialog,
-  setBusy, showMessage, spokenTime, titleCase, copyText, safeHref, guardClosed,
+  setBusy, showMessage, spokenTime, titleCase, copyText, safeHref, guardClosed, updateSignupDeadline,
 } from "./common.js";
 import { initPlacePicker } from "./places.js";
 
@@ -251,4 +251,5 @@ list.addEventListener("click", (event) => {
   else if (button.dataset.acao === "denunciar") openReport(button);
 });
 
+updateSignupDeadline();
 guardClosed(document.querySelector("main .stack"));
