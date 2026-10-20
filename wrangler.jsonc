@@ -1,4 +1,5 @@
 {
+  "workers_dev": false,
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "rota-da-democracia",
   "main": "src/index.ts",
@@ -15,7 +16,7 @@
   "vars": {
     // Real widget; tests and wrangler dev use .dev.vars / test bindings.
     "TURNSTILE_SITE_KEY": "0x4AAAAAAFcZpTsTGKKJM9YZ",
-    "ALLOWED_HOSTNAMES": "rotadademocracia.online,www.rotadademocracia.online,rota-da-democracia.joselito.workers.dev,localhost"
+    "ALLOWED_HOSTNAMES": "rotadademocracia.online,www.rotadademocracia.online"
   },
   // Invocation logs store every request's URL and headers, client IP included,
   // for days after the purge; console.error output is still kept.
