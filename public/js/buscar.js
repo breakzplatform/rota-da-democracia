@@ -21,7 +21,7 @@ function renderOffers(offers) {
     node.dataset.id = offer.id;
     const time = node.querySelector("[data-saida]");
     const hhmm = isoToTime(offer.saida);
-    time.textContent = `Sai às ${spokenTime(hhmm)}`;
+    time.textContent = `Sai às ${spokenTime(hhmm)} (horário de Brasília)`;
     time.dateTime = offer.saida;
     node.querySelector(".offer-seats").textContent = seatsText(offer.vagasLivres);
     node.querySelector(".offer-name").textContent = offer.nome;

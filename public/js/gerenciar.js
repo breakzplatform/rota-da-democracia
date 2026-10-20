@@ -7,6 +7,8 @@ import { loadMunicipios } from "./places.js";
 const params = new URLSearchParams(location.search);
 const id = params.get("id");
 const token = params.get("token");
+// Keep the token only in memory: drop it from the address bar and history.
+if (token) history.replaceState(null, "", location.pathname + (id ? `?id=${encodeURIComponent(id)}` : ""));
 const form = $("form-gerenciar");
 const status = $("estado-gerenciar");
 const errorBox = $("erro-gerenciar");

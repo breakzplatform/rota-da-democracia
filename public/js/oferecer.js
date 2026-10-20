@@ -82,7 +82,7 @@ form.addEventListener("submit", async (event) => {
 });
 
 function showCreated({ id, token }, local, body) {
-  const url = `${location.origin}/gerenciar.html?id=${encodeURIComponent(id)}&token=${encodeURIComponent(token)}`;
+  const url = `${location.origin}/gerenciar?id=${encodeURIComponent(id)}&token=${encodeURIComponent(token)}`;
   const link = $("oferta-link");
   link.href = url;
   link.textContent = url;
@@ -91,7 +91,7 @@ function showCreated({ id, token }, local, body) {
   const text =
     `Ofereço carona gratuita até ${titleCase(local.nome)} no domingo, 25 de outubro. ` +
     `Saída ${spokenTime(hhmm)}, em ${body.pontoEncontro} (${body.bairroSaida}). ` +
-    `Sem cobrança e sem pedido de voto. Combine comigo pelo contato que deixei na oferta: ${location.origin}/buscar.html`;
+    `Sem cobrança e sem pedido de voto. Combine comigo pelo contato que deixei na oferta: ${location.origin}/buscar`;
   $("texto-compartilhar").textContent = text;
 
   form.hidden = true;

@@ -71,3 +71,8 @@
 .place-card p {
   margin: 0;
 }
+
+.hint-inline {
+  font-weight: 400;
+  color: var(--muted);
+}
