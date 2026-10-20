@@ -39,7 +39,7 @@ export const GROUP_RULES: readonly string[] = [
   "O grupo é apartidário: não se pede voto, não se fala de candidato e não circula material de campanha.",
   "Carona é gratuita: ninguém cobra nem divide combustível.",
   "Só carro particular, com no máximo 4 pessoas; nada de caravana ou transporte em grupo organizado.",
-  "A carona só é confirmada entre as pessoas, pelo contato combinado. O site não confirma nem garante caronas.",
+  "A carona só é confirmada entre as pessoas, pelo contato combinado. O site não organiza, confirma, nem garante caronas.",
 ];
 
 const DECLARATIONS = [

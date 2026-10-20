@@ -297,7 +297,7 @@ describe("POST /api/ofertas/:id/contato", () => {
       "Oi! Vi sua oferta de carona no Rota da Democracia para o local de votação ESCOLA PRAÇA 13 DE MAIO no domingo. Ainda tem vaga?",
     );
     expect(body.aviso).toBe(
-      "A carona só é confirmada entre as pessoas, pelo contato combinado. O site não confirma nem garante caronas.",
+      "A carona só é confirmada entre as pessoas, pelo contato combinado. O site não organiza, confirma, nem garante caronas.",
     );
   });
 
@@ -367,7 +367,7 @@ describe("contact types", () => {
     expect(body).toEqual({
       tipo: "whatsapp_usuario",
       valor: "@maria.silva_81",
-      aviso: "A carona só é confirmada entre as pessoas, pelo contato combinado. O site não confirma nem garante caronas.",
+      aviso: "A carona só é confirmada entre as pessoas, pelo contato combinado. O site não organiza, confirma, nem garante caronas.",
     });
     const owner = await readJson(await call("GET", `/api/ofertas/${id}?token=${token}`));
     expect(owner).toMatchObject({ contatoTipo: "whatsapp_usuario", contato: "@maria.silva_81" });

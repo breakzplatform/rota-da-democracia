@@ -2,48 +2,165 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <title>Open Graph</title>
+  <title>Rota da Democracia — Open Graph</title>
   <style>
-    html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; position: relative; }
-    body {
-      background: #c80000;
-      color: #ffffff;
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-      box-shadow: inset 0 0 0 18px #c80000, inset 0 0 0 22px #f3f0e8;
+    :root {
+      --paper: #f3f0e8;
+      --ink: #142026;
+      --red: #fd0200;
+      --field: #c80000;
+      --blue: #0034d2;
+      --yellow: #ffe403;
+      --green: #02ab20;
+      --font-display: "Arial Narrow", "Helvetica Neue Condensed", "Roboto Condensed", "Nimbus Sans Narrow", "Liberation Sans Narrow", sans-serif;
+      --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
     }
-    .bar { position: absolute; left: 22px; right: 22px; top: 22px; height: 14px; display: grid; grid-template-columns: repeat(4, 1fr); }
-    .bar i { display: block; }
-    .frame { padding: 78px 84px 64px; height: 630px; box-sizing: border-box; display: flex; flex-direction: column; }
-    .eyebrow {
-      display: flex; align-items: center; gap: 14px; margin: 0;
-      color: #ffe403;
-      font-family: ui-monospace, "SF Mono", Menlo, monospace;
-      font-size: 22px; letter-spacing: 0.12em; text-transform: uppercase;
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 1200px;
+      height: 630px;
+      overflow: hidden;
+      background: var(--field);
+      color: #fff;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
     }
-    .eyebrow::before { content: ""; width: 14px; height: 14px; background: #ffe403; }
-    h1 {
-      margin: 28px 0 0;
-      font-family: "Arial Narrow", "Helvetica Neue Condensed", sans-serif;
-      font-weight: 700; font-size: 132px; line-height: 0.82; letter-spacing: -0.03em;
+
+    .sheet {
+      width: 1200px;
+      height: 630px;
+      display: flex;
+      flex-direction: column;
+      background: var(--field);
+    }
+
+    .stripe {
+      flex: none;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      height: 22px;
+      background: var(--ink);
+      border-bottom: 4px solid var(--ink);
+    }
+
+    .stripe span:nth-child(1) { background: var(--blue); }
+    .stripe span:nth-child(2) { background: var(--yellow); }
+    .stripe span:nth-child(3) { background: var(--red); }
+    .stripe span:nth-child(4) { background: var(--green); }
+
+    .body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 18px 68px 8px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mark {
+      flex: none;
+      width: 58px;
+      height: 58px;
+      display: block;
+    }
+
+    .name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 36px;
+      line-height: 0.88;
+      letter-spacing: -0.02em;
       text-transform: uppercase;
+      color: var(--paper);
     }
+
+    h1 {
+      margin-top: 28px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 108px;
+      line-height: 0.88;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
     h1 span { display: block; }
-    h1 .accent { color: #ffe403; }
-    p { margin: 36px 0 0; max-width: 820px; font-size: 32px; line-height: 1.35; color: #ffffff; font-family: system-ui, sans-serif; }
-    .mark { position: absolute; right: 86px; bottom: 72px; }
+
+    h1 .accent { color: var(--yellow); }
+
+    .secondary {
+      margin-top: 26px;
+      max-width: 920px;
+      font-family: var(--font-body);
+      font-size: 32px;
+      font-weight: 600;
+      line-height: 1.28;
+      letter-spacing: -0.011em;
+      color: var(--paper);
+    }
+
+    .footer {
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      height: 96px;
+      padding: 0 68px 14px;
+      background: var(--yellow);
+      color: var(--ink);
+      border-top: 4px solid var(--ink);
+    }
+
+    .affiliation {
+      font-family: var(--font-body);
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+    }
+
+    .url {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
-  <div class="bar" aria-hidden="true"><i style="background:#0034d2"></i><i style="background:#ffe403"></i><i style="background:#fd0200"></i><i style="background:#02ab20"></i></div>
-  <div class="frame">
-    <p class="eyebrow">Domingo, 25 de outubro de 2026</p>
-    <h1><span>Rota da</span><span class="accent">democracia</span></h1>
-    <p>Ônibus de graça, carona solidária e transporte da Justiça Eleitoral para chegar ao seu local de votação no 2º turno, domingo, 25 de outubro.</p>
-    <svg class="mark" width="92" height="92" viewBox="0 0 48 48" aria-hidden="true">
-      <rect width="48" height="48" rx="10" fill="#ffe403"/>
-      <path fill="#142026" fill-rule="evenodd" d="M5 30h6.2l3.6-9.2c.5-1.2 1.6-2 2.9-2h12.6c1.3 0 2.4.8 2.9 2L37 30h6v7.2c0 .4-.4.8-.8.8h-5.4a4.6 4.6 0 0 1-9.1 0H20.3a4.6 4.6 0 0 1-9.1 0H5.8c-.4 0-.8-.4-.8-.8V30zm9.2 8.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4zm19.2 0a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4z"/>
-      <path fill="#142026" d="M28.2 2.2 32.8 7.4 44.6.4 47 3.8 33 14.2 25.4 5.8Z"/>
-    </svg>
+  <div class="sheet">
+    <div class="stripe" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <div class="body">
+      <div class="brand">
+        <svg class="mark" viewBox="0 0 48 48" aria-hidden="true">
+          <rect width="48" height="48" rx="10" fill="#f3f0e8"/>
+          <path fill="#c80000" fill-rule="evenodd" d="M5 30h6.2l3.6-9.2c.5-1.2 1.6-2 2.9-2h12.6c1.3 0 2.4.8 2.9 2L37 30h6v7.2c0 .4-.4.8-.8.8h-5.4a4.6 4.6 0 0 1-9.1 0H20.3a4.6 4.6 0 0 1-9.1 0H5.8c-.4 0-.8-.4-.8-.8V30zm9.2 8.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4zm19.2 0a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4z"/>
+          <path fill="#c80000" d="M28.2 2.2 32.8 7.4 44.6.4 47 3.8 33 14.2 25.4 5.8Z"/>
+        </svg>
+        <p class="name">Rota da<br>Democracia</p>
+      </div>
+      <h1>
+        <span>Ônibus de graça</span>
+        <span class="accent">no dia da eleição</span>
+      </h1>
+      <p class="secondary">Carona solidária e como chegar ao seu local de votação<br>— 2º turno, domingo, 25 de outubro</p>
+    </div>
+    <footer class="footer">
+      <p class="affiliation">Iniciativa voluntária e apartidária</p>
+      <p class="url">rota-da-democracia.joselito.workers.dev</p>
+    </footer>
   </div>
 </body>
 </html>

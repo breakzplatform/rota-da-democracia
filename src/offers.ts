@@ -58,7 +58,7 @@ interface OfferRow {
 }
 
 export const CONFIRMATION_NOTICE =
-  "A carona só é confirmada entre as pessoas, pelo contato combinado. O site não confirma nem garante caronas.";
+  "A carona só é confirmada entre as pessoas, pelo contato combinado. O site não organiza, confirma, nem garante caronas.";
 const LOCAL_ID = /^\d{1,4}-\d{1,6}$/;
 const MAX_RESULTS = 200;
 // Offers stay listed this long after departure, for riders running a little late.

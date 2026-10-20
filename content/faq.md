@@ -113,7 +113,7 @@ Fonte: página "Sobre" do site.
 
 Sim, na página "Grupos". Quem administra um grupo da região pode cadastrá-lo com um link de convite, e quem procura carona entra pelo site, depois de aceitar as regras. O link do grupo só aparece depois dessa confirmação.
 
-As regras valem para o grupo inteiro: o grupo é apartidário (não se pede voto, não se fala de candidato, não circula material de campanha), as caronas são só em carro particular, com no máximo 4 pessoas, sem cobrança e sem caravana ou transporte em grupo organizado. Quem administra é responsável por remover quem fizer campanha. O site não modera as conversas do grupo e não confirma nem garante caronas.
+As regras valem para o grupo inteiro: o grupo é apartidário (não se pede voto, não se fala de candidato, não circula material de campanha), as caronas são só em carro particular, com no máximo 4 pessoas, sem cobrança e sem caravana ou transporte em grupo organizado. Quem administra é responsável por remover quem fizer campanha. O site não modera as conversas do grupo e não organiza, confirma, nem garante caronas.
 
 Viu um grupo que cobra, pede voto ou faz propaganda? Use o botão "Denunciar" no cartão do grupo. A moderação recebe um aviso, analisa e esconde o grupo se ele quebrar as regras. Denúncia sozinha não derruba ninguém. Quem cadastrou pode apagar o grupo a qualquer momento pelo link de gerenciamento.
 
