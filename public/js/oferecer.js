@@ -10,9 +10,9 @@ const form = $("form-oferta");
 const errorBox = $("erro-oferta");
 
 const CONTACT_KINDS = {
-  whatsapp: { label: "Número do WhatsApp", type: "tel", mode: "tel", complete: "tel", placeholder: "(81) 98888-1200", help: "Com DDD. O contato não aparece na lista. Só quem pede a vaga vê, depois de uma verificação." },
-  whatsapp_usuario: { label: "Usuário do WhatsApp", type: "text", mode: "text", complete: "off", placeholder: "@maria.silva", help: "O nome de usuário que você criou no WhatsApp. Só quem pede a vaga vê, depois de uma verificação." },
-  email: { label: "E-mail", type: "email", mode: "email", complete: "email", placeholder: "maria@exemplo.com", help: "Só quem pede a vaga vê, depois de uma verificação." },
+  whatsapp: { label: "Número do WhatsApp", type: "tel", mode: "tel", complete: "tel", placeholder: "(81) 98888-1200", help: "Com DDD. O contato não aparece na lista. Só aparece para quem pede a vaga, depois de uma checagem contra robôs." },
+  whatsapp_usuario: { label: "Usuário do WhatsApp", type: "text", mode: "text", complete: "off", placeholder: "@maria.silva", help: "O nome de usuário que você criou no WhatsApp. Só aparece para quem pede a vaga, depois de uma checagem contra robôs." },
+  email: { label: "E-mail", type: "email", mode: "email", complete: "email", placeholder: "maria@exemplo.com", help: "Só aparece para quem pede a vaga, depois de uma checagem contra robôs." },
 };
 const contactInput = $("contato");
 const selectedKind = () => document.querySelector('input[name="contatoTipo"]:checked').value;
