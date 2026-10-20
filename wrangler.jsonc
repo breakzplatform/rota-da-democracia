@@ -17,5 +17,7 @@
     "TURNSTILE_SITE_KEY": "0x4AAAAAAFcZpTsTGKKJM9YZ",
     "ALLOWED_HOSTNAMES": "rotadademocracia.online,www.rotadademocracia.online,rota-da-democracia.joselito.workers.dev,localhost"
   },
-  "observability": { "enabled": true }
+  // Invocation logs store every request's URL and headers, client IP included,
+  // for days after the purge; console.error output is still kept.
+  "observability": { "enabled": true, "logs": { "invocation_logs": false } }
 }
