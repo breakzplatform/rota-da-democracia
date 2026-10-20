@@ -2,7 +2,8 @@
 
 The chart counts completed voter sessions, not votes for individual offices or
 queue length. Its input is the TSE's [2026 transmitted files dataset](https://dadosabertos.tse.jus.br/dataset/resultados-2026-arquivos-transmitidos-para-totalizacao),
-first round, 4 October 2026. Abroad (`ZZ`) is excluded.
+first round, 4 October 2026. Abroad (`ZZ`) is excluded from the domestic shards;
+see the separate abroad pipeline below.
 
 ## Reproduce
 
@@ -130,3 +131,57 @@ Chrome runtime checks at 320, 360, 768, and 1280 px verify nine accessible bars
 and no horizontal overflow. Additional checks cover missing data, stale requests
 after selection changes, equal counts, unknown place comparisons, and the actual
 changed-place case `01015/2-88`. The existing site explicitly uses a light theme.
+
+
+## Abroad
+
+Abroad logs use each polling place's local clock, with shift zero and the same
+nine buckets (08h through 16h, with later votes in the last bucket). Run `ZZ`
+separately: mixing it with domestic states is rejected. It produces the work
+result `ZZ.json`, including a `paper` list of section keys from `-logsa.jez`
+filenames; these paper-ballot containers are not parsed. The usual work lock,
+source metadata, samples and rejected logs stay in the work directory. Neither
+normal extraction nor `--publish-only --states ZZ` calls the domestic publisher;
+`public/data/h*` and `hours-audit.json` are untouched. `STATES` and national
+`complete` still refer to the 27 domestic UFs.
+
+Use a copy of the source ZIP: successful extraction deletes its working copy.
+The extractor still makes a HEAD request to verify the source size and retains
+its usual disk-space guard. From the repository root:
+
+```sh
+abroad_work=$(mktemp -d /private/tmp/rota-zz-hours.XXXXXX)
+cp "$HOME/.local/state/rota-zz/dl-zz/ZZ.zip" "$abroad_work/ZZ.zip"
+python3 -I scripts/build-hours.py --states ZZ --work-dir "$abroad_work"
+python3 -I scripts/build-abroad.py \
+  --csv "$HOME/.local/state/rota-zz/dl-locais/locais.zip" \
+  --hours "$abroad_work/ZZ.json" \
+  --places scripts/abroad-places.json \
+  --out public/data/exterior.json
+```
+
+`npm run data:abroad -- ...` accepts the same arguments. `--csv` also accepts
+the extracted Latin-1 ZZ CSV. ZIP input selects the `_ZZ.csv` member explicitly.
+Keep the work directory to resume extraction or inspect its audit records.
+
+Only active ZZ sections from round two participate. Blocked polling places
+remain eligible, matching `build-data.py`. Aggregated sections follow principal
+chains, with the same existing-place fallback; they contribute voters, but only
+main sections appear in `secoes` and contribute hourly logs. Unresolved
+aggregations are omitted, as in the domestic builder. Main sections without a
+usable log or paper marker appear in `semDado`; empty or rejected logs count as
+missing. Paper and missing lists are subsets of `secoes`. A place with no logged
+main sections gets `horas: null`, not fabricated zeroes.
+
+The place table must exactly match eligible place keys. Every time zone must
+load through `zoneinfo.ZoneInfo`, and its country must include the table's `pais`
+according to the union of `/usr/share/zoneinfo/zone1970.tab` and `zone.tab`.
+If neither file exists, country validation is skipped with a warning; time zone
+validation still runs. Countries come from individual places, not jurisdiction
+names. Output is minified UTF-8, sorted by folded country, city and place names,
+with stable identifier tie-breaks. `geradoEm` is the CSV generation date in ISO
+format. The audit counts current main sections with data, paper ballots and no
+log; it does not assume every first-round section still exists in round two.
+
+Unit tests use synthetic rows and tiny in-memory ZIPs, with temporary outputs
+outside the repository: `npm run test:data`.

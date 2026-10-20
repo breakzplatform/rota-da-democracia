@@ -1,0 +1,1698 @@
+{
+  "29173/1-1015": {
+    "pais": "NP",
+    "paisNome": "Nepal",
+    "cidadeLocal": "Catmandu",
+    "tz": "Asia/Kathmandu",
+    "lat": 27.7172,
+    "lon": 85.324
+  },
+  "29254/1-1015": {
+    "pais": "CI",
+    "paisNome": "Costa do Marfim",
+    "cidadeLocal": "Abidjã",
+    "tz": "Africa/Abidjan",
+    "lat": 5.36,
+    "lon": -4.0083
+  },
+  "29262/1-1015": {
+    "pais": "AE",
+    "paisNome": "Emirados Árabes Unidos",
+    "cidadeLocal": "Abu Dhabi",
+    "tz": "Asia/Dubai",
+    "lat": 24.4539,
+    "lon": 54.3773
+  },
+  "29262/1-1023": {
+    "pais": "AE",
+    "paisNome": "Emirados Árabes Unidos",
+    "cidadeLocal": "Dubai",
+    "tz": "Asia/Dubai",
+    "lat": 25.1017,
+    "lon": 55.1764
+  },
+  "29270/1-1015": {
+    "pais": "GH",
+    "paisNome": "Gana",
+    "cidadeLocal": "Acra",
+    "tz": "Africa/Accra",
+    "lat": 5.6037,
+    "lon": -0.187
+  },
+  "29289/1-1015": {
+    "pais": "JO",
+    "paisNome": "Jordânia",
+    "cidadeLocal": "Amã",
+    "tz": "Asia/Amman",
+    "lat": 31.9454,
+    "lon": 35.9284
+  },
+  "29297/1-1015": {
+    "pais": "TR",
+    "paisNome": "Turquia",
+    "cidadeLocal": "Ancara",
+    "tz": "Europe/Istanbul",
+    "lat": 39.9334,
+    "lon": 32.8597
+  },
+  "29300/1-1015": {
+    "pais": "DZ",
+    "paisNome": "Argélia",
+    "cidadeLocal": "Argel",
+    "tz": "Africa/Algiers",
+    "lat": 36.7538,
+    "lon": 3.0588
+  },
+  "29319/1-1015": {
+    "pais": "UY",
+    "paisNome": "Uruguai",
+    "cidadeLocal": "Artigas",
+    "tz": "America/Montevideo",
+    "lat": -30.4,
+    "lon": -56.4667
+  },
+  "29327/1-1023": {
+    "pais": "PY",
+    "paisNome": "Paraguai",
+    "cidadeLocal": "Assunção",
+    "tz": "America/Asuncion",
+    "lat": -25.2637,
+    "lon": -57.5759
+  },
+  "29335/1-1015": {
+    "pais": "GR",
+    "paisNome": "Grécia",
+    "cidadeLocal": "Atenas",
+    "tz": "Europe/Athens",
+    "lat": 37.9838,
+    "lon": 23.7275
+  },
+  "29343/1-1015": {
+    "pais": "TH",
+    "paisNome": "Tailândia",
+    "cidadeLocal": "Bangkok",
+    "tz": "Asia/Bangkok",
+    "lat": 13.7563,
+    "lon": 100.5018
+  },
+  "29351/1-1015": {
+    "pais": "ES",
+    "paisNome": "Espanha",
+    "cidadeLocal": "Barcelona",
+    "tz": "Europe/Madrid",
+    "lat": 41.3879,
+    "lon": 2.1699
+  },
+  "29360/1-1015": {
+    "pais": "LB",
+    "paisNome": "Líbano",
+    "cidadeLocal": "Beirute",
+    "tz": "Asia/Beirut",
+    "lat": 33.8938,
+    "lon": 35.5018
+  },
+  "29360/1-1040": {
+    "pais": "LB",
+    "paisNome": "Líbano",
+    "cidadeLocal": "Kab Elias",
+    "tz": "Asia/Beirut",
+    "lat": 33.8058,
+    "lon": 35.8239
+  },
+  "29378/1-1015": {
+    "pais": "RS",
+    "paisNome": "Sérvia",
+    "cidadeLocal": "Belgrado",
+    "tz": "Europe/Belgrade",
+    "lat": 44.7866,
+    "lon": 20.4489
+  },
+  "29386/1-1015": {
+    "pais": "DE",
+    "paisNome": "Alemanha",
+    "cidadeLocal": "Berlim",
+    "tz": "Europe/Berlin",
+    "lat": 52.52,
+    "lon": 13.405
+  },
+  "29386/1-1040": {
+    "pais": "DE",
+    "paisNome": "Alemanha",
+    "cidadeLocal": "Hamburgo",
+    "tz": "Europe/Berlin",
+    "lat": 53.5511,
+    "lon": 9.9937
+  },
+  "29394/1-1015": {
+    "pais": "GW",
+    "paisNome": "Guiné-Bissau",
+    "cidadeLocal": "Bissau",
+    "tz": "Africa/Bissau",
+    "lat": 11.8636,
+    "lon": -15.5977
+  },
+  "29408/1-1015": {
+    "pais": "CO",
+    "paisNome": "Colômbia",
+    "cidadeLocal": "Bogotá",
+    "tz": "America/Bogota",
+    "lat": 4.711,
+    "lon": -74.0721
+  },
+  "29416/1-1023": {
+    "pais": "US",
+    "paisNome": "Estados Unidos",
+    "cidadeLocal": "Malden",
+    "tz": "America/New_York",
+    "lat": 42.4298,
+    "lon": -71.071
+  },
+  "29416/1-1090": {
+    "pais": "US",
+    "paisNome": "Estados Unidos",
+    "cidadeLocal": "Framingham",
+    "tz": "America/New_York",
+    "lat": 42.2793,
+    "lon": -71.4162
+  },
+  "29416/1-1112": {
+    "pais": "US",
+    "paisNome": "Estados Unidos",
+    "cidadeLocal": "Framingham",
+    "tz": "America/New_York",
+    "lat": 42.2793,
+    "lon": -71.4162
+  },
+  "29424/1-1015": {
+    "pais": "BB",
+    "paisNome": "Barbados",
+    "cidadeLocal": "Bridgetown",
+    "tz": "America/Barbados",
+    "lat": 13.106,
+    "lon": -59.6132
+  },
+  "29432/1-1015": {
+    "pais": "BE",
+    "paisNome": "Bélgica",
+    "cidadeLocal": "Bruxelas",
+    "tz": "Europe/Brussels",
+    "lat": 50.8503,
+    "lon": 4.3517
+  },
+  "29432/1-1058": {
+    "pais": "LU",
+    "paisNome": "Luxemburgo",
+    "cidadeLocal": "Esch-sur-Alzette",
+    "tz": "Europe/Luxembourg",
+    "lat": 49.4958,
+    "lon": 5.9806
+  },
+  "29440/1-1015": {
+    "pais": "RO",
+    "paisNome": "Romênia",
+    "cidadeLocal": "Bucareste",
+    "tz": "Europe/Bucharest",
+    "lat": 44.4268,
+    "lon": 26.1025
+  },
+  "29459/1-1015": {
+    "pais": "HU",
+    "paisNome": "Hungria",
+    "cidadeLocal": "Budapeste",
+    "tz": "Europe/Budapest",
+    "lat": 47.4979,
+    "lon": 19.0402
+  },
+  "29467/1-1015": {
+    "pais": "AR",
+    "paisNome": "Argentina",
+    "cidadeLocal": "Buenos Aires",
+    "tz": "America/Argentina/Buenos_Aires",
+    "lat": -34.6037,
+    "lon": -58.3816
+  },
+  "29475/1-1015": {
+    "pais": "GF",
+    "paisNome": "Guiana Francesa",
+    "cidadeLocal": "Caiena",
+    "tz": "America/Cayenne",
+    "lat": 4.9372,
+    "lon": -52.326
+  },
+  "29483/1-1015": {
+    "pais": "EG",
+    "paisNome": "Egito",
+    "cidadeLocal": "Cairo",
+    "tz": "Africa/Cairo",
+    "lat": 30.0444,
+    "lon": 31.2357
+  },
+  "29491/1-1015": {
+    "pais": "AU",
+    "paisNome": "Austrália",
+    "cidadeLocal": "Camberra",
+    "tz": "Australia/Sydney",
+    "lat": -35.2809,
+    "lon": 149.13
+  },
+  "29491/1-1023": {
+    "pais": "AU",
+    "paisNome": "Austrália",
+    "cidadeLocal": "Melbourne",
+    "tz": "Australia/Melbourne",
+    "lat": -37.8136,
+    "lon": 144.9631
+  },
+  "29491/1-1031": {
+    "pais": "AU",
+    "paisNome": "Austrália",
+    "cidadeLocal": "Perth",
+    "tz": "Australia/Perth",
+    "lat": -31.9505,
+    "lon": 115.8605
+  },
+  "29505/1-1015": {
+    "pais": "VE",
+    "paisNome": "Venezuela",
+    "cidadeLocal": "Caracas",
+    "tz": "America/Caracas",
+    "lat": 10.4806,
+    "lon": -66.9036
+  },
+  "29513/1-1015": {
+    "pais": "US",
+    "paisNome": "Estados Unidos",
+    "cidadeLocal": "Chicago",
+    "tz": "America/Chicago",
+    "lat": 41.8781,
+    "lon": -87.6298
+  },
+  "29521/1-1015": {
+    "pais": "UY",
+    "paisNome": "Uruguai",
+    "cidadeLocal": "Chuy",
+    "tz": "America/Montevideo",
+    "lat": -33.6972,
+    "lon": -53.4611
+  },
+  "29530/1-1015": {
+    "pais": "ZA",
+    "paisNome": "África do Sul",
+    "cidadeLocal": "Cidade do Cabo",
+    "tz": "Africa/Johannesburg",
+    "lat": -33.9249,
+    "lon": 18.4241
+  },
+  "29548/1-1015": {
+    "pais": "SG",
+    "paisNome": "Singapura",
+    "cidadeLocal": "Singapura",
+    "tz": "Asia/Singapore",
+    "lat": 1.3521,
+    "lon": 103.8198
+  },
+  "29556/1-1015": {
+    "pais": "PY",
+    "paisNome": "Paraguai",
+    "cidadeLocal": "Ciudad del Este",
+    "tz": "America/Asuncion",
+    "lat": -25.5097,
+    "lon": -54.6111
+  },
+  "29564/1-1015": {
+    "pais": "VE",
+    "paisNome": "Venezuela",
+    "cidadeLocal": "Caracas",
+    "tz": "America/Caracas",
+    "lat": 10.4806,
+    "lon": -66.9036
+  },
+  "29572/1-1023": {
+    "pais": "BO",
+    "paisNome": "Bolívia",
+    "cidadeLocal": "Cochabamba",
+    "tz": "America/La_Paz",
+    "lat": -17.3895,
+    "lon": -66.1568
+  },
+  "29580/1-1015": {
+    "pais": "PY",
+    "paisNome": "Paraguai",
+    "cidadeLocal": "Concepción",
+    "tz": "America/Asuncion",
+    "lat": -23.4,
+    "lon": -57.4333
+  },
+  "29599/1-1015": {
+    "pais": "DK",
+    "paisNome": "Dinamarca",
+    "cidadeLocal": "Copenhague",
+    "tz": "Europe/Copenhagen",
+    "lat": 55.6761,
+    "lon": 12.5683
+  },
+  "29602/1-1015": {
+    "pais": "AR",
+    "paisNome": "Argentina",
+    "cidadeLocal": "Córdoba",
+    "tz": "America/Argentina/Cordoba",
+    "lat": -31.4201,
+    "lon": -64.1888
+  },
+  "29610/1-1015": {
+    "pais": "SN",
+    "paisNome": "Senegal",
+    "cidadeLocal": "Dacar",
+    "tz": "Africa/Dakar",
+    "lat": 14.7167,
+    "lon": -17.4677
+  },
+  "29629/1-1023": {
+    "pais": "BD",
+    "paisNome": "Bangladesh",
+    "cidadeLocal": "Dacca",
+    "tz": "Asia/Dhaka",
+    "lat": 23.8103,
+    "lon": 90.4125
+  },
+  "29637/1-1015": {
+    "pais": "SY",
+    "paisNome": "Síria",
+    "cidadeLocal": "Damasco",
+    "tz": "Asia/Damascus",
+    "lat": 33.5138,
+    "lon": 36.2765
+  },
+  "29645/1-1015": {
+    "pais": "TL",
+    "paisNome": "Timor-Leste",
+    "cidadeLocal": "Díli",
+    "tz": "Asia/Dili",
+    "lat": -8.5569,
+    "lon": 125.5603
+  },
+  "29653/1-1015": {
+    "pais": "QA",
+    "paisNome": "Catar",
+    "cidadeLocal": "Doha",
+    "tz": "Asia/Qatar",
+    "lat": 25.2854,
+    "lon": 51.531
+  },
+  "29661/1-1015": {
+    "pais": "IE",
+    "paisNome": "Irlanda",
+    "cidadeLocal": "Dublin",
+    "tz": "Europe/Dublin",
+    "lat": 53.3498,
+    "lon": -6.2603
+  },
+  "29670/1-1015": {
+    "pais": "PY",
+    "paisNome": "Paraguai",
+    "cidadeLocal": "Encarnación",
+    "tz": "America/Asuncion",
+    "lat": -27.3306,
+    "lon": -55.8667
+  },
+  "29688/1-1015": {
+    "pais": "SE",
+    "paisNome": "Suécia",
+    "cidadeLocal": "Estocolmo",
+    "tz": "Europe/Stockholm",
+    "lat": 59.3293,
+    "lon": 18.0686
+  },
+  "29688/1-1023": {
+    "pais": "SE",
+    "paisNome": "Suécia",
+    "cidadeLocal": "Gotemburgo",
+    "tz": "Europe/Stockholm",
+    "lat": 57.7089,
+    "lon": 11.9746
+  },
+  "29696/1-1031": {
+    "pais": "DE",
+    "paisNome": "Alemanha",
+    "cidadeLocal": "Frankfurt",
+    "tz": "Europe/Berlin",
+    "lat": 50.1109,
+    "lon": 8.6821
+  },
+  "29696/1-1040": {
+    "pais": "DE",
+    "paisNome": "Alemanha",
+    "cidadeLocal": "Colônia",
+    "tz": "Europe/Berlin",
+    "lat": 50.9375,
+    "lon": 6.9603
+  },
+  "29700/1-1015": {
+    "pais": "CH",
+    "paisNome": "Suíça",
+    "cidadeLocal": "Genebra",
+    "tz": "Europe/Zurich",
+    "lat": 46.2044,
+    "lon": 6.1432
+  },
+  "29718/1-1015": {
+    "pais": "GY",
+    "paisNome": "Guiana",
+    "cidadeLocal": "Georgetown",
+    "tz": "America/Guyana",
+    "lat": 6.8013,
+    "lon": -58.1551
+  },
+  "29742/1-1015": {
+    "pais": "JP",
+    "paisNome": "Japão",
+    "cidadeLocal": "Hamamatsu",
+    "tz": "Asia/Tokyo",
+    "lat": 34.7108,
+    "lon": 137.7261
+  },
+  "29750/1-1015": {
+    "pais": "VN",
+    "paisNome": "Vietnã",
+    "cidadeLocal": "Hanói",
+    "tz": "Asia/Ho_Chi_Minh",
+    "lat": 21.0285,
+    "lon": 105.8542
+  },
+  "29769/1-1015": {
+    "pais": "ZW",
+    "paisNome": "Zimbábue",
+    "cidadeLocal": "Harare",
+    "tz": "Africa/Harare",
+    "lat": -17.8252,
+    "lon": 31.0335
+  },
+  "29777/1-1015": {
+    "pais": "CU",
+    "paisNome": "Cuba",
+    "cidadeLocal": "Havana",
+    "tz": "America/Havana",
+    "lat": 23.1136,
+    "lon": -82.3666
+  },
+  "29785/1-1015": {
+    "pais": "FI",
+    "paisNome": "Finlândia",
+    "cidadeLocal": "Helsinque",
+    "tz": "Europe/Helsinki",
+    "lat": 60.1699,
+    "lon": 24.9384
+  },
+  "29793/1-1015": {
+    "pais": "HK",
+    "paisNome": "Hong Kong",
+    "cidadeLocal": "Hong Kong",
+    "tz": "Asia/Hong_Kong",
+    "lat": 22.3193,
+    "lon": 114.1694
+  },
+  "29807/1-1023": {
+    "pais": "US",
+    "paisNome": "Estados Unidos",
+    "cidadeLocal": "Houston",
+    "tz": "America/Chicago",
+    "lat": 29.7604,
+    "lon": -95.3698
+  },
+  "29807/1-1031": {
+    "pais": "US",
+    "paisNome": "Estados Unidos",
+    "cidadeLocal": "Dallas",
+    "tz": "America/Chicago",
+    "lat": 32.7767,
+    "lon": -96.797
+  },
+  "29815/1-1015": {
+    "pais": "CM",
+    "paisNome": "Camarões",
+    "cidadeLocal": "Iaundê",
+    "tz": "Africa/Douala",
+    "lat": 3.848,
+    "lon": 11.5021
+  },
+  "29823/1-1015": {
+    "pais": "PE",
+    "paisNome": "Peru",
+    "cidadeLocal": "Iquitos",
+    "tz": "America/Lima",
+    "lat": -3.7437,
+    "lon": -73.2516
+  },
+  "29831/1-1015": {
+    "pais": "PK",
+    "paisNome": "Paquistão",
+    "cidadeLocal": "Islamabade",
+    "tz": "Asia/Karachi",
+    "lat": 33.6844,
+    "lon": 73.0479
+  },
+  "29840/1-1015": {
+    "pais": "ID",
+    "paisNome": "Indonésia",
+    "cidadeLocal": "Jacarta",
+    "tz": "Asia/Jakarta",
+    "lat": -6.2088,
+    "lon": 106.8456
+  },
+  "29858/1-1015": {
+    "pais": "UA",
+    "paisNome": "Ucrânia",
+    "cidadeLocal": "Kiev",
+    "tz": "Europe/Kyiv",
+    "lat": 50.4501,
+    "lon": 30.5234
+  },
+  "29874/1-1015": {
+    "pais": "CD",
+    "paisNome": "República Democrática do Congo",
+    "cidadeLocal": "Kinshasa",
+    "tz": "Africa/Kinshasa",
+    "lat": -4.3224,
+    "lon": 15.307
+  },
+  "29882/1-1015": {
+    "pais": "KW",
+    "paisNome": "Kuwait",
+    "cidadeLocal": "Cidade do Kuwait",
+    "tz": "Asia/Kuwait",
+    "lat": 29.3759,
+    "lon": 47.9774
+  },
+  "29890/1-1015": {
+    "pais": "MY",
+    "paisNome": "Malásia",
+    "cidadeLocal": "Kuala Lumpur",
+    "tz": "Asia/Kuala_Lumpur",
+    "lat": 3.139,
+    "lon": 101.6869
+  },
+  "29904/1-1015": {
+    "pais": "BO",
+    "paisNome": "Bolívia",
+    "cidadeLocal": "La Paz",
+    "tz": "America/La_Paz",
+    "lat": -16.5,
+    "lon": -68.15
+  },
+  "29912/1-1015": {
+    "pais": "NG",
+    "paisNome": "Nigéria",
+    "cidadeLocal": "Lagos",
+    "tz": "Africa/Lagos",
+    "lat": 6.5244,
+    "lon": 3.3792
+  },
+  "29939/1-1015": {
+    "pais": "GA",
+    "paisNome": "Gabão",
+    "cidadeLocal": "Libreville",
+    "tz": "Africa/Libreville",
+    "lat": 0.4162,
+    "lon": 9.4673
+  },
+  "29947/1-1023": {
+    "pais": "PE",
+    "paisNome": "Peru",
+    "cidadeLocal": "Lima",
+    "tz": "America/Lima",
+    "lat": -12.0464,
+    "lon": -77.0428
+  },
+  "29955/1-1031": {
+    "pais": "PT",
+    "paisNome": "Portugal",
+    "cidadeLocal": "Lisboa",
+    "tz": "Europe/Lisbon",
+    "lat": 38.7223,
+    "lon": -9.1393
+  },
+  "29955/1-1080": {
+    "pais": "PT",
+    "paisNome": "Portugal",
+    "cidadeLocal": "Lisboa",
+    "tz": "Europe/Lisbon",
+    "lat": 38.7223,
+    "lon": -9.1393
+  },
+  "29963/1-1015": {
+    "pais": "TG",
+    "paisNome": "Togo",
+    "cidadeLocal": "Lomé",
+    "tz": "Africa/Lome",
+    "lat": 6.1375,
+    "lon": 1.2123
+  },
+  "29971/1-1015": {
+    "pais": "GB",
+    "paisNome": "Reino Unido",
+    "cidadeLocal": "Londres",
+    "tz": "Europe/London",
+    "lat": 51.5074,
+    "lon": -0.1278
+  },
+  "29980/1-1023": {
+    "pais": "US",
+    "paisNome": "Estados Unidos",
+    "cidadeLocal": "Los Angeles",
+    "tz": "America/Los_Angeles",
+    "lat": 34.0522,
+    "lon": -118.2437
+  },
+  "29980/1-1120": {
+    "pais": "US",
+    "paisNome": "Estados Unidos",
+    "cidadeLocal": "Los Angeles",
+    "tz": "America/Los_Angeles",
+    "lat": 34.0522,
+    "lon": -118.2437
+  },
+  "29980/1-1244": {
+    "pais": "US",
+    "paisNome": "Estados Unidos",
+    "cidadeLocal": "Salt Lake City",
+    "tz": "America/Denver",
+    "lat": 40.7608,
+    "lon": -111.891
+  },
+  "29998/1-1015": {
+    "pais": "AO",
+    "paisNome": "Angola",
+    "cidadeLocal": "Luanda",
+    "tz": "Africa/Luanda",
+    "lat": -8.839,
+    "lon": 13.2894
+  },
+  "30066/1-1023": {
+    "pais": "ES",
+    "paisNome": "Espanha",
+    "cidadeLocal": "Madri",
+    "tz": "Europe/Madrid",
+    "lat": 40.4168,
+    "lon": -3.7038
+  },
+  "30074/1-1015": {
+    "pais": "NI",
+    "paisNome": "Nicarágua",
+    "cidadeLocal": "Manágua",
+    "tz": "America/Managua",
+    "lat": 12.115,
+    "lon": -86.2362
+  },
+  "30082/1-1015": {
+    "pais": "PH",
+    "paisNome": "Filipinas",
+    "cidadeLocal": "Manila",
+    "tz": "Asia/Manila",
+    "lat": 14.5995,
+    "lon": 120.9842
+  },
+  "30090/1-1015": {
+    "pais": "MZ",
+    "paisNome": "Moçambique",
+    "cidadeLocal": "Maputo",
+    "tz": "Africa/Maputo",
+    "lat": -25.9692,
+    "lon": 32.5732
+  },
+  "30104/1-1040": {
+    "pais": "MX",
+    "paisNome": "México",
+    "cidadeLocal": "Cidade do México",
+    "tz": "America/Mexico_City",
+    "lat": 19.4326,
+    "lon": -99.1332
+  },
+  "30112/1-1058": {
+    "pais": "US",
+    "paisNome": "Estados Unidos",
+    "cidadeLocal": "Miami",
+    "tz": "America/New_York",
+    "lat": 25.7617,
+    "lon": -80.1918
+  },
+  "30120/1-1040": {
+    "pais": "IT",
+    "paisNome": "Itália",
+    "cidadeLocal": "Milão",
+    "tz": "Europe/Rome",
+    "lat": 45.4642,
+    "lon": 9.19
+  },
+  "30147/1-1023": {
+    "pais": "UY",
+    "paisNome": "Uruguai",
+    "cidadeLocal": "Montevidéu",
+    "tz": "America/Montevideo",
+    "lat": -34.9011,
+    "lon": -56.1645
+  },
+  "30155/1-1023": {
+    "pais": "CA",
+    "paisNome": "Canadá",
+    "cidadeLocal": "Montreal",
+    "tz": "America/Toronto",
+    "lat": 45.5017,
+    "lon": -73.5673
+  },
+  "30155/1-1104": {
+    "pais": "CA",
+    "paisNome": "Canadá",
+    "cidadeLocal": "Quebec",
+    "tz": "America/Toronto",
+    "lat": 46.8139,
+    "lon": -71.208
+  },
+  "30163/1-1015": {
+    "pais": "RU",
+    "paisNome": "Rússia",
+    "cidadeLocal": "Moscou",
+    "tz": "Europe/Moscow",
+    "lat": 55.7558,
+    "lon": 37.6173
+  },
+  "30171/1-1015": {
+    "pais": "IN",
+    "paisNome": "Índia",
+    "cidadeLocal": "Mumbai",
+    "tz": "Asia/Kolkata",
+    "lat": 19.076,
+    "lon": 72.8777
+  },
+  "30180/1-1031": {
+    "pais": "DE",
+    "paisNome": "Alemanha",
+    "cidadeLocal": "Munique",
+    "tz": "Europe/Berlin",
+    "lat": 48.1351,
+    "lon": 11.582
+  },
+  "30198/1-1015": {
+    "pais": "JP",
+    "paisNome": "Japão",
+    "cidadeLocal": "Gifu",
+    "tz": "Asia/Tokyo",
+    "lat": 35.4233,
+    "lon": 136.7607
+  },
+  "30198/1-1023": {
+    "pais": "JP",
+    "paisNome": "Japão",
+    "cidadeLocal": "Hiroshima",
+    "tz": "Asia/Tokyo",
+    "lat": 34.3853,
+    "lon": 132.4553
+  },
+  "30198/1-1066": {
+    "pais": "JP",
+    "paisNome": "Japão",
+    "cidadeLocal": "Toyohashi",
+    "tz": "Asia/Tokyo",
+    "lat": 34.7692,
+    "lon": 137.3915
+  },
+  "30198/1-1287": {
+    "pais": "JP",
+    "paisNome": "Japão",
+    "cidadeLocal": "Takaoka",
+    "tz": "Asia/Tokyo",
+    "lat": 36.7551,
+    "lon": 137.0189
+  },
+  "30198/1-1376": {
+    "pais": "JP",
+    "paisNome": "Japão",
+    "cidadeLocal": "Suzuka",
+    "tz": "Asia/Tokyo",
+    "lat": 34.8824,
+    "lon": 136.5841
+  },
+  "30201/1-1015": {
+    "pais": "KE",
+    "paisNome": "Quênia",
+    "cidadeLocal": "Nairóbi",
+    "tz": "Africa/Nairobi",
+    "lat": -1.2921,
+    "lon": 36.8219
+  },
+  "30210/1-1015": {
+    "pais": "IN",
+    "paisNome": "Índia",
+    "cidadeLocal": "Nova Delhi",
+    "tz": "Asia/Kolkata",
+    "lat": 28.6139,
+    "lon": 77.209
+  },
+  "30228/1-1082": {
+    "pais": "US",
+    "paisNome": "Estados Unidos",
+    "cidadeLocal": "Nova York",
+    "tz": "America/New_York",
+    "lat": 40.7128,
+    "lon": -74.006
+  },
+  "30244/1-1015": {
+    "pais": "NO",
+    "paisNome": "Noruega",
+    "cidadeLocal": "Oslo",
+    "tz": "Europe/Oslo",
+    "lat": 59.9139,
+    "lon": 10.7522
+  },
+  "30252/1-1015": {
+    "pais": "CA",
+    "paisNome": "Canadá",
+    "cidadeLocal": "Ottawa",
+    "tz": "America/Toronto",
+    "lat": 45.4215,
+    "lon": -75.6972
+  },
+  "30260/1-1015": {
+    "pais": "PA",
+    "paisNome": "Panamá",
+    "cidadeLocal": "Cidade do Panamá",
+    "tz": "America/Panama",
+    "lat": 8.9824,
+    "lon": -79.5199
+  },
+  "30279/1-1015": {
+    "pais": "SR",
+    "paisNome": "Suriname",
+    "cidadeLocal": "Paramaribo",
+    "tz": "America/Paramaribo",
+    "lat": 5.852,
+    "lon": -55.2038
+  },
+  "30287/1-1066": {
+    "pais": "FR",
+    "paisNome": "França",
+    "cidadeLocal": "Paris",
+    "tz": "Europe/Paris",
+    "lat": 48.8566,
+    "lon": 2.3522
+  },
+  "30295/1-1015": {
+    "pais": "AR",
+    "paisNome": "Argentina",
+    "cidadeLocal": "Paso de los Libres",
+    "tz": "America/Argentina/Cordoba",
+    "lat": -29.7125,
+    "lon": -57.0878
+  },
+  "30309/1-1015": {
+    "pais": "PY",
+    "paisNome": "Paraguai",
+    "cidadeLocal": "Pedro Juan Caballero",
+    "tz": "America/Asuncion",
+    "lat": -22.5472,
+    "lon": -55.7333
+  },
+  "30317/1-1015": {
+    "pais": "CN",
+    "paisNome": "China",
+    "cidadeLocal": "Pequim",
+    "tz": "Asia/Shanghai",
+    "lat": 39.9042,
+    "lon": 116.4074
+  },
+  "30325/1-1015": {
+    "pais": "TT",
+    "paisNome": "Trinidad e Tobago",
+    "cidadeLocal": "Port of Spain",
+    "tz": "America/Port_of_Spain",
+    "lat": 10.6549,
+    "lon": -61.5019
+  },
+  "30333/1-1015": {
+    "pais": "HT",
+    "paisNome": "Haiti",
+    "cidadeLocal": "Pétion-Ville",
+    "tz": "America/Port-au-Prince",
+    "lat": 18.5125,
+    "lon": -72.2853
+  },
+  "30341/1-1015": {
+    "pais": "PT",
+    "paisNome": "Portugal",
+    "cidadeLocal": "Porto",
+    "tz": "Europe/Lisbon",
+    "lat": 41.1579,
+    "lon": -8.6291
+  },
+  "30341/1-1050": {
+    "pais": "PT",
+    "paisNome": "Portugal",
+    "cidadeLocal": "Porto",
+    "tz": "Europe/Lisbon",
+    "lat": 41.1579,
+    "lon": -8.6291
+  },
+  "30350/1-1015": {
+    "pais": "CZ",
+    "paisNome": "República Tcheca",
+    "cidadeLocal": "Praga",
+    "tz": "Europe/Prague",
+    "lat": 50.0755,
+    "lon": 14.4378
+  },
+  "30368/1-1015": {
+    "pais": "CV",
+    "paisNome": "Cabo Verde",
+    "cidadeLocal": "Praia",
+    "tz": "Atlantic/Cape_Verde",
+    "lat": 14.933,
+    "lon": -23.5133
+  },
+  "30376/1-1015": {
+    "pais": "ZA",
+    "paisNome": "África do Sul",
+    "cidadeLocal": "Pretória",
+    "tz": "Africa/Johannesburg",
+    "lat": -25.7479,
+    "lon": 28.2293
+  },
+  "30392/1-1015": {
+    "pais": "EC",
+    "paisNome": "Equador",
+    "cidadeLocal": "Quito",
+    "tz": "America/Guayaquil",
+    "lat": -0.1807,
+    "lon": -78.4678
+  },
+  "30406/1-1015": {
+    "pais": "MA",
+    "paisNome": "Marrocos",
+    "cidadeLocal": "Rabat",
+    "tz": "Africa/Casablanca",
+    "lat": 34.0209,
+    "lon": -6.8416
+  },
+  "30414/1-1015": {
+    "pais": "PS",
+    "paisNome": "Palestina",
+    "cidadeLocal": "Ramala",
+    "tz": "Asia/Hebron",
+    "lat": 31.9038,
+    "lon": 35.2034
+  },
+  "30422/1-1015": {
+    "pais": "SA",
+    "paisNome": "Arábia Saudita",
+    "cidadeLocal": "Riade",
+    "tz": "Asia/Riyadh",
+    "lat": 24.7136,
+    "lon": 46.6753
+  },
+  "30430/1-1015": {
+    "pais": "UY",
+    "paisNome": "Uruguai",
+    "cidadeLocal": "Río Branco",
+    "tz": "America/Montevideo",
+    "lat": -32.5978,
+    "lon": -53.3858
+  },
+  "30449/1-1015": {
+    "pais": "IT",
+    "paisNome": "Itália",
+    "cidadeLocal": "Roma",
+    "tz": "Europe/Rome",
+    "lat": 41.9028,
+    "lon": 12.4964
+  },
+  "30457/1-1015": {
+    "pais": "NL",
+    "paisNome": "Países Baixos",
+    "cidadeLocal": "Amsterdã",
+    "tz": "Europe/Amsterdam",
+    "lat": 52.3676,
+    "lon": 4.9041
+  },
+  "30465/1-1015": {
+    "pais": "PY",
+    "paisNome": "Paraguai",
+    "cidadeLocal": "Salto del Guairá",
+    "tz": "America/Asuncion",
+    "lat": -24.0625,
+    "lon": -54.3069
+  },
+  "30473/1-1015": {
+    "pais": "BO",
+    "paisNome": "Bolívia",
+    "cidadeLocal": "Santa Cruz de la Sierra",
+    "tz": "America/La_Paz",
+    "lat": -17.8146,
+    "lon": -63.1561
+  },
+  "30481/1-1015": {
+    "pais": "CL",
+    "paisNome": "Chile",
+    "cidadeLocal": "Santiago",
+    "tz": "America/Santiago",
+    "lat": -33.4489,
+    "lon": -70.6693
+  },
+  "30490/1-1015": {
+    "pais": "DO",
+    "paisNome": "República Dominicana",
+    "cidadeLocal": "São Domingos",
+    "tz": "America/Santo_Domingo",
+    "lat": 18.4861,
+    "lon": -69.9312
+  },
+  "30503/1-1015": {
+    "pais": "US",
+    "paisNome": "Estados Unidos",
+    "cidadeLocal": "São Francisco",
+    "tz": "America/Los_Angeles",
+    "lat": 37.7749,
+    "lon": -122.4194
+  },
+  "30511/1-1015": {
+    "pais": "CR",
+    "paisNome": "Costa Rica",
+    "cidadeLocal": "São José",
+    "tz": "America/Costa_Rica",
+    "lat": 9.9281,
+    "lon": -84.0907
+  },
+  "30520/1-1015": {
+    "pais": "SV",
+    "paisNome": "El Salvador",
+    "cidadeLocal": "São Salvador",
+    "tz": "America/El_Salvador",
+    "lat": 13.6929,
+    "lon": -89.2182
+  },
+  "30538/1-1015": {
+    "pais": "KR",
+    "paisNome": "Coreia do Sul",
+    "cidadeLocal": "Seul",
+    "tz": "Asia/Seoul",
+    "lat": 37.5665,
+    "lon": 126.978
+  },
+  "30546/1-1015": {
+    "pais": "BG",
+    "paisNome": "Bulgária",
+    "cidadeLocal": "Sófia",
+    "tz": "Europe/Sofia",
+    "lat": 42.6977,
+    "lon": 23.3219
+  },
+  "30562/1-1015": {
+    "pais": "AU",
+    "paisNome": "Austrália",
+    "cidadeLocal": "Sydney",
+    "tz": "Australia/Sydney",
+    "lat": -33.8688,
+    "lon": 151.2093
+  },
+  "30562/1-1031": {
+    "pais": "AU",
+    "paisNome": "Austrália",
+    "cidadeLocal": "Brisbane",
+    "tz": "Australia/Brisbane",
+    "lat": -27.4698,
+    "lon": 153.0251
+  },
+  "30570/1-1015": {
+    "pais": "TW",
+    "paisNome": "Taiwan",
+    "cidadeLocal": "Taipé",
+    "tz": "Asia/Taipei",
+    "lat": 25.033,
+    "lon": 121.5654
+  },
+  "30597/1-1015": {
+    "pais": "IR",
+    "paisNome": "Irã",
+    "cidadeLocal": "Teerã",
+    "tz": "Asia/Tehran",
+    "lat": 35.6892,
+    "lon": 51.389
+  },
+  "30600/1-1015": {
+    "pais": "HN",
+    "paisNome": "Honduras",
+    "cidadeLocal": "Tegucigalpa",
+    "tz": "America/Tegucigalpa",
+    "lat": 14.0723,
+    "lon": -87.1921
+  },
+  "30619/1-1015": {
+    "pais": "IL",
+    "paisNome": "Israel",
+    "cidadeLocal": "Tel Aviv",
+    "tz": "Asia/Jerusalem",
+    "lat": 32.0853,
+    "lon": 34.7818
+  },
+  "30627/1-1023": {
+    "pais": "JP",
+    "paisNome": "Japão",
+    "cidadeLocal": "Tóquio",
+    "tz": "Asia/Tokyo",
+    "lat": 35.6762,
+    "lon": 139.6503
+  },
+  "30627/1-1236": {
+    "pais": "JP",
+    "paisNome": "Japão",
+    "cidadeLocal": "Oizumi",
+    "tz": "Asia/Tokyo",
+    "lat": 36.2575,
+    "lon": 139.4097
+  },
+  "30635/1-1058": {
+    "pais": "CA",
+    "paisNome": "Canadá",
+    "cidadeLocal": "Winnipeg",
+    "tz": "America/Winnipeg",
+    "lat": 49.8951,
+    "lon": -97.1384
+  },
+  "30635/1-1066": {
+    "pais": "CA",
+    "paisNome": "Canadá",
+    "cidadeLocal": "Toronto",
+    "tz": "America/Toronto",
+    "lat": 43.6532,
+    "lon": -79.3832
+  },
+  "30651/1-1015": {
+    "pais": "CN",
+    "paisNome": "China",
+    "cidadeLocal": "Cantão",
+    "tz": "Asia/Shanghai",
+    "lat": 23.1291,
+    "lon": 113.2644
+  },
+  "30669/1-1015": {
+    "pais": "BW",
+    "paisNome": "Botsuana",
+    "cidadeLocal": "Gaborone",
+    "tz": "Africa/Gaborone",
+    "lat": -24.6282,
+    "lon": 25.9231
+  },
+  "30686/1-1015": {
+    "pais": "TN",
+    "paisNome": "Tunísia",
+    "cidadeLocal": "Túnis",
+    "tz": "Africa/Tunis",
+    "lat": 36.8065,
+    "lon": 10.1815
+  },
+  "30708/1-1015": {
+    "pais": "TN",
+    "paisNome": "Tunísia",
+    "cidadeLocal": "Túnis",
+    "tz": "Africa/Tunis",
+    "lat": 36.8065,
+    "lon": 10.1815
+  },
+  "30740/1-1015": {
+    "pais": "PL",
+    "paisNome": "Polônia",
+    "cidadeLocal": "Varsóvia",
+    "tz": "Europe/Warsaw",
+    "lat": 52.2297,
+    "lon": 21.0122
+  },
+  "30767/1-1015": {
+    "pais": "AT",
+    "paisNome": "Áustria",
+    "cidadeLocal": "Viena",
+    "tz": "Europe/Vienna",
+    "lat": 48.2082,
+    "lon": 16.3738
+  },
+  "30783/1-1031": {
+    "pais": "US",
+    "paisNome": "Estados Unidos",
+    "cidadeLocal": "Washington",
+    "tz": "America/New_York",
+    "lat": 38.9072,
+    "lon": -77.0369
+  },
+  "30805/1-1015": {
+    "pais": "NZ",
+    "paisNome": "Nova Zelândia",
+    "cidadeLocal": "Wellington",
+    "tz": "Pacific/Auckland",
+    "lat": -41.2865,
+    "lon": 174.7762
+  },
+  "30821/1-1023": {
+    "pais": "NA",
+    "paisNome": "Namíbia",
+    "cidadeLocal": "Windhoek",
+    "tz": "Africa/Windhoek",
+    "lat": -22.5609,
+    "lon": 17.0658
+  },
+  "30848/1-1015": {
+    "pais": "CN",
+    "paisNome": "China",
+    "cidadeLocal": "Xangai",
+    "tz": "Asia/Shanghai",
+    "lat": 31.2304,
+    "lon": 121.4737
+  },
+  "30864/1-1082": {
+    "pais": "CH",
+    "paisNome": "Suíça",
+    "cidadeLocal": "Zurique",
+    "tz": "Europe/Zurich",
+    "lat": 47.3769,
+    "lon": 8.5417
+  },
+  "30902/1-1015": {
+    "pais": "US",
+    "paisNome": "Estados Unidos",
+    "cidadeLocal": "Hartford",
+    "tz": "America/New_York",
+    "lat": 41.7658,
+    "lon": -72.6734
+  },
+  "30929/1-1015": {
+    "pais": "LK",
+    "paisNome": "Sri Lanka",
+    "cidadeLocal": "Colombo",
+    "tz": "Asia/Colombo",
+    "lat": 6.9271,
+    "lon": 79.8612
+  },
+  "30961/1-1015": {
+    "pais": "PT",
+    "paisNome": "Portugal",
+    "cidadeLocal": "Faro",
+    "tz": "Europe/Lisbon",
+    "lat": 37.0194,
+    "lon": -7.9304
+  },
+  "30988/1-1015": {
+    "pais": "BA",
+    "paisNome": "Bósnia e Herzegovina",
+    "cidadeLocal": "Sarajevo",
+    "tz": "Europe/Sarajevo",
+    "lat": 43.8563,
+    "lon": 18.4131
+  },
+  "30988/1-1040": {
+    "pais": "BA",
+    "paisNome": "Bósnia e Herzegovina",
+    "cidadeLocal": "Sarajevo",
+    "tz": "Europe/Sarajevo",
+    "lat": 43.8563,
+    "lon": 18.4131
+  },
+  "38881/1-1015": {
+    "pais": "BZ",
+    "paisNome": "Belize",
+    "cidadeLocal": "Belmopan",
+    "tz": "America/Belize",
+    "lat": 17.251,
+    "lon": -88.759
+  },
+  "38903/1-1015": {
+    "pais": "GN",
+    "paisNome": "Guiné",
+    "cidadeLocal": "Conacri",
+    "tz": "Africa/Conakry",
+    "lat": 9.6412,
+    "lon": -13.5784
+  },
+  "38920/1-1015": {
+    "pais": "BJ",
+    "paisNome": "Benin",
+    "cidadeLocal": "Cotonou",
+    "tz": "Africa/Porto-Novo",
+    "lat": 6.3654,
+    "lon": 2.4183
+  },
+  "38962/1-1015": {
+    "pais": "TZ",
+    "paisNome": "Tanzânia",
+    "cidadeLocal": "Dar es Salaam",
+    "tz": "Africa/Dar_es_Salaam",
+    "lat": -6.7924,
+    "lon": 39.2083
+  },
+  "38989/1-1015": {
+    "pais": "AM",
+    "paisNome": "Armênia",
+    "cidadeLocal": "Ierevan",
+    "tz": "Asia/Yerevan",
+    "lat": 40.1792,
+    "lon": 44.4991
+  },
+  "39004/1-1015": {
+    "pais": "AR",
+    "paisNome": "Argentina",
+    "cidadeLocal": "Mendoza",
+    "tz": "America/Argentina/Mendoza",
+    "lat": -32.8895,
+    "lon": -68.8458
+  },
+  "39020/1-1015": {
+    "pais": "HR",
+    "paisNome": "Croácia",
+    "cidadeLocal": "Zagreb",
+    "tz": "Europe/Zagreb",
+    "lat": 45.815,
+    "lon": 15.9819
+  },
+  "39063/1-1031": {
+    "pais": "CA",
+    "paisNome": "Canadá",
+    "cidadeLocal": "Vancouver",
+    "tz": "America/Vancouver",
+    "lat": 49.2827,
+    "lon": -123.1207
+  },
+  "39063/1-1040": {
+    "pais": "CA",
+    "paisNome": "Canadá",
+    "cidadeLocal": "Calgary",
+    "tz": "America/Edmonton",
+    "lat": 51.0447,
+    "lon": -114.0719
+  },
+  "39080/1-1015": {
+    "pais": "US",
+    "paisNome": "Estados Unidos",
+    "cidadeLocal": "Doraville",
+    "tz": "America/New_York",
+    "lat": 33.9045,
+    "lon": -84.2827
+  },
+  "39102/1-1015": {
+    "pais": "OM",
+    "paisNome": "Omã",
+    "cidadeLocal": "Mascate",
+    "tz": "Asia/Muscat",
+    "lat": 23.588,
+    "lon": 58.3829
+  },
+  "39128/1-1015": {
+    "pais": "AZ",
+    "paisNome": "Azerbaijão",
+    "cidadeLocal": "Baku",
+    "tz": "Asia/Baku",
+    "lat": 40.4093,
+    "lon": 49.8671
+  },
+  "39160/1-1015": {
+    "pais": "SI",
+    "paisNome": "Eslovênia",
+    "cidadeLocal": "Liubliana",
+    "tz": "Europe/Ljubljana",
+    "lat": 46.0569,
+    "lon": 14.5058
+  },
+  "39187/1-1015": {
+    "pais": "CG",
+    "paisNome": "República do Congo",
+    "cidadeLocal": "Brazzaville",
+    "tz": "Africa/Brazzaville",
+    "lat": -4.2634,
+    "lon": 15.2429
+  },
+  "39209/1-1015": {
+    "pais": "SK",
+    "paisNome": "Eslováquia",
+    "cidadeLocal": "Bratislava",
+    "tz": "Europe/Bratislava",
+    "lat": 48.1486,
+    "lon": 17.1077
+  },
+  "39225/1-1015": {
+    "pais": "ST",
+    "paisNome": "São Tomé e Príncipe",
+    "cidadeLocal": "São Tomé",
+    "tz": "Africa/Sao_Tome",
+    "lat": 0.3365,
+    "lon": 6.7273
+  },
+  "39241/1-1015": {
+    "pais": "KZ",
+    "paisNome": "Cazaquistão",
+    "cidadeLocal": "Astana",
+    "tz": "Asia/Almaty",
+    "lat": 51.1694,
+    "lon": 71.4491
+  },
+  "39263/1-1015": {
+    "pais": "GQ",
+    "paisNome": "Guiné Equatorial",
+    "cidadeLocal": "Malabo",
+    "tz": "Africa/Malabo",
+    "lat": 3.7504,
+    "lon": 8.7371
+  },
+  "39284/1-1015": {
+    "pais": "BF",
+    "paisNome": "Burkina Faso",
+    "cidadeLocal": "Uagadugu",
+    "tz": "Africa/Ouagadougou",
+    "lat": 12.3714,
+    "lon": -1.5197
+  },
+  "39306/1-1015": {
+    "pais": "TR",
+    "paisNome": "Turquia",
+    "cidadeLocal": "Istambul",
+    "tz": "Europe/Istanbul",
+    "lat": 41.0082,
+    "lon": 28.9784
+  },
+  "39322/1-1015": {
+    "pais": "CY",
+    "paisNome": "Chipre",
+    "cidadeLocal": "Nicósia",
+    "tz": "Asia/Nicosia",
+    "lat": 35.1856,
+    "lon": 33.3823
+  },
+  "98000/1-1023": {
+    "pais": "GT",
+    "paisNome": "Guatemala",
+    "cidadeLocal": "Cidade da Guatemala",
+    "tz": "America/Guatemala",
+    "lat": 14.6349,
+    "lon": -90.5069
+  },
+  "99104/1-1015": {
+    "pais": "GE",
+    "paisNome": "Geórgia",
+    "cidadeLocal": "Tbilisi",
+    "tz": "Asia/Tbilisi",
+    "lat": 41.7151,
+    "lon": 44.8271
+  },
+  "99139/1-1015": {
+    "pais": "AL",
+    "paisNome": "Albânia",
+    "cidadeLocal": "Tirana",
+    "tz": "Europe/Tirane",
+    "lat": 41.3275,
+    "lon": 19.8187
+  },
+  "99147/1-1015": {
+    "pais": "AG",
+    "paisNome": "Antígua e Barbuda",
+    "cidadeLocal": "Saint John's",
+    "tz": "America/Antigua",
+    "lat": 17.1274,
+    "lon": -61.8468
+  },
+  "99155/1-1023": {
+    "pais": "AR",
+    "paisNome": "Argentina",
+    "cidadeLocal": "Puerto Iguazú",
+    "tz": "America/Argentina/Cordoba",
+    "lat": -25.5991,
+    "lon": -54.5736
+  },
+  "99171/1-1015": {
+    "pais": "IQ",
+    "paisNome": "Iraque",
+    "cidadeLocal": "Bagdá",
+    "tz": "Asia/Baghdad",
+    "lat": 33.3152,
+    "lon": 44.3661
+  },
+  "99180/1-1015": {
+    "pais": "BS",
+    "paisNome": "Bahamas",
+    "cidadeLocal": "Nassau",
+    "tz": "America/Nassau",
+    "lat": 25.0443,
+    "lon": -77.3504
+  },
+  "99198/1-1023": {
+    "pais": "NG",
+    "paisNome": "Nigéria",
+    "cidadeLocal": "Abuja",
+    "tz": "Africa/Lagos",
+    "lat": 9.0765,
+    "lon": 7.3986
+  },
+  "99210/1-1015": {
+    "pais": "BO",
+    "paisNome": "Bolívia",
+    "cidadeLocal": "Cobija",
+    "tz": "America/La_Paz",
+    "lat": -11.0267,
+    "lon": -68.7692
+  },
+  "99236/1-1015": {
+    "pais": "BO",
+    "paisNome": "Bolívia",
+    "cidadeLocal": "Puerto Quijarro",
+    "tz": "America/La_Paz",
+    "lat": -17.7833,
+    "lon": -57.7667
+  },
+  "99244/1-1015": {
+    "pais": "UY",
+    "paisNome": "Uruguai",
+    "cidadeLocal": "Rivera",
+    "tz": "America/Montevideo",
+    "lat": -30.9053,
+    "lon": -55.5508
+  },
+  "99279/1-1015": {
+    "pais": "VE",
+    "paisNome": "Venezuela",
+    "cidadeLocal": "Santa Elena de Uairén",
+    "tz": "America/Caracas",
+    "lat": 4.6027,
+    "lon": -61.1106
+  },
+  "99287/1-1015": {
+    "pais": "ZM",
+    "paisNome": "Zâmbia",
+    "cidadeLocal": "Lusaca",
+    "tz": "Africa/Lusaka",
+    "lat": -15.3875,
+    "lon": 28.3228
+  },
+  "99295/1-1015": {
+    "pais": "KP",
+    "paisNome": "Coreia do Norte",
+    "cidadeLocal": "Pyongyang",
+    "tz": "Asia/Pyongyang",
+    "lat": 39.0392,
+    "lon": 125.7625
+  },
+  "99317/1-1015": {
+    "pais": "EE",
+    "paisNome": "Estônia",
+    "cidadeLocal": "Talin",
+    "tz": "Europe/Tallinn",
+    "lat": 59.437,
+    "lon": 24.7535
+  },
+  "99325/1-1015": {
+    "pais": "ET",
+    "paisNome": "Etiópia",
+    "cidadeLocal": "Adis Abeba",
+    "tz": "Africa/Addis_Ababa",
+    "lat": 9.025,
+    "lon": 38.7469
+  },
+  "99333/1-1015": {
+    "pais": "GF",
+    "paisNome": "Guiana Francesa",
+    "cidadeLocal": "Saint-Georges-de-l'Oyapock",
+    "tz": "America/Cayenne",
+    "lat": 3.8992,
+    "lon": -51.8036
+  },
+  "99341/1-1015": {
+    "pais": "MW",
+    "paisNome": "Malaui",
+    "cidadeLocal": "Lilongue",
+    "tz": "Africa/Blantyre",
+    "lat": -13.9626,
+    "lon": 33.7741
+  },
+  "99350/1-1015": {
+    "pais": "ML",
+    "paisNome": "Mali",
+    "cidadeLocal": "Bamako",
+    "tz": "Africa/Bamako",
+    "lat": 12.6392,
+    "lon": -8.0029
+  },
+  "99376/1-1015": {
+    "pais": "MM",
+    "paisNome": "Mianmar",
+    "cidadeLocal": "Yangon",
+    "tz": "Asia/Yangon",
+    "lat": 16.8661,
+    "lon": 96.1951
+  },
+  "99384/1-1023": {
+    "pais": "LC",
+    "paisNome": "Santa Lúcia",
+    "cidadeLocal": "Castries",
+    "tz": "America/St_Lucia",
+    "lat": 14.0101,
+    "lon": -60.9875
+  },
+  "99430/1-1015": {
+    "pais": "JM",
+    "paisNome": "Jamaica",
+    "cidadeLocal": "Kingston",
+    "tz": "America/Jamaica",
+    "lat": 17.9712,
+    "lon": -76.7928
+  },
+  "99473/1-1015": {
+    "pais": "BH",
+    "paisNome": "Barein",
+    "cidadeLocal": "Manama",
+    "tz": "Asia/Bahrain",
+    "lat": 26.2285,
+    "lon": 50.586
+  },
+  "99490/1-1015": {
+    "pais": "US",
+    "paisNome": "Estados Unidos",
+    "cidadeLocal": "Kissimmee",
+    "tz": "America/New_York",
+    "lat": 28.292,
+    "lon": -81.4076
+  },
+  "99503/1-1015": {
+    "pais": "GB",
+    "paisNome": "Reino Unido",
+    "cidadeLocal": "Edimburgo",
+    "tz": "Europe/London",
+    "lat": 55.9533,
+    "lon": -3.1883
+  },
+  "99503/1-1066": {
+    "pais": "GB",
+    "paisNome": "Reino Unido",
+    "cidadeLocal": "Edimburgo",
+    "tz": "Europe/London",
+    "lat": 55.9533,
+    "lon": -3.1883
+  },
+  "99511/1-1015": {
+    "pais": "FR",
+    "paisNome": "França",
+    "cidadeLocal": "Marselha",
+    "tz": "Europe/Paris",
+    "lat": 43.2965,
+    "lon": 5.3698
+  }
+}

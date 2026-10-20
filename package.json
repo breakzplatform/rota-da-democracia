@@ -10,6 +10,7 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "data": "python3 -I scripts/build-data.py",
+    "data:abroad": "python3 -I scripts/build-abroad.py",
     "test:data": "python3 -I -m unittest discover -s scripts -p 'test_*.py'"
   },
   "devDependencies": {
