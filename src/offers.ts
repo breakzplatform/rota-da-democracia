@@ -1,5 +1,6 @@
 import { LIMITS, SITE_NAME } from "./config";
-import { NOT_PURGED, isPurged } from "./cleanup";
+import { NOT_PURGED } from "./cleanup";
+import { notifyReport } from "./notify";
 import {
   CONTACT_ERRORS,
   contactLink,
@@ -15,7 +16,14 @@ import { ApiError, json, readJsonObject, type JsonObject } from "./http";
 import { isMunicipioCode, loadMunicipio } from "./places";
 import { withQuota } from "./rate-limit";
 import { cleanText, foldForSearch } from "./text";
-import { verifyTurnstile, type TurnstileAction } from "./turnstile";
+import {
+  closed,
+  quotaExhausted,
+  reportReason,
+  requireDeclarations,
+  requireTokenShape,
+  turnstile,
+} from "./shared";
 import {
   departure,
   integerInRange,
@@ -45,6 +53,7 @@ interface OfferRow {
   acessivel: number;
   declarado_em: string;
   created_at: string;
+  oculta: number;
   denuncias: number;
 }
 
@@ -58,14 +67,13 @@ export const DEPARTURE_GRACE_MS = 30 * 60 * 1000;
 function listedSince(now: Date): string {
   return new Date(now.getTime() - DEPARTURE_GRACE_MS).toISOString();
 }
-const REPORT_REASONS = new Set(["cobranca", "campanha", "falsa", "outro"]);
 
 const SELECT_OFFER = `
   SELECT o.*, (SELECT COUNT(*) FROM reports r WHERE r.offer_id = o.id) AS denuncias
   FROM offers o`;
 
 function isVisible(row: OfferRow): boolean {
-  return row.vagas_livres > 0 && row.denuncias < LIMITS.reportsToHide;
+  return row.vagas_livres > 0 && row.oculta === 0;
 }
 
 function publicView(row: OfferRow) {
@@ -91,26 +99,16 @@ function ownerView(row: OfferRow) {
     municipio: row.municipio,
     vagas: row.vagas,
     denuncias: row.denuncias,
+    // True when full or hidden by a moderator; reports alone never hide an offer.
     oculta: !isVisible(row),
+    moderada: row.oculta === 1,
     criadaEm: row.created_at,
     declaradoEm: row.declarado_em,
   };
 }
 
-function closed(): ApiError {
-  return new ApiError(410, "encerrado", "A eleição acabou e os dados foram apagados. Obrigado por participar!");
-}
-
-async function quotaExhausted(env: Env, error: ApiError): Promise<ApiError> {
-  return (await isPurged(env.DB)) ? closed() : error;
-}
-
-function turnstile(request: Request, env: Env, deps: Deps, token: unknown, action: TurnstileAction) {
-  return verifyTurnstile(
-    token,
-    { secret: env.TURNSTILE_SECRET, ip: clientIp(request), action, allowedHostnames: env.ALLOWED_HOSTNAMES },
-    deps,
-  );
+export function offerSummary(row: Pick<OfferRow, "nome" | "ponto_encontro" | "local_nome" | "nota">): string {
+  return [`${row.nome}: ${row.ponto_encontro} → ${row.local_nome}`, row.nota].filter(Boolean).join(" · ");
 }
 
 function notFound(): ApiError {
@@ -124,9 +122,7 @@ async function findOffer(env: Env, id: string): Promise<OfferRow> {
 }
 
 async function authorize(env: Env, id: string, token: unknown): Promise<OfferRow> {
-  if (typeof token !== "string" || token.length < 16 || token.length > 128) {
-    throw new ApiError(401, "token_ausente", "Use o link de gerenciamento que você recebeu.");
-  }
+  requireTokenShape(token);
   const row = await findOffer(env, id);
   if (!(await tokenMatches(token, row.token_hash))) {
     throw new ApiError(403, "token_invalido", "Esse link de gerenciamento não vale para esta oferta.");
@@ -143,15 +139,9 @@ const DECLARATIONS = [
   ["maiorHabilitado", "Para oferecer carona, é preciso confirmar que você tem mais de 18 anos e carteira de motorista válida."],
 ] as const;
 
-function requireDeclarations(body: JsonObject): void {
-  for (const [field, message] of DECLARATIONS) {
-    if (body[field] !== true) throw invalid(field, message);
-  }
-}
-
 export async function createOffer(request: Request, env: Env, deps: Deps): Promise<Response> {
   const body = await readJsonObject(request);
-  requireDeclarations(body);
+  requireDeclarations(body, DECLARATIONS);
 
   const nome = requiredText(body, "nome", LIMITS.nome, "nome");
   const contatoTipo = body.contatoTipo;
@@ -265,10 +255,10 @@ export async function listOffers(request: Request, env: Env, deps: Deps): Promis
 
   const { results } = await env.DB.prepare(
     `${SELECT_OFFER} WHERE ${where.join(" AND ")}
-       AND (SELECT COUNT(*) FROM reports r WHERE r.offer_id = o.id) < ?
+       AND o.oculta = 0
      ORDER BY o.saida, o.created_at LIMIT ?`,
   )
-    .bind(...binds, LIMITS.reportsToHide, MAX_RESULTS)
+    .bind(...binds, MAX_RESULTS)
     .all<OfferRow>();
   return json({ ofertas: results.map(publicView) });
 }
@@ -370,15 +360,12 @@ export async function deleteOffer(request: Request, env: Env, id: string): Promi
 
 export async function reportOffer(request: Request, env: Env, deps: Deps, id: string): Promise<Response> {
   const body = await readJsonObject(request);
-  const motivo = body.motivo;
-  if (typeof motivo !== "string" || !REPORT_REASONS.has(motivo)) {
-    throw invalid("motivo", "Escolha o motivo da denúncia.");
-  }
+  const motivo = reportReason(body);
   // Hashed per network (IPv6 /64), so one subscriber cannot count as several reporters.
   const ipHash = await hashIp(clientIp(request), env.IP_SALT);
   const now = deps.now();
-  const exhausted = new ApiError(429, "limite_de_denuncias", "Muitas denúncias seguidas. Tente de novo daqui a pouco.");
-  await withQuota(env.DB, "denuncia", ipHash, now, () => quotaExhausted(env, exhausted), async () => {
+  const exhausted = new ApiError(429, "limite_de_denuncias", "Você já fez o máximo de denúncias por hoje.");
+  const offer = await withQuota(env.DB, "denuncia", ipHash, now, () => quotaExhausted(env, exhausted), async () => {
     await turnstile(request, env, deps, body.turnstile, "denuncia");
     await findOffer(env, id);
     await env.DB.prepare(
@@ -387,17 +374,27 @@ export async function reportOffer(request: Request, env: Env, deps: Deps, id: st
     )
       .bind(id, ipHash, motivo, now.toISOString())
       .run();
+    return findOffer(env, id);
   });
+  deps.defer(
+    notifyReport(env, deps, {
+      tipo: "oferta",
+      id,
+      municipio: offer.municipio,
+      motivo,
+      texto: offerSummary(offer),
+      total: offer.denuncias,
+    }),
+  );
   return json({ ok: true }, 202);
 }
 
 export async function countVisibleOffers(env: Env, now: Date): Promise<number> {
   const row = await env.DB.prepare(
     `SELECT COUNT(*) AS total FROM offers o
-     WHERE o.vagas_livres > 0 AND o.saida >= ?
-       AND (SELECT COUNT(*) FROM reports r WHERE r.offer_id = o.id) < ?`,
+     WHERE o.vagas_livres > 0 AND o.oculta = 0 AND o.saida >= ?`,
   )
-    .bind(listedSince(now), LIMITS.reportsToHide)
+    .bind(listedSince(now))
     .first<{ total: number }>();
   return row?.total ?? 0;
 }

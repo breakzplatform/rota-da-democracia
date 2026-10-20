@@ -1,9 +1,73 @@
-import { $, showMessage, titleCase, safeHref } from "./common.js";
+import { $, copyText, titleCase, safeHref } from "./common.js";
 import { initPlacePicker } from "./places.js";
 
 const result = $("resultado-local");
 const status = $("estado-local");
 let tarifas = [];
+let plan = null;
+
+function icsEscape(text) {
+  return text.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n");
+}
+
+function buildIcs({ name, address }) {
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Rota da Democracia//PT",
+    "BEGIN:VEVENT",
+    `UID:votar-2026-10-25-${Date.now()}@rota-da-democracia`,
+    `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`,
+    // 08:00 BRT = 11:00 UTC; polls close 17:00 BRT = 20:00 UTC.
+    "DTSTART:20261025T110000Z",
+    "DTEND:20261025T200000Z",
+    "SUMMARY:Votar no 2º turno",
+    `LOCATION:${icsEscape(`${name}, ${address}`)}`,
+    "DESCRIPTION:Leve documento oficial com foto ou o e-Título. As seções abrem às 8h e fecham às 17h (horário de Brasília).",
+    "BEGIN:VALARM",
+    "TRIGGER:-PT1H",
+    "ACTION:DISPLAY",
+    "DESCRIPTION:Hora de sair para votar",
+    "END:VALARM",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ];
+  return `${lines.join("\r\n")}\r\n`;
+}
+
+$("baixar-ics").addEventListener("click", () => {
+  if (!plan) return;
+  const blob = new Blob([buildIcs(plan)], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "votar-25-de-outubro.ics";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  $("estado-plano").textContent = "Arquivo do calendário baixado.";
+});
+
+$("compartilhar-plano").addEventListener("click", async () => {
+  if (!plan) return;
+  const text =
+    `Meu plano para votar no domingo, 25 de outubro (2º turno): ${plan.name}, ${plan.address}. ` +
+    "As seções abrem às 8h e fecham às 17h (horário de Brasília). Levar documento oficial com foto ou o e-Título. " +
+    "O ônibus é de graça no domingo, pela Resolução TSE 23.751/2026. Quer ir junto? " +
+    `Veja como chegar: ${location.origin}/como-chegar`;
+  try {
+    if (navigator.share) {
+      await navigator.share({ text });
+      return;
+    }
+  } catch (error) {
+    if (error?.name === "AbortError") return;
+  }
+  $("estado-plano").textContent = (await copyText(text)) ? "Texto do plano copiado." : "Não foi possível copiar. Selecione e copie manualmente.";
+});
+
+$("imprimir-plano").addEventListener("click", () => window.print());
 
 const picker = initPlacePicker({
   onMunicipio(entry) {
@@ -24,9 +88,14 @@ function showPlace(local, shard) {
   const addressText = `${titleCase(local.nome)}, ${titleCase(local.endereco)}, ${titleCase(shard.nome)} - ${shard.uf}`;
   const destination = hasCoords ? `${local.lat},${local.lon}` : addressText;
 
-  $("local-nome").textContent = "Como chegar";
-  $("rota-google").href =
-    `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=transit`;
+  const dir = (mode) => `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=${mode}`;
+  $("rota-google").href = dir("transit");
+  $("rota-pe").href = dir("walking");
+  $("rota-bike").href = dir("bicycling");
+  $("rota-carro").href = dir("driving");
+  $("rota-waze").href = hasCoords
+    ? `https://waze.com/ul?ll=${local.lat},${local.lon}&navigate=yes`
+    : `https://waze.com/ul?q=${encodeURIComponent(addressText)}&navigate=yes`;
   const moovit = new URLSearchParams({ to: addressText, lang: "pt" });
   let moovitUrl = `https://moovitapp.com/?${moovit}`;
   if (hasCoords) moovitUrl += `&tll=${local.lat}_${local.lon}`;
@@ -34,6 +103,7 @@ function showPlace(local, shard) {
   $("local-mapa").href = hasCoords
     ? `https://www.google.com/maps/search/?api=1&query=${local.lat},${local.lon}`
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressText)}`;
+  plan = { name: titleCase(local.nome), address: `${titleCase(local.endereco)}, ${titleCase(shard.nome)} - ${shard.uf}` };
 
   result.hidden = false;
   status.textContent = `Local encontrado: ${titleCase(local.nome)}.`;

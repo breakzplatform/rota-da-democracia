@@ -33,7 +33,7 @@
       <label for="nav-open" class="nav-toggle">Menu</label>
       <div class="nav-panel">
         <nav class="nav-links" aria-label="Seções">
-          <a href="/">Início</a><a href="/buscar">Preciso de carona</a><a href="/oferecer">Posso dar carona</a><a href="/como-chegar" aria-current="page">Como chego</a><a href="/faq">Dúvidas</a>
+          <a href="/">Início</a><a href="/buscar">Preciso de carona</a><a href="/oferecer">Posso dar carona</a><a href="/como-chegar" aria-current="page">Como chego</a><a href="/grupos">Grupos</a><a href="/faq">Dúvidas</a>
         </nav>
         <a class="btn btn-primary btn-header" href="/oferecer">Dar carona</a>
       </div>
@@ -53,14 +53,45 @@
 
       </form>
       <p id="estado-local" class="status" role="status">O endereço aparece aqui depois da busca.</p>
-      <section id="resultado-local" class="panel place" aria-labelledby="local-nome" hidden>
-        <h2 id="local-nome"></h2>
-        <div class="place-actions">
-          <a id="rota-google" class="btn btn-primary" href="" target="_blank" rel="noopener noreferrer">Rota de transporte público (Google Maps)</a>
-          <a id="rota-moovit" class="btn" href="" target="_blank" rel="noopener noreferrer">Abrir no Moovit</a>
-          <a id="local-mapa" class="btn" href="" target="_blank" rel="noopener noreferrer">Ver no mapa</a>
-        </div>
-      </section>
+      <div id="resultado-local" hidden>
+        <section class="panel place" aria-labelledby="local-nome">
+          <h2 id="local-nome">Melhor rota</h2>
+          <div class="place-actions">
+            <a id="rota-google" class="btn btn-primary" href="" target="_blank" rel="noopener noreferrer">Ônibus ou metrô (Google Maps)</a>
+            <a id="rota-pe" class="btn" href="" target="_blank" rel="noopener noreferrer">A pé</a>
+            <a id="rota-bike" class="btn" href="" target="_blank" rel="noopener noreferrer">Bicicleta</a>
+            <a id="rota-carro" class="btn" href="" target="_blank" rel="noopener noreferrer">Carro</a>
+            <a id="rota-waze" class="btn" href="" target="_blank" rel="noopener noreferrer">Waze</a>
+            <a id="rota-moovit" class="btn" href="" target="_blank" rel="noopener noreferrer">Abrir no Moovit</a>
+            <a id="local-mapa" class="btn" href="" target="_blank" rel="noopener noreferrer">Ver no mapa</a>
+          </div>
+          <p class="hint">Saia com folga: as seções abrem às 8h e fecham às 17h (horário de Brasília).</p>
+        </section>
+        <section class="panel" aria-labelledby="titulo-confira">
+          <h2 id="titulo-confira">Confira seu local antes de sair</h2>
+          <p>Confirme no app e-Título (aba Onde votar) que este é o seu local. Ele é o mesmo do 1º turno.</p>
+          <div class="form-actions">
+            <a class="btn" href="https://play.google.com/store/apps/details?id=br.jus.tse.eleitoral.etitulo" target="_blank" rel="noopener noreferrer">e-Título no Android<span class="sr-only"> (abre em nova aba)</span></a>
+            <a class="btn" href="https://apps.apple.com/br/app/e-t%C3%ADtulo/id1320338088" target="_blank" rel="noopener noreferrer">e-Título no iPhone<span class="sr-only"> (abre em nova aba)</span></a>
+            <a class="btn" href="https://www.tse.jus.br/servicos-eleitorais/autoatendimento-eleitoral#/atendimento-eleitor/onde-votar" target="_blank" rel="noopener noreferrer">Onde votar no site do TSE<span class="sr-only"> (abre em nova aba)</span></a>
+          </div>
+        </section>
+        <section class="panel" id="plano" aria-labelledby="titulo-plano">
+          <h2 id="titulo-plano">Seu plano para domingo</h2>
+          <ul class="who-list">
+            <li>Documento oficial com foto, ou o e-Título com foto.</li>
+            <li>Horário em que vou sair: ______</li>
+            <li>Rota escolhida: ______</li>
+            <li>Chame alguém para ir junto.</li>
+          </ul>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" id="baixar-ics">Adicionar ao calendário</button>
+            <button type="button" class="btn" id="compartilhar-plano">Compartilhar meu plano</button>
+            <button type="button" class="btn" id="imprimir-plano">Imprimir</button>
+          </div>
+          <p id="estado-plano" class="status" role="status"></p>
+        </section>
+      </div>
       <section id="transporte-justica-eleitoral" class="panel" aria-labelledby="titulo-justica">
         <p class="eyebrow">Justiça Eleitoral</p>
         <h2 id="titulo-justica">Transporte gratuito da Justiça Eleitoral</h2>
@@ -100,6 +131,7 @@
         <span class="brand-text">Rota da<br>Democracia</span>
       </a>
       <nav class="footer-links" aria-label="Rodapé">
+        <a href="/grupos">Grupos</a>
         <a href="/faq">Dúvidas</a>
         <a href="/privacidade">Privacidade</a>
         <a href="/sobre">Sobre</a>

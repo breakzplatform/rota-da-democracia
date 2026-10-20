@@ -1,13 +1,15 @@
 import { LIMITS } from "./config";
 
-export type RateKind = "oferta" | "contato" | "denuncia";
+// "contato" covers every contact reveal: offer contacts and group links alike.
+export type RateKind = "oferta" | "contato" | "denuncia" | "grupo";
 
 const HOUR_MS = 60 * 60 * 1000;
 
 export const RATE_RULES: Readonly<Record<RateKind, { windowMs: number; limit: number }>> = {
   oferta: { windowMs: 24 * HOUR_MS, limit: LIMITS.offersPerIpPerDay },
   contato: { windowMs: HOUR_MS, limit: LIMITS.revealsPerIpPerHour },
-  denuncia: { windowMs: HOUR_MS, limit: LIMITS.reportsPerIpPerHour },
+  denuncia: { windowMs: 24 * HOUR_MS, limit: LIMITS.reportsPerIpPerDay },
+  grupo: { windowMs: 24 * HOUR_MS, limit: LIMITS.groupsPerIpPerDay },
 };
 
 export interface Reservation {

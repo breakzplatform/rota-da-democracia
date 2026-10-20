@@ -37,15 +37,28 @@ export const TURNSTILE = {
   oferecer: "pass:oferecer",
   contato: "pass:contato",
   denuncia: "pass:denuncia",
+  grupo: "pass:grupo",
+  entrar: "pass:entrar",
 } as const;
 
 export const clock = { now: BEFORE_ELECTION };
 export const turnstileCalls: { secret: string; response: string; remoteip: string | null }[] = [];
+export const telegramCalls: { url: string; chatId: unknown; text: string }[] = [];
+const deferred: Promise<unknown>[] = [];
+
+export async function flushDeferred(): Promise<void> {
+  while (deferred.length > 0) await deferred.shift();
+}
 
 // Siteverify stand-in. "pass:<action>[@<hostname>]" succeeds and echoes that action and
 // hostname (default carona.test); "fail" and "unreachable" exercise the error paths.
 async function fakeFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
   const url = input instanceof Request ? input.url : input.toString();
+  if (url.startsWith("https://api.telegram.org/")) {
+    const payload = JSON.parse(String(init?.body)) as { chat_id: unknown; text: string };
+    telegramCalls.push({ url, chatId: payload.chat_id, text: payload.text });
+    return Response.json({ ok: true });
+  }
   if (url !== "https://challenges.cloudflare.com/turnstile/v0/siteverify") {
     throw new Error(`unexpected fetch ${url}`);
   }
@@ -64,15 +77,19 @@ async function fakeFetch(input: RequestInfo | URL, init?: RequestInit): Promise<
   return Response.json({ success: true, action: pass[1], hostname: pass[2] ?? "carona.test" });
 }
 
-export const deps: Deps = { now: () => clock.now, fetch: fakeFetch };
+export const deps: Deps = { now: () => clock.now, fetch: fakeFetch, defer: (task) => void deferred.push(task) };
 
 beforeEach(async () => {
   clock.now = BEFORE_ELECTION;
   turnstileCalls.length = 0;
+  telegramCalls.length = 0;
+  deferred.length = 0;
   clearMunicipioCache();
   await env.DB.batch([
     env.DB.prepare("DELETE FROM reports"),
     env.DB.prepare("DELETE FROM offers"),
+    env.DB.prepare("DELETE FROM grupo_reports"),
+    env.DB.prepare("DELETE FROM grupos"),
     env.DB.prepare("DELETE FROM rate_events"),
     env.DB.prepare("DELETE FROM system_state"),
   ]);

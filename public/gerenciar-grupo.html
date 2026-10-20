@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seu grupo · Rota da Democracia</title>
+  <meta name="description" content="Gerencie o grupo de carona que você cadastrou.">
+  <meta name="theme-color" content="#ffe403">
+  <meta property="og:title" content="Seu grupo · Rota da Democracia">
+  <meta property="og:description" content="Gerencie o grupo de carona que você cadastrou.">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/site.css">
+  <link rel="stylesheet" href="/assets/app.css">
+  
+</head>
+<body>
+<a class="skip" href="#conteudo">Ir para o conteúdo</a>
+<noscript><p class="noscript">O texto desta página está visível. A busca de municípios e o envio dos formulários precisam de JavaScript.</p></noscript>
+<p class="affiliation-top">Iniciativa voluntária e apartidária. Este site não tem relação com nenhum candidato, partido ou campanha.</p>
+  <div class="color-bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+  <header class="site-header">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">Rota da<br>Democracia</span>
+    </a>
+    <div class="nav">
+      <input type="checkbox" id="nav-open" class="nav-check" aria-label="Abrir menu">
+      <label for="nav-open" class="nav-toggle">Menu</label>
+      <div class="nav-panel">
+        <nav class="nav-links" aria-label="Seções">
+          <a href="/">Início</a><a href="/buscar">Preciso de carona</a><a href="/oferecer">Posso dar carona</a><a href="/como-chegar">Como chego</a><a href="/grupos" aria-current="page">Grupos</a><a href="/faq">Dúvidas</a>
+        </nav>
+        <a class="btn btn-primary btn-header" href="/oferecer">Dar carona</a>
+      </div>
+    </div>
+  </header>
+<main id="conteudo">
+    <section class="band" aria-labelledby="titulo">
+      <div class="wrap">
+        <p class="eyebrow">Seu link</p>
+        <h1 id="titulo">Seu grupo</h1>
+        <p class="lede">Este endereço é só de quem cadastrou. Dá para apagar o grupo da lista.</p>
+      </div>
+    </section>
+    <div class="wrap stack">
+      <section class="panel" aria-labelledby="titulo-ver">
+        <h2 id="titulo-ver" class="sr-only">Dados do grupo</h2>
+        <p id="estado-gerenciar" class="status" role="status">Abra o link que você guardou ao cadastrar.</p>
+        <dl class="resumo" id="gerenciar-resumo">
+          <div><dt>Nome</dt><dd id="ver-nome">-</dd></div>
+          <div><dt>Bairros ou zona</dt><dd id="ver-bairros">-</dd></div>
+          <div><dt>Município</dt><dd id="ver-municipio">-</dd></div>
+          <div><dt>Administrador</dt><dd id="ver-admin">-</dd></div>
+          <div><dt>Link do grupo</dt><dd id="ver-link">-</dd></div>
+        </dl>
+        <p id="erro-gerenciar" class="form-error" role="alert" hidden></p>
+        <div class="form-actions">
+          <button type="button" class="btn" id="apagar-grupo">Apagar grupo</button>
+        </div>
+      </section>
+      <section id="grupo-apagado" class="panel" hidden>
+        <h2>Grupo apagado</h2>
+        <p>Ele saiu da lista. O link privado para de funcionar.</p>
+      </section>
+    </div>
+  </main>
+  <dialog id="dialogo-apagar" aria-labelledby="titulo-apagar">
+    <h2 id="titulo-apagar">Apagar este grupo?</h2>
+    <p>Ele some da lista. Não dá para desfazer.</p>
+    <div class="dialog-actions">
+      <button type="button" class="btn btn-primary" id="confirmar-apagar">Apagar grupo</button>
+      <button type="button" class="btn" id="fechar-apagar">Voltar</button>
+    </div>
+  </dialog>
+
+<footer class="site-footer">
+  <p class="affiliation-top">Iniciativa voluntária e apartidária. Este site não tem relação com nenhum candidato, partido ou campanha.</p>
+  <div class="color-bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+
+    <div class="wrap footer-grid">
+      <a class="brand" href="/">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-text">Rota da<br>Democracia</span>
+      </a>
+      <nav class="footer-links" aria-label="Rodapé">
+        <a href="/grupos">Grupos</a>
+        <a href="/faq">Dúvidas</a>
+        <a href="/privacidade">Privacidade</a>
+        <a href="/sobre">Sobre</a>
+      </nav>
+      <p class="fine">Locais de votação: <a href="https://www.tse.jus.br/" target="_blank" rel="noopener noreferrer">Tribunal Superior Eleitoral<span class="sr-only"> (abre em nova aba)</span></a>, licença CC-BY. Ofertas e denúncias são apagadas na segunda, 26 de outubro de 2026, ao meio-dia (horário de Brasília).</p>
+    </div>
+  </footer>
+  <script type="module" src="/js/gerenciar-grupo.js"></script>
+</body>
+</html>

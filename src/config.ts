@@ -17,8 +17,8 @@ export const LIMITS = {
   // Mobile carriers put many voters behind one IPv4 (CGNAT); Turnstile already stops bots.
   offersPerIpPerDay: 30,
   revealsPerIpPerHour: 200,
-  reportsPerIpPerHour: 60,
-  reportsToHide: 5,
+  reportsPerIpPerDay: 5,
+  groupsPerIpPerDay: 10,
 } as const;
 
 // Standalone tokens and phrases that make an offer look like campaigning.

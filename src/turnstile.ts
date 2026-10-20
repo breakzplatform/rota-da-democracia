@@ -4,7 +4,7 @@ import { ApiError } from "./http";
 const SITEVERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 const SITEVERIFY_TIMEOUT_MS = 5000;
 
-export type TurnstileAction = "oferecer" | "contato" | "denuncia";
+export type TurnstileAction = "oferecer" | "contato" | "denuncia" | "grupo" | "entrar";
 
 // Cloudflare's documented dummy secrets answer with a fixed hostname and no
 // action, so those two checks only run with a real secret.

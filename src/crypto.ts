@@ -56,3 +56,8 @@ export function networkKey(ip: string): string {
 export function hashIp(ip: string, salt: string): Promise<string> {
   return sha256Hex(`${salt}:${networkKey(ip)}`);
 }
+
+/** Constant-time comparison of two secrets of any length (both are hashed to fixed-size digests). */
+export async function secretMatches(given: string, expected: string): Promise<boolean> {
+  return crypto.subtle.timingSafeEqual(await sha256(given), await sha256(expected));
+}

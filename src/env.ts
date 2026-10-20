@@ -6,15 +6,25 @@ export interface Env {
   IP_SALT: string;
   // Comma-separated hostnames Turnstile tokens may come from.
   ALLOWED_HOSTNAMES?: string;
+  // Moderation endpoints answer 404 while unset.
+  ADMIN_TOKEN?: string;
+  // Report notifications are skipped while either is unset.
+  TELEGRAM_BOT_TOKEN?: string;
+  TELEGRAM_CHAT_ID?: string;
 }
 
 // Side effects the handlers depend on, injectable so tests control time and network.
 export interface Deps {
   now: () => Date;
   fetch: typeof fetch;
+  // Runs work after the response is sent (ctx.waitUntil in production).
+  defer: (task: Promise<unknown>) => void;
 }
 
 export const defaultDeps: Deps = {
   now: () => new Date(),
   fetch: (input, init) => fetch(input, init),
+  defer: (task) => {
+    task.catch((error: unknown) => console.error("deferred task failed", error));
+  },
 };

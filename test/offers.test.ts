@@ -507,27 +507,17 @@ describe("owner endpoints", () => {
 });
 
 describe("POST /api/ofertas/:id/denuncia", () => {
-  it("hides an offer after reports from enough distinct IPs", async () => {
+  it("counts distinct reporters but never hides the offer on its own", async () => {
     const { id, token } = await createOffer();
-    const report = (ip: string, motivo = "campanha") => call("POST", `/api/ofertas/${id}/denuncia`, { body: { turnstile: TURNSTILE.denuncia, motivo }, ip });
-
+    const report = (ip: string, motivo = "campanha") =>
+      call("POST", `/api/ofertas/${id}/denuncia`, { body: { turnstile: TURNSTILE.denuncia, motivo }, ip });
     expect((await report("192.0.2.1")).status).toBe(202);
     expect((await report("192.0.2.1", "falsa")).status).toBe(202);
-    expect((await report("192.0.2.1", "cobranca")).status).toBe(202);
-    for (let index = 2; index < LIMITS.reportsToHide; index += 1) {
-      expect((await report(`192.0.2.${index}`)).status).toBe(202);
-    }
+    for (let index = 2; index <= 20; index += 1) expect((await report(`192.0.2.${index}`)).status).toBe(202);
     expect(await list("municipio=25313")).toHaveLength(1);
-
-    expect((await report(`192.0.2.${LIMITS.reportsToHide}`)).status).toBe(202);
-    expect(await list("municipio=25313")).toEqual([]);
-    await expectError(
-      await call("POST", `/api/ofertas/${id}/contato`, { body: { turnstile: TURNSTILE.contato, ciente: true } }),
-      404,
-      "oferta_nao_encontrada",
-    );
+    expect((await call("POST", `/api/ofertas/${id}/contato`, { body: { turnstile: TURNSTILE.contato, ciente: true } })).status).toBe(200);
     const owner = await readJson(await call("GET", `/api/ofertas/${id}?token=${token}`));
-    expect(owner).toMatchObject({ denuncias: LIMITS.reportsToHide, oculta: true });
+    expect(owner).toMatchObject({ denuncias: 20, oculta: false, moderada: false });
   });
 
   it("validates the reason and the offer", async () => {
@@ -688,29 +678,31 @@ describe("review hardening", () => {
     expect(reports?.total).toBe(0);
   });
 
-  it("limits reports per network per hour", async () => {
+  it("limits reports per network per day", async () => {
     // Repeated reports of the same offer are ignored but still spend quota.
     const { id } = await createOffer();
     const report = () =>
       call("POST", `/api/ofertas/${id}/denuncia`, { body: { turnstile: TURNSTILE.denuncia, motivo: "outro" }, ip: "192.0.2.99" });
-    for (let index = 0; index < LIMITS.reportsPerIpPerHour; index += 1) {
+    for (let index = 0; index < LIMITS.reportsPerIpPerDay; index += 1) {
       expect((await report()).status).toBe(202);
     }
+    await expectError(await report(), 429, "limite_de_denuncias");
+    clock.now = new Date(clock.now.getTime() + 23 * 60 * 60 * 1000);
     await expectError(await report(), 429, "limite_de_denuncias");
     clock.now = new Date(clock.now.getTime() + 60 * 60 * 1000 + 1000);
     expect((await report()).status).toBe(202);
   });
 
   it("counts IPv6 reporters by /64", async () => {
-    const { id } = await createOffer();
+    const { id, token } = await createOffer();
     const report = (ip: string) =>
       call("POST", `/api/ofertas/${id}/denuncia`, { body: { turnstile: TURNSTILE.denuncia, motivo: "campanha" }, ip });
     await report("2001:db8:1:2::1");
     await report("2001:db8:1:2::2");
     await report("2001:db8:1:2:ffff:ffff:ffff:ffff");
-    expect(await list("municipio=25313")).toHaveLength(1);
-    for (let index = 1; index < LIMITS.reportsToHide; index += 1) await report(`2001:db8:1:${3 + index}::1`);
-    expect(await list("municipio=25313")).toEqual([]);
+    await report("2001:db8:1:3::1");
+    await report("203.0.113.77");
+    expect(await readJson(await call("GET", `/api/ofertas/${id}?token=${token}`))).toMatchObject({ denuncias: 3 });
   });
 
   it("refuses inserts once the purge flag is set, even before the purge instant", async () => {
@@ -747,6 +739,7 @@ describe("Turnstile timeout", () => {
     let signal: AbortSignal | null | undefined;
     const hanging = {
       now: () => clock.now,
+      defer: () => undefined,
       fetch: (_input: RequestInfo | URL, init?: RequestInit) => {
         signal = init?.signal;
         return new Promise<Response>((_resolve, reject) => {

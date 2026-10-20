@@ -215,7 +215,7 @@ function h(tag, attrs = {}, ...children) {
  * Renders the picker into #seletor-local. Options: onMunicipio(entry|null, shard|null), onPlace(local|null, shard).
  * Returns { municipio(), shard(), local(), resolve() }.
  */
-export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {} } = {}) {
+export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {}, cityOnly = false } = {}) {
   const mount = $("seletor-local");
   const status = h("p", { class: "sr-only", role: "status", "aria-live": "polite" });
   const body = h("div", { class: "picker-body" });
@@ -310,13 +310,14 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {} } =
   // -- views ----------------------------------------------------------
   const VIEWS = {
     cidade() {
-      const [progress, heading] = stepHead(1, "Onde você vota?");
+      const [progress, heading] = stepHead(1, cityOnly ? "Em qual cidade?" : "Onde você vota?");
+      if (cityOnly) progress.hidden = true;
       const ufSelect = h("select", { id: "uf", name: "uf" }, h("option", { value: "", text: "Escolha o estado" }), UFS.map((uf) => h("option", { value: uf, text: uf })));
       ufSelect.value = state.uf;
       const input = h("input", { id: "municipio-busca", type: "search", autocomplete: "off", placeholder: "Digite o nome da cidade", role: "combobox", "aria-expanded": "false", "aria-controls": "municipio-lista", "aria-autocomplete": "list" });
       input.value = state.cityText;
       const list = h("ul", { id: "municipio-lista", class: "listbox", role: "listbox", hidden: true });
-      const note = h("p", { class: "hint", role: "status" });
+      const note = h("p", { class: "hint", role: "status", text: cityOnly && state.municipio ? `Cidade escolhida: ${cityLabel()}` : "" });
       body.replaceChildren(
         progress,
         heading,
@@ -521,6 +522,12 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {} } =
     state.cityText = titleCase(entry.nome);
     clearPlace();
     onMunicipio(entry, null);
+    if (cityOnly) {
+      announce(`Cidade escolhida: ${cityLabel()}`);
+      const note = body.querySelector(".hint[role=status]");
+      if (note) note.textContent = `Cidade escolhida: ${cityLabel()}`;
+      return;
+    }
     go("conhece");
     try {
       const shard = await loadShard(entry.cd);

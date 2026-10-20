@@ -16,6 +16,8 @@ export async function purgeAll(env: Env, now: Date): Promise<void> {
     env.DB.prepare("INSERT OR REPLACE INTO system_state (key, value) VALUES ('encerrado', ?)").bind(now.toISOString()),
     env.DB.prepare("DELETE FROM reports"),
     env.DB.prepare("DELETE FROM offers"),
+    env.DB.prepare("DELETE FROM grupo_reports"),
+    env.DB.prepare("DELETE FROM grupos"),
     env.DB.prepare("DELETE FROM rate_events"),
   ]);
 }

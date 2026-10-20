@@ -5,6 +5,7 @@ export interface PollingPlace {
 
 interface MunicipioShard {
   cd: string;
+  nome: string;
   locais: PollingPlace[];
 }
 
@@ -52,5 +53,5 @@ function parseShard(value: unknown): MunicipioShard | null {
       locais.push({ id: local.id, nome: local.nome });
     }
   }
-  return { cd: record.cd, locais };
+  return { cd: record.cd, nome: typeof record.nome === "string" ? record.nome : "", locais };
 }

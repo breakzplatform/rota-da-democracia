@@ -1,8 +1,18 @@
+import { handleAdmin } from "./admin";
 import { isPurged } from "./cleanup";
 import { ELECTION } from "./config";
 import { isClosed, purgeAt, windowEnd, windowStart } from "./election";
 import type { Deps, Env } from "./env";
+import {
+  createGroup,
+  deleteGroup,
+  getOwnedGroup,
+  joinGroup,
+  listGroups,
+  reportGroup,
+} from "./groups";
 import { ApiError, errorResponse, json } from "./http";
+import { closed } from "./shared";
 import {
   countVisibleOffers,
   createOffer,
@@ -14,19 +24,19 @@ import {
   updateOffer,
 } from "./offers";
 
+const GROUP_PATH = /^\/api\/grupos\/([A-Za-z0-9_-]{8,32})(?:\/(entrar|denuncia))?$/;
 const OFFER_PATH = /^\/api\/ofertas\/([A-Za-z0-9_-]{8,32})(?:\/(contato|denuncia))?$/;
 
 function methodNotAllowed(): ApiError {
   return new ApiError(405, "metodo_nao_permitido", "Método não permitido.");
 }
 
-function closed(): ApiError {
-  return new ApiError(410, "encerrado", "A eleição acabou e os dados foram apagados. Obrigado por participar!");
-}
 
 async function route(request: Request, env: Env, deps: Deps): Promise<Response> {
   const { pathname } = new URL(request.url);
   const method = request.method;
+
+  if (pathname.startsWith("/api/admin/")) return handleAdmin(request, env, deps, pathname);
 
   if (pathname === "/api/status") {
     if (method !== "GET") throw methodNotAllowed();
@@ -53,6 +63,26 @@ async function route(request: Request, env: Env, deps: Deps): Promise<Response> 
     if (method !== "GET" && method !== "POST") throw methodNotAllowed();
     if (isClosed(deps.now())) throw closed();
     return method === "GET" ? listOffers(request, env, deps) : createOffer(request, env, deps);
+  }
+
+  if (pathname === "/api/grupos") {
+    if (method !== "GET" && method !== "POST") throw methodNotAllowed();
+    if (isClosed(deps.now())) throw closed();
+    return method === "GET" ? listGroups(request, env) : createGroup(request, env, deps);
+  }
+
+  const group = GROUP_PATH.exec(pathname);
+  if (group) {
+    const [, id, action] = group;
+    if (!id) throw new ApiError(404, "nao_encontrado", "Endereço não encontrado.");
+    if (isClosed(deps.now())) throw closed();
+    if (action) {
+      if (method !== "POST") throw methodNotAllowed();
+      return action === "entrar" ? joinGroup(request, env, deps, id) : reportGroup(request, env, deps, id);
+    }
+    if (method === "GET") return getOwnedGroup(request, env, id);
+    if (method === "DELETE") return deleteGroup(request, env, id);
+    throw methodNotAllowed();
   }
 
   const match = OFFER_PATH.exec(pathname);
