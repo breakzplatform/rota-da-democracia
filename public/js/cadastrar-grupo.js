@@ -1,5 +1,5 @@
 import {
-  $, api, ApiFailure, clearInvalid, copyText, createTurnstile, describeError, focusField, guardClosed,
+  $, api, ApiFailure, clearInvalid, copyText, createTurnstile, describeError, focusField, guardClosed, showSignupClosed, signupIsClosed,
   NO_TURNSTILE_MESSAGE, setBusy, showMessage,
 } from "./common.js";
 import { initPlacePicker } from "./places.js";
@@ -55,6 +55,7 @@ form.addEventListener("submit", async (event) => {
       button.textContent = (await copyText(url)) ? "Link copiado" : "Selecione e copie manualmente";
     };
   } catch (failure) {
+    if (failure instanceof ApiFailure && failure.code === "cadastro_encerrado") return showSignupClosed(form);
     fail(describeError(failure), failure instanceof ApiFailure ? failure.field : null);
     turnstile.reset();
   } finally {
@@ -62,4 +63,5 @@ form.addEventListener("submit", async (event) => {
   }
 });
 
+if (signupIsClosed()) showSignupClosed(form);
 guardClosed(document.querySelector("main .stack"));

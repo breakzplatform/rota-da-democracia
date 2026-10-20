@@ -11,6 +11,14 @@ export function closed(): ApiError {
   return new ApiError(410, "encerrado", "A eleição acabou e os dados foram apagados. Obrigado por participar!");
 }
 
+export function signupClosed(): ApiError {
+  return new ApiError(
+    403,
+    "cadastro_encerrado",
+    "Os cadastros de carona e de grupos foram encerrados quando as urnas abriram. Procure as ofertas já publicadas ou o transporte público.",
+  );
+}
+
 /** The error for a failed quota reservation: 410 once purged, otherwise the given 429. */
 export async function quotaExhausted(env: Env, error: ApiError): Promise<ApiError> {
   return (await isPurged(env.DB)) ? closed() : error;

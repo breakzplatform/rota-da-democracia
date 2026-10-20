@@ -95,6 +95,35 @@ describe("POST /api/ofertas", () => {
     expect(messages.size).toBe(declarations.length);
   });
 
+  it("explains the one-trip declaration when it is missing", async () => {
+    const response = await call("POST", "/api/ofertas", { body: validOffer({ umTrajeto: undefined }) });
+    const body = await expectError(response, 400, "campo_invalido", "umTrajeto");
+    expect(body.message).toContain("só no seu trajeto, uma ida e uma volta");
+  });
+
+  it("accepts offers until polls open and refuses them from then on", async () => {
+    clock.now = new Date("2026-10-25T07:59:59-03:00");
+    await createOffer();
+    turnstileCalls.length = 0;
+    for (const instant of ["2026-10-25T08:00:00-03:00", "2026-10-25T16:59:59-03:00"]) {
+      clock.now = new Date(instant);
+      const body = await expectError(await call("POST", "/api/ofertas", { body: validOffer() }), 403, "cadastro_encerrado");
+      expect(body.message).toContain("quando as urnas abriram");
+    }
+    expect(turnstileCalls).toHaveLength(0);
+    const total = await env.DB.prepare("SELECT COUNT(*) AS total FROM offers").first<{ total: number }>();
+    expect(total?.total).toBe(1);
+  });
+
+  it("keeps editing, deleting and searching open after signups close", async () => {
+    const { id, token } = await createOffer();
+    clock.now = new Date("2026-10-25T08:30:00-03:00");
+    expect(await list("municipio=25313")).toHaveLength(1);
+    const patched = await call("PATCH", `/api/ofertas/${id}`, { body: { token, vagasLivres: 1 } });
+    expect(patched.status).toBe(200);
+    expect((await call("DELETE", `/api/ofertas/${id}`, { body: { token } })).status).toBe(200);
+  });
+
   it("verifies Turnstile with the secret and the client IP", async () => {
     await createOffer({}, "198.51.100.7");
     expect(turnstileCalls).toEqual([

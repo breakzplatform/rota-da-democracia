@@ -3,6 +3,7 @@ import { ELECTION } from "./config";
 export const windowStart = new Date(ELECTION.rideWindowStart);
 export const windowEnd = new Date(ELECTION.rideWindowEnd);
 export const purgeAt = new Date(ELECTION.purgeAt);
+export const signupClosesAt = new Date(ELECTION.signupClosesAt);
 
 // The UTC offset the UI uses for election day, taken from the configured window ("-03:00").
 const ELECTION_OFFSET = ELECTION.rideWindowStart.slice(-6);
@@ -12,6 +13,10 @@ const CLOCK_TIME = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 export function isClosed(now: Date): boolean {
   return now.getTime() >= purgeAt.getTime();
+}
+
+export function isSignupClosed(now: Date): boolean {
+  return now.getTime() >= signupClosesAt.getTime();
 }
 
 /** Parses an ISO timestamp that carries an explicit offset; null when malformed. */

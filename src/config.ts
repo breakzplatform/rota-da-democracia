@@ -3,6 +3,8 @@ export const ELECTION = {
   date: "2026-10-25",
   rideWindowStart: "2026-10-25T09:00:00-03:00",
   rideWindowEnd: "2026-10-25T17:00:00-03:00",
+  // New offers and groups are refused from this instant (Sun 25 Oct 08:00 BRT, when polls open).
+  signupClosesAt: "2026-10-25T08:00:00-03:00",
   // Everything is deleted at this instant (Sun 25 Oct 17:00 BRT, when polls close).
   purgeAt: "2026-10-25T17:00:00-03:00",
 } as const;

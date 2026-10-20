@@ -94,6 +94,28 @@ export function showClosed(target) {
   target.replaceChildren(box);
 }
 
+// Mirrors ELECTION.signupClosesAt; the server enforces it, this only spares a doomed form.
+const SIGNUP_CLOSES_AT = new Date("2026-10-25T08:00:00-03:00");
+export const SIGNUP_CLOSED_MESSAGE =
+  "Os cadastros de carona e de grupos foram encerrados quando as urnas abriram. Procure as ofertas já publicadas ou o transporte público.";
+
+export function signupIsClosed() {
+  return Date.now() >= SIGNUP_CLOSES_AT.getTime();
+}
+
+/** Replaces a signup form with the closed-signups notice. */
+export function showSignupClosed(form) {
+  const box = document.createElement("section");
+  box.className = "panel";
+  box.setAttribute("role", "status");
+  const heading = document.createElement("h2");
+  heading.textContent = "Cadastros encerrados";
+  const text = document.createElement("p");
+  text.textContent = SIGNUP_CLOSED_MESSAGE;
+  box.append(heading, text);
+  form.replaceWith(box);
+}
+
 // ---- Time (election day, BRT) ---------------------------------------
 
 /** "09:40" -> "2026-10-25T09:40:00-03:00" */

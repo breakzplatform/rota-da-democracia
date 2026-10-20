@@ -10,7 +10,7 @@ import {
   type ContactType,
 } from "./contact";
 import { clientIp, hashIp, randomToken, sha256Hex, tokenMatches } from "./crypto";
-import { electionDayTime } from "./election";
+import { electionDayTime, isSignupClosed } from "./election";
 import type { Deps, Env } from "./env";
 import { ApiError, json, readJsonObject, type JsonObject } from "./http";
 import { isMunicipioCode, loadMunicipio } from "./places";
@@ -22,6 +22,7 @@ import {
   reportReason,
   requireDeclarations,
   requireTokenShape,
+  signupClosed,
   turnstile,
 } from "./shared";
 import {
@@ -141,6 +142,7 @@ const DECLARATIONS = [
 ] as const;
 
 export async function createOffer(request: Request, env: Env, deps: Deps): Promise<Response> {
+  if (isSignupClosed(deps.now())) throw signupClosed();
   const body = await readJsonObject(request);
   requireDeclarations(body, DECLARATIONS);
 

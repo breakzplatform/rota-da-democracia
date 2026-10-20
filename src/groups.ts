@@ -2,6 +2,7 @@ import { NOT_PURGED } from "./cleanup";
 import { notifyReport } from "./notify";
 import { LIMITS } from "./config";
 import { clientIp, hashIp, randomToken, sha256Hex, tokenMatches } from "./crypto";
+import { isSignupClosed } from "./election";
 import type { Deps, Env } from "./env";
 import { ApiError, json, readJsonObject } from "./http";
 import { isMunicipioCode, loadMunicipio } from "./places";
@@ -12,6 +13,7 @@ import {
   reportReason,
   requireDeclarations,
   requireTokenShape,
+  signupClosed,
   turnstile,
 } from "./shared";
 import { cleanText, foldForSearch } from "./text";
@@ -97,6 +99,7 @@ async function authorize(env: Env, id: string, token: unknown): Promise<GroupRow
 }
 
 export async function createGroup(request: Request, env: Env, deps: Deps): Promise<Response> {
+  if (isSignupClosed(deps.now())) throw signupClosed();
   const body = await readJsonObject(request);
   requireDeclarations(body, DECLARATIONS);
 

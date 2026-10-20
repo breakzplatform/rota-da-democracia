@@ -1,5 +1,5 @@
 import {
-  $, api, maskWhatsapp, guardClosed, clearInvalid, copyText, createTurnstile, describeError, focusField,
+  $, api, maskWhatsapp, guardClosed, showSignupClosed, signupIsClosed, clearInvalid, copyText, createTurnstile, describeError, focusField,
   NO_TURNSTILE_MESSAGE, ApiFailure, setBusy, showMessage, spokenTime, timeToIso, titleCase,
 } from "./common.js";
 import { initPlacePicker } from "./places.js";
@@ -74,6 +74,7 @@ form.addEventListener("submit", async (event) => {
     const created = await api("/api/ofertas", { method: "POST", body });
     showCreated(created, local, body);
   } catch (failure) {
+    if (failure instanceof ApiFailure && failure.code === "cadastro_encerrado") return showSignupClosed(form);
     fail(describeError(failure), failure instanceof ApiFailure ? failure.field : null);
     turnstile.reset();
   } finally {
@@ -127,4 +128,5 @@ function showCreated({ id, token }, local, body) {
   }
 }
 
+if (signupIsClosed()) showSignupClosed(form);
 guardClosed(document.querySelector("main .stack"));
