@@ -546,7 +546,7 @@ describe("status, config and routing", () => {
     expect(await readJson(response)).toEqual({
       turnstileSiteKey: "1x00000000000000000000AA",
       janela: { inicio: "2026-10-25T12:00:00.000Z", fim: "2026-10-25T20:00:00.000Z" },
-      encerraEm: "2026-10-26T15:00:00.000Z",
+      encerraEm: "2026-10-25T20:00:00.000Z",
       data: "2026-10-25",
     });
   });
@@ -569,7 +569,7 @@ describe("status, config and routing", () => {
 
   it("returns 410 on offer endpoints after the purge instant", async () => {
     const { id, token } = await createOffer();
-    clock.now = new Date("2026-10-26T12:00:00-03:00");
+    clock.now = new Date("2026-10-25T17:00:00-03:00");
     await expectError(await call("POST", "/api/ofertas", { body: validOffer() }), 410, "encerrado");
     await expectError(await call("GET", "/api/ofertas?municipio=25313"), 410, "encerrado");
     await expectError(await call("POST", `/api/ofertas/${id}/contato`, { body: { turnstile: TURNSTILE.contato, ciente: true } }), 410, "encerrado");

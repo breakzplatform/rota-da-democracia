@@ -31,18 +31,18 @@ describe("scheduled cleanup", () => {
   it("deletes everything at the purge instant", async () => {
     const { id } = await createOffer({ saida: "2026-10-25T16:00:00-03:00" });
     await call("POST", `/api/ofertas/${id}/denuncia`, { body: { turnstile: TURNSTILE.denuncia, motivo: "outro" } });
-    clock.now = new Date("2026-10-26T14:00:00Z");
+    clock.now = new Date("2026-10-25T19:00:00Z");
     await call("POST", `/api/ofertas/${id}/contato`, { body: { turnstile: TURNSTILE.contato, ciente: true } });
 
-    await runCron("2026-10-26T14:59:59Z");
+    await runCron("2026-10-25T19:59:59Z");
     expect(await count("rate_events")).toBe(1);
 
-    await runCron("2026-10-26T15:00:00Z");
+    await runCron("2026-10-25T20:00:00Z");
     expect(await count("offers")).toBe(0);
     expect(await count("reports")).toBe(0);
     expect(await count("rate_events")).toBe(0);
     const flag = await env.DB.prepare("SELECT value FROM system_state WHERE key = 'encerrado'").first<{ value: string }>();
-    expect(flag?.value).toBe("2026-10-26T15:00:00.000Z");
+    expect(flag?.value).toBe("2026-10-25T20:00:00.000Z");
   });
 });
 

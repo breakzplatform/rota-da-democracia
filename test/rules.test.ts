@@ -111,8 +111,8 @@ describe("election time helpers", () => {
   });
 
   it("closes at the purge instant", () => {
-    expect(isClosed(new Date("2026-10-26T14:59:59Z"))).toBe(false);
-    expect(isClosed(new Date("2026-10-26T15:00:00Z"))).toBe(true);
+    expect(isClosed(new Date("2026-10-25T19:59:59Z"))).toBe(false);
+    expect(isClosed(new Date("2026-10-25T20:00:00Z"))).toBe(true);
   });
 });
 

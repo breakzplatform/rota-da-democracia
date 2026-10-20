@@ -254,7 +254,7 @@ describe("group purge", () => {
     const { id } = await createGroup();
     await call("POST", `/api/grupos/${id}/denuncia`, { body: { turnstile: TURNSTILE.denuncia, motivo: "outro" } });
     await worker.scheduled(
-      createScheduledController({ scheduledTime: new Date("2026-10-26T15:00:00Z"), cron: "0 * * * *" }),
+      createScheduledController({ scheduledTime: new Date("2026-10-25T20:00:00Z"), cron: "0 * * * *" }),
       testEnv,
     );
     const counts = await env.DB.prepare(
@@ -262,7 +262,7 @@ describe("group purge", () => {
     ).first();
     expect(counts).toEqual({ grupos: 0, reports: 0 });
 
-    clock.now = new Date("2026-10-26T15:00:00Z");
+    clock.now = new Date("2026-10-25T20:00:00Z");
     await expectError(await call("GET", "/api/grupos?municipio=25313"), 410, "encerrado");
     await expectError(await call("POST", "/api/grupos", { body: validGroup() }), 410, "encerrado");
     await expectError(await enter(id), 410, "encerrado");
