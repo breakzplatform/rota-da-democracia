@@ -1,0 +1,73 @@
+/* Step-by-step place picker. Light theme only. */
+.place-picker {
+  display: grid;
+  gap: 1rem;
+}
+
+.picker-body {
+  display: grid;
+  gap: 1rem;
+}
+
+.step-progress {
+  margin: 0;
+}
+
+.step-title {
+  margin: 0;
+  scroll-margin-top: 5rem;
+}
+
+.step-title:focus {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+}
+
+.step-choices {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.step-choice {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  width: 100%;
+  min-height: 64px;
+  text-align: left;
+}
+
+.step-choice-title {
+  font-size: 1.1rem;
+}
+
+.step-choice-detail {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.link-back {
+  justify-self: start;
+  min-height: 44px;
+  padding: 0.4rem 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.place-card {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem;
+  border: 3px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+}
+
+.place-card p {
+  margin: 0;
+}

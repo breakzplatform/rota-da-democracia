@@ -49,15 +49,9 @@ form.addEventListener("submit", async (event) => {
   const municipio = picker.municipio();
   const error = $("erro-busca");
   showMessage(error, "");
-  if (!municipio) {
-    showMessage(error, "Escolha o município na lista.");
-    $("municipio-busca").focus();
-    return;
-  }
   const resolved = picker.resolve();
   if (!resolved.ok) {
-    showMessage(error, "Confira a zona e a seção, ou escolha o local na lista, antes de buscar.");
-    $("zona").focus();
+    showMessage(error, "Escolha o local de votação nos passos acima antes de buscar.");
     return;
   }
   const params = new URLSearchParams({ municipio: municipio.cd });

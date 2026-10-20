@@ -3,7 +3,6 @@ import { initPlacePicker } from "./places.js";
 
 const result = $("resultado-local");
 const status = $("estado-local");
-const form = $("form-local");
 let tarifas = [];
 
 const picker = initPlacePicker({
@@ -14,13 +13,10 @@ const picker = initPlacePicker({
   onPlace: showPlace,
 });
 
-function formatCep(cep) {
-  return cep && cep.length === 8 ? `CEP ${cep.slice(0, 5)}-${cep.slice(5)}` : "";
-}
-
 function showPlace(local, shard) {
   if (!local) {
     result.hidden = true;
+    status.textContent = "O endereço aparece aqui depois da busca.";
     return;
   }
   const municipio = picker.municipio();
@@ -28,14 +24,7 @@ function showPlace(local, shard) {
   const addressText = `${titleCase(local.nome)}, ${titleCase(local.endereco)}, ${titleCase(shard.nome)} - ${shard.uf}`;
   const destination = hasCoords ? `${local.lat},${local.lon}` : addressText;
 
-  $("local-nome").textContent = titleCase(local.nome);
-  $("local-endereco").textContent = titleCase(local.endereco);
-  $("local-bairro").textContent = titleCase(local.bairro);
-  $("local-cep").textContent = formatCep(local.cep);
-  $("local-acesso").textContent = local.acessivel
-    ? "Este local tem seções com acessibilidade."
-    : "O TSE não informa acessibilidade neste local. Em caso de dúvida, fale com o cartório eleitoral.";
-
+  $("local-nome").textContent = "Como chegar";
   $("rota-google").href =
     `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=transit`;
   const moovit = new URLSearchParams({ to: addressText, lang: "pt" });
@@ -48,28 +37,8 @@ function showPlace(local, shard) {
 
   result.hidden = false;
   status.textContent = `Local encontrado: ${titleCase(local.nome)}.`;
-  result.scrollIntoView({ block: "start", behavior: "smooth" });
   if (municipio) renderTarifaFor(municipio);
 }
-
-form.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const error = $("erro-local");
-  showMessage(error, "");
-  if (!picker.municipio()) {
-    showMessage(error, "Escolha o município na lista.");
-    $("municipio-busca").focus();
-    return;
-  }
-  const resolved = picker.resolve();
-  if (resolved.local) return showPlace(resolved.local, picker.shard());
-  showMessage(
-    error,
-    resolved.ok
-      ? "Informe zona e seção, ou busque o local pelo nome."
-      : "Não achamos esse local. Confira zona e seção (comprovante ou e-Título), ou escolha o nome na lista.",
-  );
-});
 
 // ---- Tarifa zero -----------------------------------------------------
 

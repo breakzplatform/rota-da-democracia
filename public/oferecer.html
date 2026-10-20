@@ -15,6 +15,7 @@
   <meta property="og:image:height" content="630">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/site.css">
+  <link rel="stylesheet" href="/assets/app.css">
   
 </head>
 <body>
@@ -66,68 +67,7 @@
             <p id="contato-ajuda" class="hint">Com DDD. O contato não aparece na lista. Só quem pede a vaga vê, depois de uma verificação.</p>
           </div>
         </fieldset>
-        <div class="field">
-            <label for="uf">Estado</label>
-            <select id="uf" name="uf" required>
-              <option value="">Escolha o estado</option>
-              <option value="AC">AC</option>
-              <option value="AL">AL</option>
-              <option value="AM">AM</option>
-              <option value="AP">AP</option>
-              <option value="BA">BA</option>
-              <option value="CE">CE</option>
-              <option value="DF">DF</option>
-              <option value="ES">ES</option>
-              <option value="GO">GO</option>
-              <option value="MA">MA</option>
-              <option value="MG">MG</option>
-              <option value="MS">MS</option>
-              <option value="MT">MT</option>
-              <option value="PA">PA</option>
-              <option value="PB">PB</option>
-              <option value="PE">PE</option>
-              <option value="PI">PI</option>
-              <option value="PR">PR</option>
-              <option value="RJ">RJ</option>
-              <option value="RN">RN</option>
-              <option value="RO">RO</option>
-              <option value="RR">RR</option>
-              <option value="RS">RS</option>
-              <option value="SC">SC</option>
-              <option value="SE">SE</option>
-              <option value="SP">SP</option>
-              <option value="TO">TO</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="municipio-busca">Município</label>
-            <input id="municipio-busca" type="search" value="" autocomplete="off" required placeholder="Digite o nome" role="combobox" aria-expanded="false" aria-controls="municipio-lista" aria-autocomplete="list">
-            <input type="hidden" id="municipio" name="municipio" value="">
-            <!-- Options: li > button[data-cd][data-uf][data-nome]. -->
-            <ul id="municipio-lista" class="listbox" role="listbox" hidden></ul>
-          </div>
-          <fieldset>
-            <legend>Local de votação</legend>
-            <div class="row-2">
-              <div class="field">
-                <label for="zona">Zona</label>
-                <input id="zona" name="zona" inputmode="numeric" autocomplete="off">
-              </div>
-              <div class="field">
-                <label for="secao">Seção</label>
-                <input id="secao" name="secao" inputmode="numeric" autocomplete="off">
-              </div>
-            </div>
-            <button type="button" class="btn" id="achar-secao">Achar local pela seção</button>
-            <div class="field">
-              <label for="local-busca">Ou busque pelo nome</label>
-              <input id="local-busca" type="search" autocomplete="off" placeholder="Nome da escola, igreja, clube" role="combobox" aria-expanded="false" aria-controls="lista-locais" aria-autocomplete="list">
-              <!-- Options: li > button[data-local-id]. -->
-              <ul id="lista-locais" class="listbox" role="listbox" hidden></ul>
-            </div>
-            <p id="local-escolhido" class="hint">O local escolhido aparece aqui.</p>
-            <input type="hidden" id="local-id" name="localId" value="">
-          </fieldset>
+        <div id="seletor-local" class="place-picker"><p class="hint">O seletor de local precisa de JavaScript.</p></div>
         <div class="field">
           <label for="bairroSaida">Bairro de saída</label>
           <input id="bairroSaida" name="bairroSaida" maxlength="40" required autocomplete="off">

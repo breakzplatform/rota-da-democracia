@@ -47,9 +47,8 @@ form.addEventListener("submit", async (event) => {
   clearInvalid();
   showMessage(errorBox, "");
   const municipio = picker.municipio();
-  if (!municipio) return fail("Escolha o município na lista.", "municipio");
   const { local } = picker.resolve();
-  if (!local) return fail("Escolha o local de votação: informe zona e seção, ou busque pelo nome.", "localId");
+  if (!municipio || !local) return fail("Escolha onde você vota nos passos acima.");
   const token = turnstile.token();
   if (!token) return fail(NO_TURNSTILE_MESSAGE);
 
