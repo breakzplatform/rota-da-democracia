@@ -25,7 +25,6 @@ const LINK_HOSTS: Readonly<Record<string, RegExp>> = {
   "telegram.me": /^\/[^/]/,
   "signal.me": /^\//,
   "signal.group": /^\//,
-  "wa.me": /^\/[^/]/,
   "ig.me": /^\/m\/[^/]/,
   "m.me": /^\/[^/]/,
   "bsky.app": /^\/profile\/[^/]/,
