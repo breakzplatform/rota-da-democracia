@@ -1,0 +1,11 @@
+{"geradoEm":"2026-10-20","fonte":{"locais":"https://dadosabertos.tse.jus.br/dataset/eleitorado-2026-locais-de-votacao","horas":"https://dadosabertos.tse.jus.br/dataset/resultados-2026-arquivos-transmitidos-para-totalizacao","licenca":"CC-BY 4.0"},"totais":{"locais":5,"secoes":9,"secoesComDado":6,"cedula":2,"semLog":3},"paises":[
+{"iso":"JP","nome":"Japão","cidades":[{"cd":"30422","nome":"TÓQUIO","nomeBusca":"toquio","locais":[
+{"id":"1-1234","nome":"EMBAIXADA DO BRASIL EM TÓQUIO","nomeBusca":"embaixada do brasil em toquio","endereco":"2-11-12 Kita-Aoyama, Minato-ku","cidadeLocal":"Tóquio","tz":"Asia/Tokyo","lat":35.6762,"lon":139.6503,"eleitores":1520,"secoes":[651,652,653],"cedula":[],"semDado":[653],"horas":[120,70,64,66,90,95,110,130,60]}]}]},
+{"iso":"NP","nome":"Nepal","cidades":[{"cd":"30500","nome":"CATMANDU","nomeBusca":"catmandu","locais":[
+{"id":"1-2001","nome":"CONSULADO HONORÁRIO","nomeBusca":"consulado honorario","endereco":"Lazimpat, Kathmandu","cidadeLocal":"Catmandu","tz":"Asia/Kathmandu","lat":27.7172,"lon":85.324,"eleitores":40,"secoes":[700],"cedula":[],"semDado":[],"horas":[2,1,1,3,2,2,3,2,1]}]}]},
+{"iso":"PT","nome":"Portugal","cidades":[{"cd":"30700","nome":"LISBOA","nomeBusca":"lisboa","locais":[
+{"id":"1-3001","nome":"ESCOLA PORTUGUESA","nomeBusca":"escola portuguesa","endereco":"Rua Exemplo 1, Lisboa","cidadeLocal":"Lisboa","tz":"Europe/Lisbon","lat":38.7223,"lon":-9.1393,"eleitores":3100,"secoes":[800,801],"cedula":[],"semDado":[],"horas":[100,100,100,100,100,100,100,100,50]}]}]},
+{"iso":"US","nome":"Estados Unidos","cidades":[{"cd":"30800","nome":"LOS ANGELES","nomeBusca":"los angeles","locais":[
+{"id":"1-4001","nome":"CENTRO COMUNITÁRIO","nomeBusca":"centro comunitario","endereco":"1 Main St, Salt Lake City","cidadeLocal":"Salt Lake City","tz":"America/Denver","lat":40.7608,"lon":-111.891,"eleitores":200,"secoes":[900,901],"cedula":[900,901],"semDado":[],"horas":null},
+{"id":"1-4002","nome":"IGREJA","nomeBusca":"igreja","endereco":"2 Sunset Blvd, Los Angeles","cidadeLocal":"Los Angeles","tz":"America/Los_Angeles","lat":34.0522,"lon":-118.2437,"eleitores":900,"secoes":[902],"cedula":[],"semDado":[902],"horas":null}]}]}
+]}
