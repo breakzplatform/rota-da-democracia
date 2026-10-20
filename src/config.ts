@@ -13,7 +13,7 @@ export const LIMITS = {
   bairroSaida: 40,
   nota: 200,
   vagasMin: 1,
-  vagasMax: 6,
+  vagasMax: 4,
   offersPerIpPerDay: 3,
   revealsPerIpPerHour: 20,
   reportsToHide: 3,
@@ -24,9 +24,9 @@ export const CAMPAIGN_PATTERNS: readonly RegExp[] = [
   // Bare numbers are too common in addresses ("Praça 13 de Maio"); only flag them next to vote words.
   /\b(vot\w*|n[uú]mero|confirma)\W{0,3}(13|22)\b/i,
   /\b(13|22)\W{0,3}(confirma|nele|neles|nela)\b/i,
-  /\bvot[ea]\s+(n[oa]|em)\b/i,
+  /\bvot(e|a|em|ar)\s+(n[oa]s?|em)\b/i,
   /\bvoto\s+(n[oa]|em)\b/i,
-  /\b(lula|bolsonaro|tarc[ií]sio|michelle|haddad|alckmin|ciro|marçal|marcal)\b/i,
+  /\b(lula|bolsonaro|tarc[ií]sio|haddad|alckmin|mar[cç]al)/i,
   /\b(pt|pl|psdb|mdb|psol|pdt|partido novo|uni[aã]o brasil|republicanos|psd|pcdob|pc do b|psb)\b/i,
   /\b(petista|bolsonarista|lulista|esquerdista|direitista|mito|lul[aã]o)\b/i,
 ];

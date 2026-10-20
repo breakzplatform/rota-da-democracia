@@ -1,0 +1,381 @@
+import { LIMITS, SITE_NAME } from "./config";
+import { NOT_PURGED, isPurged } from "./cleanup";
+import { clientIp, hashIp, randomToken, sha256Hex, tokenMatches } from "./crypto";
+import { electionDayTime } from "./election";
+import type { Deps, Env } from "./env";
+import { ApiError, json, readJsonObject, type JsonObject } from "./http";
+import { isMunicipioCode, loadMunicipio } from "./places";
+import { withQuota } from "./rate-limit";
+import { cleanText, foldForSearch } from "./text";
+import { verifyTurnstile, type TurnstileAction } from "./turnstile";
+import {
+  departure,
+  integerInRange,
+  invalid,
+  optionalBoolean,
+  optionalText,
+  requiredText,
+  screenNeutrality,
+  seats,
+} from "./validation";
+import { normalizeWhatsapp } from "./whatsapp";
+
+interface OfferRow {
+  id: string;
+  token_hash: string;
+  nome: string;
+  whatsapp: string;
+  municipio: string;
+  local_id: string;
+  local_nome: string;
+  ponto_encontro: string;
+  bairro_saida: string;
+  saida: string;
+  vagas: number;
+  vagas_livres: number;
+  nota: string | null;
+  acessivel: number;
+  declarado_em: string;
+  created_at: string;
+  denuncias: number;
+}
+
+export const CONFIRMATION_NOTICE =
+  "A carona só é confirmada entre as pessoas, pelo WhatsApp. O site não confirma nem garante caronas.";
+const LOCAL_ID = /^\d{1,4}-\d{1,6}$/;
+const MAX_RESULTS = 200;
+const REPORT_REASONS = new Set(["cobranca", "campanha", "falsa", "outro"]);
+
+const SELECT_OFFER = `
+  SELECT o.*, (SELECT COUNT(*) FROM reports r WHERE r.offer_id = o.id) AS denuncias
+  FROM offers o`;
+
+function isVisible(row: OfferRow): boolean {
+  return row.vagas_livres > 0 && row.denuncias < LIMITS.reportsToHide;
+}
+
+function publicView(row: OfferRow) {
+  return {
+    id: row.id,
+    nome: row.nome,
+    localId: row.local_id,
+    localNome: row.local_nome,
+    pontoEncontro: row.ponto_encontro,
+    bairroSaida: row.bairro_saida,
+    saida: row.saida,
+    vagasLivres: row.vagas_livres,
+    nota: row.nota,
+    acessivel: row.acessivel === 1,
+  };
+}
+
+function ownerView(row: OfferRow) {
+  return {
+    ...publicView(row),
+    whatsapp: row.whatsapp,
+    municipio: row.municipio,
+    vagas: row.vagas,
+    denuncias: row.denuncias,
+    oculta: !isVisible(row),
+    criadaEm: row.created_at,
+    declaradoEm: row.declarado_em,
+  };
+}
+
+function closed(): ApiError {
+  return new ApiError(410, "encerrado", "A eleição acabou e os dados foram apagados. Obrigado por participar!");
+}
+
+async function quotaExhausted(env: Env, error: ApiError): Promise<ApiError> {
+  return (await isPurged(env.DB)) ? closed() : error;
+}
+
+function turnstile(request: Request, env: Env, deps: Deps, token: unknown, action: TurnstileAction) {
+  return verifyTurnstile(
+    token,
+    { secret: env.TURNSTILE_SECRET, ip: clientIp(request), action, allowedHostnames: env.ALLOWED_HOSTNAMES },
+    deps,
+  );
+}
+
+function notFound(): ApiError {
+  return new ApiError(404, "oferta_nao_encontrada", "Essa oferta não existe mais.");
+}
+
+async function findOffer(env: Env, id: string): Promise<OfferRow> {
+  const row = await env.DB.prepare(`${SELECT_OFFER} WHERE o.id = ?`).bind(id).first<OfferRow>();
+  if (!row) throw notFound();
+  return row;
+}
+
+async function authorize(env: Env, id: string, token: unknown): Promise<OfferRow> {
+  if (typeof token !== "string" || token.length < 16 || token.length > 128) {
+    throw new ApiError(401, "token_ausente", "Use o link de gerenciamento que você recebeu.");
+  }
+  const row = await findOffer(env, id);
+  if (!(await tokenMatches(token, row.token_hash))) {
+    throw new ApiError(403, "token_invalido", "Esse link de gerenciamento não vale para esta oferta.");
+  }
+  return row;
+}
+
+const DECLARATIONS = [
+  ["aceite", "Para oferecer carona, é preciso aceitar as regras: carona gratuita, sem pedir voto e sem material de campanha."],
+  ["semVinculo", "Para oferecer carona, é preciso declarar que você não tem vínculo com candidato, partido ou campanha."],
+  ["combinaWhatsapp", "Para oferecer carona, é preciso confirmar que só vai levar quem combinar antes com você pelo WhatsApp."],
+  ["veiculoParticular", "Para oferecer carona, é preciso confirmar que o carro é particular, seu ou da sua família, e sem propaganda."],
+  ["semPagamento", "Para oferecer carona, é preciso confirmar que você não recebe nada por ela e que não é caravana."],
+  ["maiorHabilitado", "Para oferecer carona, é preciso confirmar que você tem mais de 18 anos e carteira de motorista válida."],
+] as const;
+
+function requireDeclarations(body: JsonObject): void {
+  for (const [field, message] of DECLARATIONS) {
+    if (body[field] !== true) throw invalid(field, message);
+  }
+}
+
+export async function createOffer(request: Request, env: Env, deps: Deps): Promise<Response> {
+  const body = await readJsonObject(request);
+  requireDeclarations(body);
+
+  const nome = requiredText(body, "nome", LIMITS.nome, "nome");
+  const rawWhatsapp = body.whatsapp;
+  const whatsapp = typeof rawWhatsapp === "string" ? normalizeWhatsapp(rawWhatsapp) : null;
+  if (!whatsapp) throw invalid("whatsapp", "Informe um celular brasileiro com DDD, como (81) 91234-5678.");
+  if (!isMunicipioCode(body.municipio)) throw invalid("municipio", "Escolha o município.");
+  const municipio = body.municipio;
+  const localId = body.localId;
+  if (typeof localId !== "string" || !LOCAL_ID.test(localId)) {
+    throw invalid("localId", "Escolha o local de votação.");
+  }
+  const pontoEncontro = requiredText(body, "pontoEncontro", LIMITS.pontoEncontro, "ponto de encontro");
+  const bairroSaida = requiredText(body, "bairroSaida", LIMITS.bairroSaida, "bairro de saída");
+  const saida = departure(body.saida);
+  const vagas = seats(body.vagas);
+  const nota = optionalText(body, "nota", LIMITS.nota, "observação");
+  const acessivel = optionalBoolean(body, "acessivel");
+  screenNeutrality([
+    ["nome", nome],
+    ["pontoEncontro", pontoEncontro],
+    ["bairroSaida", bairroSaida],
+    ["nota", nota],
+  ]);
+
+  const ipHash = await hashIp(clientIp(request), env.IP_SALT);
+  const now = deps.now();
+  const id = randomToken(9);
+  const token = randomToken(24);
+  const exhausted = new ApiError(429, "limite_de_ofertas", "Você já cadastrou o máximo de ofertas por hoje.");
+
+  await withQuota(env.DB, "oferta", ipHash, now, () => quotaExhausted(env, exhausted), async () => {
+    await turnstile(request, env, deps, body.turnstile, "oferecer");
+
+    const shard = await loadMunicipio(env.ASSETS, municipio);
+    if (!shard) throw invalid("municipio", "Município não encontrado.");
+    const local = shard.locais.find((place) => place.id === localId);
+    if (!local) throw invalid("localId", "Local de votação não encontrado nesse município.");
+
+    const timestamp = now.toISOString();
+    const inserted = await env.DB.prepare(
+      `INSERT INTO offers (id, token_hash, nome, whatsapp, municipio, local_id, local_nome, ponto_encontro,
+         bairro_saida, bairro_busca, saida, vagas, vagas_livres, nota, acessivel, aceite, sem_vinculo,
+         combina_whatsapp, veiculo_particular, sem_pagamento, maior_habilitado, declarado_em, created_at, updated_at)
+       SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, 1, 1, 1, 1, ?, ?, ?
+       WHERE ${NOT_PURGED}`,
+    )
+      .bind(
+        id,
+        await sha256Hex(token),
+        nome,
+        whatsapp,
+        municipio,
+        local.id,
+        local.nome,
+        pontoEncontro,
+        bairroSaida,
+        foldForSearch(bairroSaida),
+        saida.toISOString(),
+        vagas,
+        vagas,
+        nota,
+        acessivel ? 1 : 0,
+        timestamp,
+        timestamp,
+        timestamp,
+      )
+      .run();
+    if (inserted.meta.changes !== 1) throw closed();
+  });
+
+  const editarUrl = new URL(`/gerenciar.html?id=${id}&token=${token}`, request.url).toString();
+  return json({ id, token, editarUrl }, 201);
+}
+
+export async function listOffers(request: Request, env: Env, deps: Deps): Promise<Response> {
+  const params = new URL(request.url).searchParams;
+  const municipio = params.get("municipio");
+  if (!isMunicipioCode(municipio)) throw invalid("municipio", "Escolha o município.");
+
+  const where = ["o.municipio = ?", "o.saida >= ?", "o.vagas_livres > 0"];
+  const binds: (string | number)[] = [municipio, deps.now().toISOString()];
+
+  const localId = params.get("localId");
+  if (localId) {
+    if (!LOCAL_ID.test(localId)) throw invalid("localId", "Local de votação inválido.");
+    where.push("o.local_id = ?");
+    binds.push(localId);
+  }
+  const bairro = foldForSearch(cleanText(params.get("bairro") ?? ""));
+  if (bairro) {
+    if (bairro.length > LIMITS.bairroSaida) throw invalid("bairro", "Bairro grande demais.");
+    where.push("instr(o.bairro_busca, ?) > 0");
+    binds.push(bairro);
+  }
+  for (const [param, operator] of [
+    ["de", ">="],
+    ["ate", "<="],
+  ] as const) {
+    const value = params.get(param);
+    if (!value) continue;
+    const instant = electionDayTime(value);
+    if (!instant) throw invalid(param, "Use o formato HH:MM.");
+    where.push(`o.saida ${operator} ?`);
+    binds.push(instant.toISOString());
+  }
+
+  const { results } = await env.DB.prepare(
+    `${SELECT_OFFER} WHERE ${where.join(" AND ")}
+       AND (SELECT COUNT(*) FROM reports r WHERE r.offer_id = o.id) < ?
+     ORDER BY o.saida, o.created_at LIMIT ?`,
+  )
+    .bind(...binds, LIMITS.reportsToHide, MAX_RESULTS)
+    .all<OfferRow>();
+  return json({ ofertas: results.map(publicView) });
+}
+
+export async function revealContact(request: Request, env: Env, deps: Deps, id: string): Promise<Response> {
+  const body = await readJsonObject(request);
+  if (body.ciente !== true) {
+    throw invalid(
+      "ciente",
+      "Para ver o contato, confirme que entende que a carona é gratuita, combinada direto com quem oferece, e sem falar de candidato nem pedir voto.",
+    );
+  }
+  const ipHash = await hashIp(clientIp(request), env.IP_SALT);
+  const exhausted = new ApiError(429, "limite_de_contatos", "Muitos pedidos de contato. Tente de novo daqui a pouco.");
+  const row = await withQuota(env.DB, "contato", ipHash, deps.now(), () => quotaExhausted(env, exhausted), async () => {
+    await turnstile(request, env, deps, body.turnstile, "contato");
+    const offer = await findOffer(env, id);
+    if (!isVisible(offer)) throw notFound();
+    return offer;
+  });
+
+  const digits = row.whatsapp.replace(/\D/g, "");
+  const message =
+    `Oi! Vi sua oferta de carona no ${SITE_NAME} para o local de votação ` +
+    `${row.local_nome} no domingo. Ainda tem vaga?`;
+  return json({ whatsapp: row.whatsapp, aviso: CONFIRMATION_NOTICE, waLink: `https://wa.me/${digits}?text=${encodeURIComponent(message)}` });
+}
+
+export async function getOwnedOffer(request: Request, env: Env, id: string): Promise<Response> {
+  const token = new URL(request.url).searchParams.get("token");
+  return json(ownerView(await authorize(env, id, token)));
+}
+
+export async function updateOffer(request: Request, env: Env, deps: Deps, id: string): Promise<Response> {
+  const body = await readJsonObject(request);
+  const row = await authorize(env, id, body.token);
+
+  const changes: string[] = [];
+  const binds: (string | number | null)[] = [];
+  // Re-checked inside the UPDATE so a concurrent change cannot slip an invalid value in.
+  const guards = ["id = ?", "token_hash = ?"];
+  const guardBinds: (string | number)[] = [id, row.token_hash];
+  if (body.vagasLivres !== undefined) {
+    const vagasLivres = integerInRange(body.vagasLivres, "vagasLivres", 0, row.vagas, seatsMessage(row));
+    changes.push("vagas_livres = ?");
+    binds.push(vagasLivres);
+    guards.push("? BETWEEN 0 AND vagas");
+    guardBinds.push(vagasLivres);
+  }
+  if (body.saida !== undefined) {
+    changes.push("saida = ?");
+    binds.push(departure(body.saida).toISOString());
+  }
+  let pontoEncontro: string | null = null;
+  if (body.pontoEncontro !== undefined) {
+    pontoEncontro = requiredText(body, "pontoEncontro", LIMITS.pontoEncontro, "ponto de encontro");
+    changes.push("ponto_encontro = ?");
+    binds.push(pontoEncontro);
+  }
+  let nota: string | null = null;
+  if (body.nota !== undefined) {
+    nota = optionalText(body, "nota", LIMITS.nota, "observação");
+    changes.push("nota = ?");
+    binds.push(nota);
+  }
+  if (changes.length === 0) throw invalid("corpo", "Nada para alterar.");
+  screenNeutrality([
+    ["pontoEncontro", pontoEncontro],
+    ["nota", nota],
+  ]);
+
+  const updated = await env.DB.prepare(
+    `UPDATE offers SET ${changes.join(", ")}, updated_at = ? WHERE ${guards.join(" AND ")}`,
+  )
+    .bind(...binds, deps.now().toISOString(), ...guardBinds)
+    .run();
+  if (updated.meta.changes !== 1) {
+    const current = await findOffer(env, id);
+    throw invalid("vagasLivres", seatsMessage(current));
+  }
+  return json(ownerView(await findOffer(env, id)));
+}
+
+function seatsMessage(row: OfferRow): string {
+  return `Informe de 0 a ${row.vagas} vagas livres.`;
+}
+
+export async function deleteOffer(request: Request, env: Env, id: string): Promise<Response> {
+  const body = await readJsonObject(request);
+  await authorize(env, id, body.token);
+  await env.DB.batch([
+    env.DB.prepare("DELETE FROM reports WHERE offer_id = ?").bind(id),
+    env.DB.prepare("DELETE FROM offers WHERE id = ?").bind(id),
+  ]);
+  return json({ ok: true });
+}
+
+export async function reportOffer(request: Request, env: Env, deps: Deps, id: string): Promise<Response> {
+  const body = await readJsonObject(request);
+  const motivo = body.motivo;
+  if (typeof motivo !== "string" || !REPORT_REASONS.has(motivo)) {
+    throw invalid("motivo", "Escolha o motivo da denúncia.");
+  }
+  // Hashed per network (IPv6 /64), so one subscriber cannot count as several reporters.
+  const ipHash = await hashIp(clientIp(request), env.IP_SALT);
+  const now = deps.now();
+  const exhausted = new ApiError(429, "limite_de_denuncias", "Muitas denúncias seguidas. Tente de novo daqui a pouco.");
+  await withQuota(env.DB, "denuncia", ipHash, now, () => quotaExhausted(env, exhausted), async () => {
+    await turnstile(request, env, deps, body.turnstile, "denuncia");
+    await findOffer(env, id);
+    await env.DB.prepare(
+      `INSERT OR IGNORE INTO reports (offer_id, ip_hash, motivo, created_at)
+       SELECT ?, ?, ?, ? WHERE ${NOT_PURGED}`,
+    )
+      .bind(id, ipHash, motivo, now.toISOString())
+      .run();
+  });
+  return json({ ok: true }, 202);
+}
+
+export async function countVisibleOffers(env: Env, now: Date): Promise<number> {
+  const row = await env.DB.prepare(
+    `SELECT COUNT(*) AS total FROM offers o
+     WHERE o.vagas_livres > 0 AND o.saida >= ?
+       AND (SELECT COUNT(*) FROM reports r WHERE r.offer_id = o.id) < ?`,
+  )
+    .bind(now.toISOString(), LIMITS.reportsToHide)
+    .first<{ total: number }>();
+  return row?.total ?? 0;
+}
