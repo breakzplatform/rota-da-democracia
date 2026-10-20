@@ -10,6 +10,7 @@ import {
   closingWarning,
   destinationEpoch,
   googleMapsTransitUrl,
+  googleMapsDrivingUrl,
   hoursChart,
   icsTimes,
   movementLabel,
@@ -283,9 +284,23 @@ describe('clock shift, destination epoch, and Google Maps URL building', () => {
     expect(url).toBe('https://www.google.com/maps/dir/?api=1&destination=Escola%20Municipal%2C%20Rio%20Branco%20-%20AC&travelmode=transit');
   });
 
+  it('builds Google Maps driving URL with the same arrival epoch', () => {
+    const recife = { lat: -8.05, lon: -34.9 };
+    expect(googleMapsDrivingUrl(recife, 'Recife, PE', 9, 0)).toBe('https://www.google.com/maps/dir//-8.05,-34.9/data=!4m6!4m5!2m3!6e1!7e2!8j1792918800!3e0');
+    const acPlace = { lat: -9.974, lon: -67.807 };
+    expect(googleMapsDrivingUrl(acPlace, 'Rio Branco, AC', 9, 2)).toBe('https://www.google.com/maps/dir//-9.974,-67.807/data=!4m6!4m5!2m3!6e1!7e2!8j1792911600!3e0');
+    const noronhaPlace = { lat: -3.854, lon: -32.423 };
+    expect(googleMapsDrivingUrl(noronhaPlace, 'Fernando de Noronha, PE', 9, -1)).toBe('https://www.google.com/maps/dir//-3.854,-32.423/data=!4m6!4m5!2m3!6e1!7e2!8j1792922400!3e0');
+  });
+
+  it('falls back to the api=1 driving link without coordinates or hour', () => {
+    expect(googleMapsDrivingUrl({ lat: null, lon: null }, 'Escola Municipal, Rio Branco - AC', 9, 2)).toBe('https://www.google.com/maps/dir/?api=1&destination=Escola%20Municipal%2C%20Rio%20Branco%20-%20AC&travelmode=driving');
+    expect(googleMapsDrivingUrl({ lat: -8.05, lon: -34.9 }, 'Recife, PE', null)).toBe('https://www.google.com/maps/dir/?api=1&destination=-8.05%2C-34.9&travelmode=driving');
+  });
+
   it('formats transit route hint according to shift', () => {
-    expect(routeHint(9, 0)).toBe('O ônibus abre no Google Maps com chegada às 9h (domingo, 25/10). No app do celular, confira o horário.');
-    expect(routeHint(9, 2)).toBe('O ônibus abre no Google Maps com chegada às 7h (horário local, domingo, 25/10). No app do celular, confira o horário.');
+    expect(routeHint(9, 0)).toBe('Ônibus e carro abrem no Google Maps com chegada às 9h (domingo, 25/10). No app do celular, confira o horário.');
+    expect(routeHint(9, 2)).toBe('Ônibus e carro abrem no Google Maps com chegada às 7h (horário local, domingo, 25/10). No app do celular, confira o horário.');
     expect(routeHint(null)).toBe('Saia com folga: as seções abrem às 8h e fecham às 17h (horário de Brasília).');
   });
 });

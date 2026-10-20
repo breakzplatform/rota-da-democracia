@@ -147,14 +147,28 @@ export function destinationEpoch(hour, shift = 0) {
   return Math.floor(Date.UTC(2026, 9, 25, localH, 0, 0) / 1000);
 }
 
-export function googleMapsTransitUrl(local, addressText, hour, shift = 0) {
+const MAPS_MODES = {
+  transit: { travelmode: 'transit', code: '3e3' },
+  driving: { travelmode: 'driving', code: '3e0' },
+};
+
+export function googleMapsArrivalUrl(local, addressText, hour, shift = 0, mode = 'transit') {
+  const { travelmode, code } = MAPS_MODES[mode];
   const hasCoords = local && local.lat !== null && local.lat !== undefined && local.lon !== null && local.lon !== undefined;
   if (!hasCoords || hour === undefined || hour === null) {
     const destination = hasCoords ? `${local.lat},${local.lon}` : addressText;
-    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=transit`;
+    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=${travelmode}`;
   }
   const epoch = destinationEpoch(hour, shift);
-  return `https://www.google.com/maps/dir//${local.lat},${local.lon}/data=!4m6!4m5!2m3!6e1!7e2!8j${epoch}!3e3`;
+  return `https://www.google.com/maps/dir//${local.lat},${local.lon}/data=!4m6!4m5!2m3!6e1!7e2!8j${epoch}!${code}`;
+}
+
+export function googleMapsTransitUrl(local, addressText, hour, shift = 0) {
+  return googleMapsArrivalUrl(local, addressText, hour, shift, 'transit');
+}
+
+export function googleMapsDrivingUrl(local, addressText, hour, shift = 0) {
+  return googleMapsArrivalUrl(local, addressText, hour, shift, 'driving');
 }
 
 export function routeHint(hour, shift = 0) {
@@ -165,7 +179,7 @@ export function routeHint(hour, shift = 0) {
   const timeDesc = shift !== 0
     ? `${localH}h (horário local, domingo, 25/10)`
     : `${hour}h (domingo, 25/10)`;
-  return `O ônibus abre no Google Maps com chegada às ${timeDesc}. No app do celular, confira o horário.`;
+  return `Ônibus e carro abrem no Google Maps com chegada às ${timeDesc}. No app do celular, confira o horário.`;
 }
 
 export function icsTimes(hour) {

@@ -6,6 +6,7 @@ import {
   renderQuandoIr,
   clockShift,
   googleMapsTransitUrl,
+  googleMapsDrivingUrl,
   routeHint,
   aggregateHours,
   aggregateChangeStatus,
@@ -147,6 +148,7 @@ function setupQuandoIrFlow({ local, shard, addressText, data, changes, initialSe
     const planoHorario = $("plano-horario");
     if (planoHorario) planoHorario.textContent = `Chegar ao local às ${localH}h`;
     $("rota-google").href = googleMapsTransitUrl(local, addressText, h, shift);
+    $("rota-carro").href = googleMapsDrivingUrl(local, addressText, h, shift);
     const dicaRota = $("dica-rota");
     if (dicaRota) dicaRota.textContent = routeHint(h, shift);
   }
