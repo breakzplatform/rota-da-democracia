@@ -1,5 +1,6 @@
 import { env } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
+import { LIMITS } from "../src/config";
 import { sha256Hex } from "../src/crypto";
 import {
   call,
@@ -37,7 +38,7 @@ describe("POST /api/ofertas", () => {
     expect(body.id).toMatch(/^[A-Za-z0-9_-]{12}$/);
     expect(body.token.length).toBeGreaterThanOrEqual(32);
     const url = new URL(body.editarUrl);
-    expect(url.pathname).toBe("/gerenciar.html");
+    expect(url.pathname).toBe("/gerenciar");
     expect(url.searchParams.get("id")).toBe(body.id);
     expect(url.searchParams.get("token")).toBe(body.token);
     expect(response.headers.get("Cache-Control")).toBe("no-store");
@@ -174,8 +175,8 @@ describe("POST /api/ofertas", () => {
     await createOffer({ pontoEncontro: "Praça 13 de Maio, em frente à banca", bairroSaida: "Boa Vista" });
   });
 
-  it("limits offers to 3 per IP per day", async () => {
-    for (let index = 0; index < 3; index += 1) await createOffer({}, "198.51.100.1");
+  it("limits offers per IP per day", async () => {
+    for (let index = 0; index < LIMITS.offersPerIpPerDay; index += 1) await createOffer({}, "198.51.100.1");
     await expectError(
       await call("POST", "/api/ofertas", { body: validOffer(), ip: "198.51.100.1" }),
       429,
@@ -266,14 +267,18 @@ describe("GET /api/ofertas", () => {
     await expectError(await call("GET", "/api/ofertas?municipio=25313&ate=25:00"), 400, "campo_invalido", "ate");
   });
 
-  it("hides full offers and offers that already departed", async () => {
+  it("hides full offers and offers more than 30 minutes past departure", async () => {
     const full = await createOffer({ nome: "Cheio" });
     await call("PATCH", `/api/ofertas/${full.id}`, { body: { token: full.token, vagasLivres: 0 } });
     await createOffer({ nome: "Cedo", saida: "2026-10-25T09:00:00-03:00" });
     await createOffer({ nome: "Tarde", saida: "2026-10-25T16:00:00-03:00" });
     expect((await list("municipio=25313")).map((offer) => offer.nome)).toEqual(["Cedo", "Tarde"]);
-    clock.now = new Date("2026-10-25T10:00:00-03:00");
+    clock.now = new Date("2026-10-25T09:30:00-03:00");
+    expect((await list("municipio=25313")).map((offer) => offer.nome)).toEqual(["Cedo", "Tarde"]);
+    expect(await readJson(await call("GET", "/api/status"))).toMatchObject({ totalOfertas: 2 });
+    clock.now = new Date("2026-10-25T09:30:01-03:00");
     expect((await list("municipio=25313")).map((offer) => offer.nome)).toEqual(["Tarde"]);
+    expect(await readJson(await call("GET", "/api/status"))).toMatchObject({ totalOfertas: 1 });
   });
 });
 
@@ -330,9 +335,9 @@ describe("POST /api/ofertas/:id/contato", () => {
     );
   });
 
-  it("limits reveals to 20 per IP per hour", async () => {
+  it("limits reveals per IP per hour", async () => {
     const { id } = await createOffer();
-    for (let index = 0; index < 20; index += 1) {
+    for (let index = 0; index < LIMITS.revealsPerIpPerHour; index += 1) {
       const response = await call("POST", `/api/ofertas/${id}/contato`, { body: { turnstile: TURNSTILE.contato, ciente: true }, ip: "192.0.2.5" });
       expect(response.status).toBe(200);
     }
@@ -502,17 +507,19 @@ describe("owner endpoints", () => {
 });
 
 describe("POST /api/ofertas/:id/denuncia", () => {
-  it("hides an offer after reports from 3 distinct IPs", async () => {
+  it("hides an offer after reports from enough distinct IPs", async () => {
     const { id, token } = await createOffer();
     const report = (ip: string, motivo = "campanha") => call("POST", `/api/ofertas/${id}/denuncia`, { body: { turnstile: TURNSTILE.denuncia, motivo }, ip });
 
     expect((await report("192.0.2.1")).status).toBe(202);
     expect((await report("192.0.2.1", "falsa")).status).toBe(202);
     expect((await report("192.0.2.1", "cobranca")).status).toBe(202);
-    expect((await report("192.0.2.2")).status).toBe(202);
+    for (let index = 2; index < LIMITS.reportsToHide; index += 1) {
+      expect((await report(`192.0.2.${index}`)).status).toBe(202);
+    }
     expect(await list("municipio=25313")).toHaveLength(1);
 
-    expect((await report("192.0.2.3")).status).toBe(202);
+    expect((await report(`192.0.2.${LIMITS.reportsToHide}`)).status).toBe(202);
     expect(await list("municipio=25313")).toEqual([]);
     await expectError(
       await call("POST", `/api/ofertas/${id}/contato`, { body: { turnstile: TURNSTILE.contato, ciente: true } }),
@@ -520,7 +527,7 @@ describe("POST /api/ofertas/:id/denuncia", () => {
       "oferta_nao_encontrada",
     );
     const owner = await readJson(await call("GET", `/api/ofertas/${id}?token=${token}`));
-    expect(owner).toMatchObject({ denuncias: 3, oculta: true });
+    expect(owner).toMatchObject({ denuncias: LIMITS.reportsToHide, oculta: true });
   });
 
   it("validates the reason and the offer", async () => {
@@ -586,10 +593,12 @@ describe("status, config and routing", () => {
 describe("review hardening", () => {
   it("reserves offer quota atomically under concurrency", async () => {
     const attempts = await Promise.all(
-      Array.from({ length: 8 }, () => call("POST", "/api/ofertas", { body: validOffer(), ip: "198.51.100.40" })),
+      Array.from({ length: LIMITS.offersPerIpPerDay + 5 }, () =>
+        call("POST", "/api/ofertas", { body: validOffer(), ip: "198.51.100.40" }),
+      ),
     );
-    const statuses = attempts.map((response) => response.status).sort();
-    expect(statuses.filter((status) => status === 201)).toHaveLength(3);
+    const statuses = attempts.map((response) => response.status);
+    expect(statuses.filter((status) => status === 201)).toHaveLength(LIMITS.offersPerIpPerDay);
     expect(statuses.filter((status) => status === 429)).toHaveLength(5);
   });
 
@@ -599,7 +608,7 @@ describe("review hardening", () => {
       expect(response.status).toBe(403);
     }
     await call("POST", "/api/ofertas", { body: validOffer({ localId: "9-9999" }), ip: "198.51.100.41" });
-    for (let index = 0; index < 3; index += 1) await createOffer({}, "198.51.100.41");
+    for (let index = 0; index < LIMITS.offersPerIpPerDay; index += 1) await createOffer({}, "198.51.100.41");
   });
 
   it("aborts a streamed body over the limit without Content-Length", async () => {
@@ -679,17 +688,17 @@ describe("review hardening", () => {
     expect(reports?.total).toBe(0);
   });
 
-  it("limits reports to 10 per network per hour", async () => {
-    const offers = await Promise.all(Array.from({ length: 3 }, (_, index) => createOffer({}, `198.51.100.${60 + index}`)));
-    const ids = [...offers, ...(await Promise.all(Array.from({ length: 3 }, (_, index) => createOffer({}, `198.51.100.${70 + index}`))))];
-    const report = (id: string) =>
+  it("limits reports per network per hour", async () => {
+    // Repeated reports of the same offer are ignored but still spend quota.
+    const { id } = await createOffer();
+    const report = () =>
       call("POST", `/api/ofertas/${id}/denuncia`, { body: { turnstile: TURNSTILE.denuncia, motivo: "outro" }, ip: "192.0.2.99" });
-    for (let index = 0; index < 10; index += 1) {
-      expect((await report(ids[index % ids.length]?.id ?? "")).status).toBe(202);
+    for (let index = 0; index < LIMITS.reportsPerIpPerHour; index += 1) {
+      expect((await report()).status).toBe(202);
     }
-    await expectError(await report(ids[0]?.id ?? ""), 429, "limite_de_denuncias");
+    await expectError(await report(), 429, "limite_de_denuncias");
     clock.now = new Date(clock.now.getTime() + 60 * 60 * 1000 + 1000);
-    expect((await report(ids[0]?.id ?? "")).status).toBe(202);
+    expect((await report()).status).toBe(202);
   });
 
   it("counts IPv6 reporters by /64", async () => {
@@ -700,8 +709,7 @@ describe("review hardening", () => {
     await report("2001:db8:1:2::2");
     await report("2001:db8:1:2:ffff:ffff:ffff:ffff");
     expect(await list("municipio=25313")).toHaveLength(1);
-    await report("2001:db8:1:3::1");
-    await report("203.0.113.77");
+    for (let index = 1; index < LIMITS.reportsToHide; index += 1) await report(`2001:db8:1:${3 + index}::1`);
     expect(await list("municipio=25313")).toEqual([]);
   });
 
@@ -731,4 +739,29 @@ describe("review hardening", () => {
     await expectError(await call("GET", "/api/ofertas?municipio=253130"), 400, "campo_invalido", "municipio");
     await expectError(await call("POST", "/api/ofertas", { body: validOffer({ municipio: "025313" }) }), 400, "campo_invalido", "municipio");
   });
+});
+
+describe("Turnstile timeout", () => {
+  it("aborts siteverify after 5 s and answers 503", async () => {
+    const { handleApi } = await import("../src/app");
+    let signal: AbortSignal | null | undefined;
+    const hanging = {
+      now: () => clock.now,
+      fetch: (_input: RequestInfo | URL, init?: RequestInit) => {
+        signal = init?.signal;
+        return new Promise<Response>((_resolve, reject) => {
+          init?.signal?.addEventListener("abort", () => reject(init.signal?.reason));
+        });
+      },
+    };
+    const pending = handleApi(
+      new Request("https://carona.test/api/ofertas", { method: "POST", body: JSON.stringify(validOffer()) }),
+      testEnv,
+      hanging,
+    );
+    const response = await pending;
+    expect(signal).toBeInstanceOf(AbortSignal);
+    expect(response.status).toBe(503);
+    expect(await readJson(response)).toMatchObject({ error: "turnstile_indisponivel" });
+  }, 10_000);
 });

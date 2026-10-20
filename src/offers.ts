@@ -52,6 +52,12 @@ export const CONFIRMATION_NOTICE =
   "A carona só é confirmada entre as pessoas, pelo contato combinado. O site não confirma nem garante caronas.";
 const LOCAL_ID = /^\d{1,4}-\d{1,6}$/;
 const MAX_RESULTS = 200;
+// Offers stay listed this long after departure, for riders running a little late.
+export const DEPARTURE_GRACE_MS = 30 * 60 * 1000;
+
+function listedSince(now: Date): string {
+  return new Date(now.getTime() - DEPARTURE_GRACE_MS).toISOString();
+}
 const REPORT_REASONS = new Set(["cobranca", "campanha", "falsa", "outro"]);
 
 const SELECT_OFFER = `
@@ -221,7 +227,7 @@ export async function createOffer(request: Request, env: Env, deps: Deps): Promi
     if (inserted.meta.changes !== 1) throw closed();
   });
 
-  const editarUrl = new URL(`/gerenciar.html?id=${id}&token=${token}`, request.url).toString();
+  const editarUrl = new URL(`/gerenciar?id=${id}&token=${token}`, request.url).toString();
   return json({ id, token, editarUrl }, 201);
 }
 
@@ -231,7 +237,7 @@ export async function listOffers(request: Request, env: Env, deps: Deps): Promis
   if (!isMunicipioCode(municipio)) throw invalid("municipio", "Escolha o município.");
 
   const where = ["o.municipio = ?", "o.saida >= ?", "o.vagas_livres > 0"];
-  const binds: (string | number)[] = [municipio, deps.now().toISOString()];
+  const binds: (string | number)[] = [municipio, listedSince(deps.now())];
 
   const localId = params.get("localId");
   if (localId) {
@@ -391,7 +397,7 @@ export async function countVisibleOffers(env: Env, now: Date): Promise<number> {
      WHERE o.vagas_livres > 0 AND o.saida >= ?
        AND (SELECT COUNT(*) FROM reports r WHERE r.offer_id = o.id) < ?`,
   )
-    .bind(now.toISOString(), LIMITS.reportsToHide)
+    .bind(listedSince(now), LIMITS.reportsToHide)
     .first<{ total: number }>();
   return row?.total ?? 0;
 }

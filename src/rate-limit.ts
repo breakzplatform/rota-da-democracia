@@ -4,13 +4,10 @@ export type RateKind = "oferta" | "contato" | "denuncia";
 
 const HOUR_MS = 60 * 60 * 1000;
 
-// TODO(config): reportsPerIpPerHour belongs in LIMITS (src/config.ts, owned by the orchestrator).
-const REPORTS_PER_IP_PER_HOUR = 10;
-
 export const RATE_RULES: Readonly<Record<RateKind, { windowMs: number; limit: number }>> = {
   oferta: { windowMs: 24 * HOUR_MS, limit: LIMITS.offersPerIpPerDay },
   contato: { windowMs: HOUR_MS, limit: LIMITS.revealsPerIpPerHour },
-  denuncia: { windowMs: HOUR_MS, limit: REPORTS_PER_IP_PER_HOUR },
+  denuncia: { windowMs: HOUR_MS, limit: LIMITS.reportsPerIpPerHour },
 };
 
 export interface Reservation {

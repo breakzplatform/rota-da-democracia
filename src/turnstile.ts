@@ -2,6 +2,7 @@ import type { Deps } from "./env";
 import { ApiError } from "./http";
 
 const SITEVERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+const SITEVERIFY_TIMEOUT_MS = 5000;
 
 export type TurnstileAction = "oferecer" | "contato" | "denuncia";
 
@@ -39,7 +40,11 @@ export async function verifyTurnstile(token: unknown, check: TurnstileCheck, dep
   if (check.ip !== "unknown") form.append("remoteip", check.ip);
   let outcome: unknown;
   try {
-    const response = await deps.fetch(SITEVERIFY_URL, { method: "POST", body: form });
+    const response = await deps.fetch(SITEVERIFY_URL, {
+      method: "POST",
+      body: form,
+      signal: AbortSignal.timeout(SITEVERIFY_TIMEOUT_MS),
+    });
     outcome = await response.json();
   } catch {
     throw new ApiError(503, "turnstile_indisponivel", "Não conseguimos verificar agora. Tente de novo em instantes.");
