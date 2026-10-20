@@ -70,7 +70,7 @@ export function screenNeutrality(values: ReadonlyArray<readonly [string, string 
       throw new ApiError(
         422,
         "conteudo_de_campanha",
-        "A carona precisa ser neutra: não cite candidatos, partidos, números de urna nem peça voto.",
+        "Não pode usar nome de candidato. A carona precisa ser neutra: não cite candidatos, partidos, números de urna nem peça voto.",
         field,
       );
     }
