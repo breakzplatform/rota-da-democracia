@@ -16,6 +16,7 @@ DATA = runpy.run_path(str(Path(__file__).with_name('build-data.py')))
 SOURCE = runpy.run_path(str(Path(__file__).with_name('build-hours.py')))['SOURCE']
 fold = DATA['normalize_nome_busca']
 is_active = DATA['is_active']
+PLACES_SOURCE = 'https://dadosabertos.tse.jus.br/dataset/eleitorado-2026'
 
 
 def read_rows(path):
@@ -178,7 +179,7 @@ def build(csv_path, hours_path, places_path):
         country['cidades'] = sorted(country['cidades'].values(), key=lambda city: (fold(city['nome']), city['cd']))
         for city in country['cidades']:
             city['locais'].sort(key=lambda place: (fold(place['nome']), place['id']))
-    return dict(geradoEm=generated, fonte=dict(locais=DATA['TSE_DEFAULT_URL'], horas=SOURCE, licenca='CC-BY 4.0'),
+    return dict(geradoEm=generated, fonte=dict(locais=PLACES_SOURCE, horas=SOURCE, licenca='CC-BY 4.0'),
                 totais=totals, paises=sorted(countries.values(), key=lambda country: (fold(country['nome']), country['iso'])))
 
 
