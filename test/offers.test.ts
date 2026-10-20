@@ -101,14 +101,14 @@ describe("POST /api/ofertas", () => {
     expect(body.message).toContain("só no seu trajeto, uma ida e uma volta");
   });
 
-  it("accepts offers until polls open and refuses them from then on", async () => {
-    clock.now = new Date("2026-10-25T07:59:59-03:00");
+  it("accepts offers until 07:59, before polls open, and refuses them after", async () => {
+    clock.now = new Date("2026-10-25T07:58:59-03:00");
     await createOffer();
     turnstileCalls.length = 0;
-    for (const instant of ["2026-10-25T08:00:00-03:00", "2026-10-25T16:59:59-03:00"]) {
+    for (const instant of ["2026-10-25T07:59:00-03:00", "2026-10-25T16:59:59-03:00"]) {
       clock.now = new Date(instant);
       const body = await expectError(await call("POST", "/api/ofertas", { body: validOffer() }), 403, "cadastro_encerrado");
-      expect(body.message).toContain("quando as urnas abriram");
+      expect(body.message).toContain("antes de as urnas abrirem");
     }
     expect(turnstileCalls).toHaveLength(0);
     const total = await env.DB.prepare("SELECT COUNT(*) AS total FROM offers").first<{ total: number }>();

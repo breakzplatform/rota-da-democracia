@@ -250,10 +250,10 @@ describe("group owner and reports", () => {
 });
 
 describe("group signup cutoff", () => {
-  it("accepts groups until polls open and refuses them from then on", async () => {
-    clock.now = new Date("2026-10-25T07:59:59-03:00");
+  it("accepts groups until 07:59, before polls open, and refuses them after", async () => {
+    clock.now = new Date("2026-10-25T07:58:59-03:00");
     await createGroup();
-    clock.now = new Date("2026-10-25T08:00:00-03:00");
+    clock.now = new Date("2026-10-25T07:59:00-03:00");
     const response = await call("POST", "/api/grupos", { body: validGroup({ link: `${LINK}x` }) });
     await expectError(response, 403, "cadastro_encerrado");
     const total = await env.DB.prepare("SELECT COUNT(*) AS total FROM grupos").first<{ total: number }>();

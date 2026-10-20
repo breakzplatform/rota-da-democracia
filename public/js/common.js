@@ -95,12 +95,20 @@ export function showClosed(target) {
 }
 
 // Mirrors ELECTION.signupClosesAt; the server enforces it, this only spares a doomed form.
-const SIGNUP_CLOSES_AT = new Date("2026-10-25T08:00:00-03:00");
+const SIGNUP_CLOSES_AT = new Date("2026-10-25T07:59:00-03:00");
 export const SIGNUP_CLOSED_MESSAGE =
-  "Os cadastros de carona e de grupos foram encerrados quando as urnas abriram. Procure as ofertas já publicadas ou o transporte público.";
+  "Os cadastros de carona e de grupos foram encerrados antes de as urnas abrirem. Procure as ofertas já publicadas ou o transporte público.";
 
 export function signupIsClosed() {
   return Date.now() >= SIGNUP_CLOSES_AT.getTime();
+}
+
+/** Swaps the deadline banner's text for the closed notice once the cutoff has passed. */
+export function updateSignupDeadline() {
+  if (!signupIsClosed()) return;
+  for (const banner of document.querySelectorAll("[data-signup-deadline] p")) {
+    banner.textContent = SIGNUP_CLOSED_MESSAGE;
+  }
 }
 
 /** Replaces a signup form with the closed-signups notice. */

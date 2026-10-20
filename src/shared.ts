@@ -15,7 +15,7 @@ export function signupClosed(): ApiError {
   return new ApiError(
     403,
     "cadastro_encerrado",
-    "Os cadastros de carona e de grupos foram encerrados quando as urnas abriram. Procure as ofertas já publicadas ou o transporte público.",
+    "Os cadastros de carona e de grupos foram encerrados antes de as urnas abrirem. Procure as ofertas já publicadas ou o transporte público.",
   );
 }
 
