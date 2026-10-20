@@ -1371,3 +1371,7 @@ dialog p {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+#tarifa-zero-outras summary {
+  cursor: pointer;
+}
