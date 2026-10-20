@@ -15,7 +15,7 @@
   "vars": {
     // Real widget; tests and wrangler dev use .dev.vars / test bindings.
     "TURNSTILE_SITE_KEY": "0x4AAAAAAFcZpTsTGKKJM9YZ",
-    "ALLOWED_HOSTNAMES": "rota-da-democracia.joselito.workers.dev,localhost"
+    "ALLOWED_HOSTNAMES": "rotadademocracia.online,www.rotadademocracia.online,rota-da-democracia.joselito.workers.dev,localhost"
   },
   "observability": { "enabled": true }
 }
