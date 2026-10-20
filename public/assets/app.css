@@ -160,3 +160,67 @@
   background: rgba(0, 0, 0, 0.22);
   font-weight: 500;
 }
+
+/* Hourly first-round turnout, sharing the place picker's light palette. */
+.hours-card {
+  padding: 1rem;
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.hours-card h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.15rem;
+}
+
+.hours-bars {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: 0.25rem;
+  margin: 1rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hours-column {
+  min-width: 0;
+}
+
+.hours-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.hours-track {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  max-width: 2rem;
+  height: 6rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.hours-bar {
+  display: block;
+  width: 100%;
+  background: var(--blue);
+}
+
+.hours-calm,
+.hours-warning {
+  font-weight: 700;
+}
+
+.hours-warning {
+  border-left: 4px solid var(--red-ink);
+  padding-left: 0.75rem;
+}
+
+.hours-card .hint:last-child {
+  margin-bottom: 0;
+}
