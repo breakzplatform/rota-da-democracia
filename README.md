@@ -53,3 +53,4 @@ curl -X POST -H "$AUTH" "$BASE/api/admin/grupos/<id>/restaurar"
 - `npm run data` rebuilds polling places from the TSE CSV (`--download` fetches it).
 - `public/data/tarifa-zero.json` lists free-transport announcements per município with sources; `turno2: true` only when the source explicitly covers 25 Oct.
 - Content of the FAQ lives in `content/faq.md` (the page is `public/faq.html`).
+- `python3 -I scripts/build-hours.py --workers 3` gera o movimento por hora do 1º turno. Retomada, metodologia, fusos e auditoria: [documentação](docs/hourly-turnout.md).

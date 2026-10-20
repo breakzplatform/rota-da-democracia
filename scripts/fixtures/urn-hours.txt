@@ -1,0 +1,12 @@
+23/09/2026 10:40:14	INFO	02263093	SCUE	Município: 01015	A
+23/09/2026 10:40:14	INFO	02263093	SCUE	Zona Eleitoral: 0002	B
+23/09/2026 10:40:14	INFO	02263093	SCUE	Local de Votação: 1112	C
+23/09/2026 10:40:14	INFO	02263093	SCUE	Seção Eleitoral: 0088	D
+03/10/2026 06:00:00	INFO	02263093	VOTA	O voto do eleitor foi computado	0
+04/10/2026 06:00:00	INFO	02263093	VOTA	O voto do eleitor foi computado	1
+04/10/2026 06:59:59	INFO	02263093	VOTA	O voto do eleitor foi computado	2
+04/10/2026 07:00:00	INFO	02263093	VOTA	O voto do eleitor foi computado	3
+04/10/2026 14:59:59	INFO	02263093	VOTA	O voto do eleitor foi computado	4
+04/10/2026 15:00:00	INFO	02263093	VOTA	O voto do eleitor foi computado	5
+04/10/2026 15:00:00	INFO	02263093	VOTA	O voto do eleitor foi computado	5
+04/10/2026 09:00:00	INFO	02263093	VOTA	O voto do eleitor foi computado parcialmente	X

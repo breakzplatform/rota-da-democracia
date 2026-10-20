@@ -58,6 +58,7 @@
       <div id="resultado-local" hidden>
         <section class="panel place" aria-labelledby="local-nome">
           <h2 id="local-nome">Melhor rota</h2>
+          <section id="quando-ir" class="quando-ir" aria-label="Quando ir" hidden></section>
           <div class="place-actions">
             <a id="rota-google" class="btn btn-primary" href="" target="_blank" rel="noopener noreferrer">Ônibus ou metrô</a>
             <a id="rota-pe" class="btn" href="" target="_blank" rel="noopener noreferrer">A pé</a>
@@ -67,7 +68,7 @@
             <a id="rota-moovit" class="btn" href="" target="_blank" rel="noopener noreferrer">Moovit</a>
             <a id="local-mapa" class="btn" href="" target="_blank" rel="noopener noreferrer">Google Maps</a>
           </div>
-          <p class="hint">Saia com folga: as seções abrem às 8h e fecham às 17h (horário de Brasília).</p>
+          <p id="dica-rota" class="hint">Saia com folga: as seções abrem às 8h e fecham às 17h (horário de Brasília).</p>
         </section>
         <section class="panel" aria-labelledby="titulo-confira">
           <h2 id="titulo-confira">Confira seu local antes de sair</h2>
@@ -82,7 +83,7 @@
           <h2 id="titulo-plano">Seu plano para domingo</h2>
           <ul class="who-list">
             <li>Documento oficial com foto, ou o e-Título com foto.</li>
-            <li>Horário em que vou sair: ______</li>
+            <li id="plano-horario">Horário em que vou sair: ______</li>
             <li>Rota escolhida: ______</li>
             <li>Chame alguém para ir junto.</li>
           </ul>

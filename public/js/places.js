@@ -221,7 +221,7 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {}, ci
   const body = h("div", { class: "picker-body" });
   mount.replaceChildren(status, body);
 
-  const state = { municipio: null, shard: null, local: null, uf: "", cityText: "", view: "cidade" };
+  const state = { municipio: null, shard: null, local: null, section: null, uf: "", cityText: "", view: "cidade" };
   let municipiosCache = [];
   let geoToken = 0;
   let nameTimer;
@@ -285,16 +285,18 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {}, ci
   }
 
   // -- place selection ------------------------------------------------
-  function choosePlace(local) {
+  function choosePlace(local, section = null) {
     state.local = local;
-    onPlace(local, state.shard);
+    state.section = section;
+    onPlace(local, state.shard, section);
     go("resultado");
   }
 
   function clearPlace() {
     if (!state.local) return;
     state.local = null;
-    onPlace(null, state.shard);
+    state.section = null;
+    onPlace(null, state.shard, null);
   }
 
   function placeButtons(rows) {
@@ -386,7 +388,7 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {}, ci
           announce(error.textContent);
           return;
         }
-        choosePlace(local);
+        choosePlace(local, Number(secao.value));
       };
       for (const field of [zona, secao]) {
         field.addEventListener("keydown", (event) => {
