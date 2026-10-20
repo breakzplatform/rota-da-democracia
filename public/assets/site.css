@@ -1292,3 +1292,9 @@ dialog p {
     transform: none;
   }
 }
+
+/* The route result groups several panels; give them the same rhythm as .stack. */
+#resultado-local:not([hidden]) {
+  display: grid;
+  gap: 1.35rem;
+}
