@@ -15,7 +15,7 @@ O site não tem relação com nenhum candidato, partido ou campanha. A interface
 ## Fontes de dados
 
 - **Locais de votação:** arquivo `eleitorado_local_votacao_2026` do TSE (licença CC-BY), com os locais do 1º e do 2º turno. Gerado por `scripts/build-data.py` em `public/data/m/<código>.json`.
-- **Movimento por hora:** conjunto [arquivos transmitidos para totalização](https://dadosabertos.tse.jus.br/dataset/resultados-2026-arquivos-transmitidos-para-totalizacao) do TSE, 1º turno (4 de outubro de 2026). Os logs das urnas são lidos por `scripts/build-hours.py`. O exterior (`ZZ`) fica de fora.
+- **Movimento por hora:** conjunto [arquivos transmitidos para totalização](https://dadosabertos.tse.jus.br/dataset/resultados-2026-arquivos-transmitidos-para-totalizacao) do TSE, 1º turno (4 de outubro de 2026). Os logs das urnas são lidos por `scripts/build-hours.py`. O exterior (`ZZ`) usa a hora local de cada local de votação e vai para `public/data/exterior.json`, gerado por `scripts/build-abroad.py` com a tabela `scripts/abroad-places.json` (país, fuso e coordenadas de cada local).
 - **Seções que mudaram de local:** comparação entre o 1º e o 2º turno no mesmo arquivo do TSE, feita por `scripts/build-changes.py`.
 - **Tarifa zero:** `public/data/tarifa-zero.json`, uma lista mantida à mão com a fonte de cada anúncio. O campo `turno2: true` só aparece quando a fonte cita o dia 25 de outubro.
 
