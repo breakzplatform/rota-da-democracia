@@ -17,8 +17,8 @@ import zipfile
 from typing import Any, Dict, List, Optional, Tuple
 
 TSE_DEFAULT_URL = (
-    "https://cdn.tse.jus.br/estatistica/sead/odsele/perfil_eleitorado/"
-    "eleitorado_local_votacao_ATUAL.zip"
+    "https://cdn.tse.jus.br/estatistica/sead/odsele/eleitorado_locais_votacao/"
+    "eleitorado_local_votacao_2026.zip"
 )
 
 
@@ -81,6 +81,11 @@ def process_csv_stream(csv_path: str) -> Tuple[Dict[str, Any], str]:
             if uf == "ZZ":
                 continue
 
+            # The 2026 file lists every section once per round, and the TSE
+            # moved some sections to another polling place for the runoff.
+            if row.get("NR_TURNO", "").strip() == "1":
+                continue
+
             if not dt_geracao:
                 dt_geracao = row.get("DT_GERACAO", "").strip()
 
@@ -136,7 +141,9 @@ def process_csv_stream(csv_path: str) -> Tuple[Dict[str, Any], str]:
 
             situ_local = row.get("DS_SITU_LOCAL_VOTACAO", "")
             cd_situ_local = row.get("CD_SITU_LOCAL_VOTACAO", "")
-            if not is_active(cd_situ_local, situ_local):
+            # BLOQUEADO only stops new transfers into the place; its sections still vote there.
+            is_blocked = cd_situ_local.strip() == "5" or situ_local.strip().upper() == "BLOQUEADO"
+            if not is_active(cd_situ_local, situ_local) and not is_blocked:
                 continue
 
             try:
@@ -331,7 +338,8 @@ def download_and_extract_tse(url: str, target_dir: str) -> str:
         csv_files = [name for name in z.namelist() if name.lower().endswith(".csv")]
         if not csv_files:
             raise FileNotFoundError("No CSV file found in downloaded ZIP")
-        csv_name = csv_files[0]
+        national = [name for name in csv_files if name.upper().endswith("_BRASIL.CSV")]
+        csv_name = national[0] if national else csv_files[0]
         z.extract(csv_name, target_dir)
         return os.path.join(target_dir, csv_name)
 

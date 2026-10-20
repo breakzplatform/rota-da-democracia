@@ -51,14 +51,14 @@ class TestBuildData(unittest.TestCase):
         self.assertFalse(os.path.exists(os.path.join(self.out_dir, "m", "99999.json")))
 
     def test_inactive_rows_excluded(self):
-        """Inactive sections and blocked locals must be excluded."""
+        """Inactive sections are excluded; blocked locals keep their sections."""
         # Section 99 was inactive in local 1010
         loc_1010 = next(l for l in self.recife["locais"] if l["id"] == "1-1010")
         self.assertNotIn(99, loc_1010["secoes"])
 
-        # Local 1099 was BLOQUEADO
-        local_ids = [l["id"] for l in self.recife["locais"]]
-        self.assertNotIn("1-1099", local_ids)
+        # Local 1099 is BLOQUEADO: closed to new transfers, but section 88 still votes there
+        loc_1099 = next(l for l in self.recife["locais"] if l["id"] == "1-1099")
+        self.assertEqual(loc_1099["secoes"], [88])
 
     def test_aggregated_sections(self):
         """Aggregated sections map to principal's local and stay searchable in secoes."""
@@ -105,7 +105,7 @@ class TestBuildData(unittest.TestCase):
 
         # Locais sorted by (zona, nr)
         recife_ids = [l["id"] for l in self.recife["locais"]]
-        self.assertEqual(recife_ids, ["1-1010", "1-1020", "2-1005"])
+        self.assertEqual(recife_ids, ["1-1010", "1-1020", "1-1099", "2-1005"])
 
         # Secoes sorted ascending
         for loc in self.recife["locais"]:
@@ -125,9 +125,16 @@ class TestBuildData(unittest.TestCase):
     def test_meta_json(self):
         """meta.json has geradoEm, fonte, totalLocais, totalSecoes."""
         self.assertEqual(self.meta["geradoEm"], "01/10/2026")
-        self.assertIn("eleitorado_local_votacao_ATUAL.zip", self.meta["fonte"])
-        self.assertEqual(self.meta["totalLocais"], 6)
-        self.assertEqual(self.meta["totalSecoes"], 8)
+        self.assertIn("eleitorado_local_votacao_2026.zip", self.meta["fonte"])
+        self.assertEqual(self.meta["totalLocais"], 7)
+        self.assertEqual(self.meta["totalSecoes"], 10)
+
+    def test_runoff_place(self):
+        """A section moved for the runoff is listed only at its 2nd-round place."""
+        loc_1010 = next(l for l in self.recife["locais"] if l["id"] == "1-1010")
+        loc_1020 = next(l for l in self.recife["locais"] if l["id"] == "1-1020")
+        self.assertNotIn(30, loc_1010["secoes"])
+        self.assertIn(30, loc_1020["secoes"])
 
     def test_minified_and_utf8(self):
         """Files must be minified UTF-8 JSON without unnecessary whitespace."""
