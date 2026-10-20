@@ -148,6 +148,16 @@ describe('hourly turnout', () => {
       expect(calm8.textContent).toBe('Mais tranquilo: 8h e 13h.');
 
       const chartEqual = hoursChart([4, 4, 4, 4, 4, 4, 4, 4, 1], 1, 10);
+      expect(chart15.querySelector('ol').getAttribute('aria-label')).toBe('Votos computados por hora, no horário de Brasília');
+      const chartLocal = hoursChart([4, 4, 4, 4, 4, 4, 4, 4, 1], 1, 10, undefined, 'na hora local');
+      expect(chartLocal.querySelector('ol').getAttribute('aria-label')).toBe('Votos computados por hora, na hora local');
+      const chartCompact = hoursChart([4, 5, 6, 4, 4, 4, 4, 4, 1], 1, 10, undefined, 'na hora local', true);
+      expect(chartCompact.querySelector('.hours-calm')).toBeNull();
+      expect(chartCompact.querySelectorAll('.hint')).toHaveLength(2);
+      expect(chartCompact.querySelectorAll('.hours-column')).toHaveLength(9);
+      expect(chartCompact.querySelectorAll('.hours-hour-minor')).toHaveLength(6);
+      expect(chart8.querySelectorAll('.hours-hour-minor')).toHaveLength(0);
+      expect(chartLocal.querySelectorAll('.hint').some((node) => node.textContent.startsWith('Votos computados por hora, na hora local.'))).toBe(true);
       const calmEqual = chartEqual.querySelector('.hours-calm');
       expect(calmEqual.textContent).toBe('O movimento foi igual em todas as horas.');
     } finally {

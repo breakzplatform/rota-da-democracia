@@ -419,7 +419,7 @@ export function renderQuandoIr(container, {
   updateDisplay();
 }
 
-export function hoursChart(hours, zone, section, changed) {
+export function hoursChart(hours, zone, section, changed, clockLabel = 'no horário de Brasília', compact = false) {
   const chart = element('section', 'hours-card');
   const title = element('h3', '', 'Movimento no 1º turno');
   chart.setAttribute('aria-label', `Movimento no 1º turno: zona ${zone}, seção ${section}`);
@@ -430,7 +430,7 @@ export function hoursChart(hours, zone, section, changed) {
       : 'O local desta seção mudou para o 2º turno. O movimento e a fila do 1º turno podem não se repetir.'));
   }
   const list = element('ol', 'hours-bars');
-  list.setAttribute('aria-label', 'Votos computados por hora, no horário de Brasília');
+  list.setAttribute('aria-label', `Votos computados por hora, ${clockLabel}`);
   const maximum = Math.max(...hours);
   hours.forEach((count, index) => {
     const hour = index + 8;
@@ -443,16 +443,20 @@ export function hoursChart(hours, zone, section, changed) {
     const bar = element('span', 'hours-bar');
     bar.style.height = `${count / maximum * 100}%`;
     track.append(bar);
-    visual.append(element('span', 'hours-count', String(count)), track, element('span', 'hours-hour', `${hour}h`));
+    const minor = compact && ![8, 12, 16].includes(hour);
+    visual.append(element('span', 'hours-count', String(count)), track, element('span', minor ? 'hours-hour hours-hour-minor' : 'hours-hour', `${hour}h`));
     item.append(visual);
     list.append(item);
   });
-  const calm = calmHours(hours);
-  const closingNotice = calm === '15h' ? ' Chegue antes das 17h, quando a votação fecha.' : '';
-  chart.append(list, element('p', 'hours-calm', hours.slice(0, 8).every((count) => count === hours[0])
-    ? 'O movimento foi igual em todas as horas.' : `Mais tranquilo: ${calm}.${closingNotice}`));
-  chart.append(element('p', 'hint', 'Votos computados por hora, no horário de Brasília. A barra das 16h inclui quem votou após as 17h, ainda na fila.'));
-  chart.append(element('p', 'hint', 'Isso não mede o tempo de espera. O movimento pode mudar no 2º turno.'));
+  chart.append(list);
+  if (!compact) {
+    const calm = calmHours(hours);
+    const closingNotice = calm === '15h' ? ' Chegue antes das 17h, quando a votação fecha.' : '';
+    chart.append(element('p', 'hours-calm', hours.slice(0, 8).every((count) => count === hours[0])
+      ? 'O movimento foi igual em todas as horas.' : `Mais tranquilo: ${calm}.${closingNotice}`));
+    chart.append(element('p', 'hint', `Votos computados por hora, ${clockLabel}. A barra das 16h inclui quem votou após as 17h, ainda na fila.`));
+    chart.append(element('p', 'hint', 'Isso não mede o tempo de espera. O movimento pode mudar no 2º turno.'));
+  }
   const credit = element('p', 'hint');
   const link = element('a', '', 'TSE — arquivos transmitidos para totalização');
   link.href = source;
