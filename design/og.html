@@ -6,6 +6,7 @@
   <style>
     :root {
       --paper: #f3f0e8;
+      --paper-2: #fffdf8;
       --ink: #142026;
       --red: #fd0200;
       --field: #c80000;
@@ -40,42 +41,41 @@
     .stripe {
       flex: none;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      height: 22px;
+      grid-template-columns: repeat(3, 1fr);
+      height: 32px;
       background: var(--ink);
       border-bottom: 4px solid var(--ink);
     }
 
     .stripe span:nth-child(1) { background: var(--blue); }
     .stripe span:nth-child(2) { background: var(--yellow); }
-    .stripe span:nth-child(3) { background: var(--red); }
-    .stripe span:nth-child(4) { background: var(--green); }
+    .stripe span:nth-child(3) { background: var(--green); }
 
     .body {
       flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      padding: 18px 68px 8px;
+      justify-content: flex-start;
+      padding: 26px 64px 0;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
     }
 
     .mark {
       flex: none;
-      width: 58px;
-      height: 58px;
+      width: 52px;
+      height: 52px;
       display: block;
     }
 
     .name {
       font-family: var(--font-display);
       font-weight: 700;
-      font-size: 36px;
+      font-size: 28px;
       line-height: 0.88;
       letter-spacing: -0.02em;
       text-transform: uppercase;
@@ -83,12 +83,12 @@
     }
 
     h1 {
-      margin-top: 28px;
+      margin-top: 22px;
       font-family: var(--font-display);
       font-weight: 700;
-      font-size: 108px;
-      line-height: 0.88;
-      letter-spacing: -0.03em;
+      font-size: 156px;
+      line-height: 0.82;
+      letter-spacing: -0.028em;
       text-transform: uppercase;
       color: #fff;
     }
@@ -98,14 +98,14 @@
     h1 .accent { color: var(--yellow); }
 
     .secondary {
-      margin-top: 26px;
-      max-width: 920px;
+      margin-top: 22px;
+      max-width: 1072px;
       font-family: var(--font-body);
       font-size: 32px;
       font-weight: 600;
       line-height: 1.28;
-      letter-spacing: -0.011em;
-      color: var(--paper);
+      letter-spacing: -0.014em;
+      color: var(--paper-2);
     }
 
     .footer {
@@ -114,8 +114,8 @@
       align-items: center;
       justify-content: space-between;
       gap: 28px;
-      height: 96px;
-      padding: 0 68px 14px;
+      height: 82px;
+      padding: 0 64px;
       background: var(--yellow);
       color: var(--ink);
       border-top: 4px solid var(--ink);
@@ -123,15 +123,15 @@
 
     .affiliation {
       font-family: var(--font-body);
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
       line-height: 1.15;
-      letter-spacing: -0.01em;
+      letter-spacing: -0.011em;
     }
 
     .url {
       font-family: var(--font-mono);
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 600;
       line-height: 1.15;
       letter-spacing: -0.02em;
@@ -141,7 +141,7 @@
 </head>
 <body>
   <div class="sheet">
-    <div class="stripe" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <div class="stripe" aria-hidden="true"><span></span><span></span><span></span></div>
     <div class="body">
       <div class="brand">
         <svg class="mark" viewBox="0 0 48 48" aria-hidden="true">
@@ -152,14 +152,14 @@
         <p class="name">Rota da<br>Democracia</p>
       </div>
       <h1>
-        <span>Ônibus de graça</span>
-        <span class="accent">no dia da eleição</span>
+        <span>Veja a melhor</span>
+        <span class="accent">rota pra votar</span>
       </h1>
-      <p class="secondary">Carona solidária e como chegar ao seu local de votação<br>— 2º turno, domingo, 25 de outubro</p>
+      <p class="secondary">Ônibus de graça, carona solidária e o caminho até o seu local de votação<br>— 2º turno, domingo, 25 de outubro</p>
     </div>
     <footer class="footer">
       <p class="affiliation">Iniciativa voluntária e apartidária</p>
-      <p class="url">rota-da-democracia.joselito.workers.dev</p>
+      <p class="url">rotadademocracia.online</p>
     </footer>
   </div>
 </body>
