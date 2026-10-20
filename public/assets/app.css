@@ -76,3 +76,19 @@
   font-weight: 400;
   color: var(--muted);
 }
+
+.route-hero {
+  --focus: #ffe403;
+  background: #017016;
+  color: #ffffff;
+}
+
+.route-hero .eyebrow,
+.route-hero h2,
+.route-hero p {
+  color: #ffffff;
+}
+
+.route-hero .eyebrow {
+  color: #ffe403;
+}
