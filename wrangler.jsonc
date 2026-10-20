@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "carona-pela-democracia",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "carona", "database_id": "local-placeholder", "migrations_dir": "migrations" }
+  ],
+  "triggers": { "crons": ["0 * * * *"] },
+  "vars": {
+    // Cloudflare's always-pass test key; replaced with the real site key at deploy.
+    "TURNSTILE_SITE_KEY": "1x00000000000000000000AA"
+  },
+  "observability": { "enabled": true }
+}
