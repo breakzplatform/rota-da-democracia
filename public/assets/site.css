@@ -541,8 +541,13 @@ p {
   margin-top: 1.6rem;
 }
 
-.prose h2:first-child {
+.prose h2:first-child,
+.prose > p:first-child {
   margin-top: 0;
+}
+
+.stack-narrow > * {
+  max-width: 40rem;
 }
 
 @media (min-width: 60rem) {
