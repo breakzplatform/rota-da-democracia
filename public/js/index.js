@@ -1,2 +1,3 @@
-// No client-side behaviour needed on this page.
-export {};
+import { guardClosed } from "./common.js";
+
+guardClosed(document.querySelector(".hero .actions"));

@@ -1,4 +1,4 @@
-import { $, showMessage, titleCase } from "./common.js";
+import { $, showMessage, titleCase, safeHref } from "./common.js";
 import { initPlacePicker } from "./places.js";
 
 const result = $("resultado-local");
@@ -19,6 +19,10 @@ function formatCep(cep) {
 }
 
 function showPlace(local, shard) {
+  if (!local) {
+    result.hidden = true;
+    return;
+  }
   const municipio = picker.municipio();
   const hasCoords = local.lat !== null && local.lon !== null;
   const addressText = `${titleCase(local.nome)}, ${titleCase(local.endereco)}, ${titleCase(shard.nome)} - ${shard.uf}`;
@@ -57,12 +61,14 @@ form.addEventListener("submit", (event) => {
     $("municipio-busca").focus();
     return;
   }
-  if (picker.local()) return showPlace(picker.local(), picker.shard());
-  if ($("zona").value && $("secao").value) {
-    if (picker.lookupBySection()) return;
-    return showMessage(error, "Não achamos essa zona e seção neste município. Confira os números no comprovante ou no e-Título.");
-  }
-  showMessage(error, "Informe zona e seção, ou busque o local pelo nome.");
+  const resolved = picker.resolve();
+  if (resolved.local) return showPlace(resolved.local, picker.shard());
+  showMessage(
+    error,
+    resolved.ok
+      ? "Informe zona e seção, ou busque o local pelo nome."
+      : "Não achamos esse local. Confira zona e seção (comprovante ou e-Título), ou escolha o nome na lista.",
+  );
 });
 
 // ---- Tarifa zero -----------------------------------------------------
@@ -91,9 +97,14 @@ function renderTarifaList() {
     node.querySelector(".fare-city").textContent = entry.municipio;
     node.querySelector(".fare-note").textContent = tarifaNote(entry);
     const source = node.querySelector(".fare-source");
-    source.href = entry.fonte;
-    source.target = "_blank";
-    source.rel = "noopener noreferrer";
+    const href = safeHref(entry.fonte, ["https://", "http://"]);
+    if (href) {
+      source.href = href;
+      source.target = "_blank";
+      source.rel = "noopener noreferrer";
+    } else {
+      source.removeAttribute("href");
+    }
     source.textContent = `Fonte${entry.fonteData ? ` (${entry.fonteData.split("-").reverse().join("/")})` : ""}`;
     list.append(node);
   }

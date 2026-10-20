@@ -208,17 +208,40 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {} } =
 
   const state = { municipio: null, shard: null, local: null };
   let municipiosCache = [];
+  let nameTimer;
 
   const say = (text) => {
     chosen.textContent = text;
   };
 
-  const selectPlace = (local) => {
+  let geoToken = 0;
+  const clearPlaceInputs = () => {
+    for (const id of ["zona", "secao", "local-busca", "busca-local-nome"]) if ($(id)) $(id).value = "";
+  };
+  const resetHelpers = () => {
+    geoToken += 1;
+    clearTimeout(nameTimer);
+    if (nearbyList) {
+      nearbyList.replaceChildren();
+      nearbyList.hidden = true;
+    }
+    clearPlaceInputs();
+  };
+
+  const selectPlace = (local, { fromSection = false, focusSummary = false } = {}) => {
     state.local = local;
+    if (!fromSection) {
+      $("zona").value = "";
+      $("secao").value = "";
+    }
     hiddenLocal.value = local.id;
     const sections = `zona ${local.zona}`;
     say(`Local escolhido: ${titleCase(local.nome)}, ${titleCase(local.endereco)} (${sections}).`);
     if (nearbyList) nearbyList.hidden = true;
+    if (focusSummary) {
+      chosen.tabIndex = -1;
+      chosen.focus();
+    }
     onPlace(local, state.shard);
   };
 
@@ -231,6 +254,7 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {} } =
     state.municipio = entry;
     state.shard = null;
     clearPlace();
+    resetHelpers();
     hiddenMunicipio.value = entry.cd;
     searchInput.value = `${titleCase(entry.nome)} (${entry.uf})`;
     if (ufSelect.value !== entry.uf) ufSelect.value = entry.uf;
@@ -282,6 +306,7 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {} } =
       state.shard = null;
       hiddenMunicipio.value = "";
       clearPlace();
+      resetHelpers();
       onMunicipio(null, null);
       say("O local escolhido aparece aqui.");
     }
@@ -292,6 +317,14 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {} } =
       searchInput.dispatchEvent(new Event("input"));
     }
   });
+
+  const invalidateLocal = () => {
+    if (!state.local) return;
+    clearPlace();
+    say(state.shard ? "Informe zona e seção, ou busque pelo nome do local." : "O local escolhido aparece aqui.");
+    onPlace(null, state.shard);
+  };
+  for (const id of ["zona", "secao", "local-busca"]) $(id).addEventListener("input", invalidateLocal);
 
   const requireShard = () => {
     if (!state.municipio) {
@@ -315,8 +348,31 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {} } =
       say("Não achamos essa zona e seção neste município. Confira os números no comprovante ou no e-Título.");
       return null;
     }
-    selectPlace(local);
+    selectPlace(local, { fromSection: true });
     return local;
+  }
+
+  /**
+   * Re-resolves the place from whatever is typed. Returns { local, ok }:
+   * ok=false means the user typed something that did not resolve (stop and show the message).
+   */
+  function resolve() {
+    const zona = $("zona").value.trim();
+    const secao = $("secao").value.trim();
+    if (zona || secao) {
+      if (!zona || !secao) {
+        say("Informe zona e seção juntas.");
+        return { local: null, ok: false };
+      }
+      const local = lookupBySection();
+      return { local, ok: Boolean(local) };
+    }
+    if (state.local) return { local: state.local, ok: true };
+    if ($("local-busca").value.trim()) {
+      say("Escolha o local na lista que aparece ao digitar o nome.");
+      return { local: null, ok: false };
+    }
+    return { local: null, ok: true };
   }
   $("achar-secao").addEventListener("click", lookupBySection);
   for (const id of ["zona", "secao"]) {
@@ -341,8 +397,8 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {} } =
       }));
     },
     onPick(local) {
-      $("local-busca").value = titleCase(local.nome);
       selectPlace(local);
+      $("local-busca").value = titleCase(local.nome);
     },
   });
 
@@ -360,7 +416,7 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {} } =
       const button = document.createElement("button");
       button.type = "button";
       button.textContent = `${placeLabel(local)}${km === undefined ? "" : ` - ${formatKm(km)}`}`;
-      button.addEventListener("click", () => selectPlace(local));
+      button.addEventListener("click", () => selectPlace(local, { focusSummary: true }));
       li.append(button);
       nearbyList.append(li);
     }
@@ -368,7 +424,6 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {} } =
     nearbyList.setAttribute("aria-label", heading);
   };
 
-  let nameTimer;
   $("busca-local-nome")?.addEventListener("input", (event) => {
     clearTimeout(nameTimer);
     nameTimer = setTimeout(() => {
@@ -394,13 +449,15 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {} } =
       return;
     }
     say("Procurando sua localização... (ela fica só no seu celular)");
+    const myToken = ++geoToken;
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        if (myToken !== geoToken || shard !== state.shard) return;
         const rows = nearestPlaces(shard, position.coords.latitude, position.coords.longitude, 10);
         say("Locais mais próximos de você. Toque no seu.");
         renderNearby(rows, "Locais perto de você");
       },
-      () => say("Não conseguimos pegar a localização. Permita o acesso ou busque pelo nome do local."),
+      () => myToken === geoToken && say("Não conseguimos pegar a localização. Permita o acesso ou busque pelo nome do local."),
       { enableHighAccuracy: false, timeout: 15000, maximumAge: 300000 },
     );
   });
@@ -410,5 +467,6 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {} } =
     shard: () => state.shard,
     local: () => state.local,
     lookupBySection,
+    resolve,
   };
 }

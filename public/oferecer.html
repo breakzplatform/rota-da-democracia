@@ -43,7 +43,7 @@
       <div class="wrap">
         <p class="eyebrow">Oferecer</p>
         <h1 id="titulo">Posso dar carona</h1>
-        <p class="lede">A vaga é de graça. Quem precisar combina com você pelo WhatsApp, no horário de saída.</p>
+        <p class="lede">A vaga é de graça. Quem precisar combina com você pelo contato que você deixar, no horário de saída.</p>
       </div>
     </section>
     <div class="wrap stack">
@@ -55,11 +55,17 @@
           <input id="nome" name="nome" maxlength="30" autocomplete="nickname" required placeholder="Primeiro nome ou apelido">
           <p class="hint">Até 30 caracteres. Pode ser só o primeiro nome.</p>
         </div>
-        <div class="field">
-          <label for="whatsapp">WhatsApp</label>
-          <input id="whatsapp" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" required placeholder="(81) 98888-1200">
-          <p id="whatsapp-ajuda" class="hint">Com DDD. O número não aparece na lista. Só quem pede a vaga vê, depois de uma verificação.</p>
-        </div>
+        <fieldset class="contact-type">
+          <legend>Como a pessoa fala com você</legend>
+          <label class="check"><input type="radio" name="contatoTipo" id="contatoTipo-whatsapp" value="whatsapp" checked><span>Número do WhatsApp</span></label>
+          <label class="check"><input type="radio" name="contatoTipo" id="contatoTipo-whatsapp_usuario" value="whatsapp_usuario"><span>@usuário do WhatsApp</span></label>
+          <label class="check"><input type="radio" name="contatoTipo" id="contatoTipo-email" value="email"><span>E-mail</span></label>
+          <div class="field">
+            <label for="contato" id="contato-rotulo">Número do WhatsApp</label>
+            <input id="contato" name="contato" type="tel" inputmode="tel" autocomplete="tel" maxlength="100" required placeholder="(81) 98888-1200" aria-describedby="contato-ajuda">
+            <p id="contato-ajuda" class="hint">Com DDD. O contato não aparece na lista. Só quem pede a vaga vê, depois de uma verificação.</p>
+          </div>
+        </fieldset>
         <div class="field">
             <label for="uf">Estado</label>
             <select id="uf" name="uf" required>
@@ -169,7 +175,7 @@
           </label>
           <label class="check">
             <input type="checkbox" id="combinaWhatsapp" name="combinaWhatsapp" value="true" required>
-            <span>Só vou levar quem combinar antes comigo pelo WhatsApp: não pego desconhecidos</span>
+            <span>Só vou levar quem combinar antes comigo pelo contato que deixei: não pego desconhecidos</span>
           </label>
           <label class="check">
             <input type="checkbox" id="veiculoParticular" name="veiculoParticular" value="true" required>
@@ -203,7 +209,7 @@
           <button type="button" class="btn" id="copiar-texto">Copiar texto</button>
         </div>
       </section>
-      <p class="guarantee">A carona só é confirmada entre as pessoas, pelo WhatsApp. O site não confirma nem garante caronas.</p>
+      <p class="guarantee">A carona só é confirmada entre as pessoas, pelo contato combinado. O site não confirma nem garante caronas.</p>
       <aside class="legal" id="aviso-legal" aria-label="Aviso legal">
         <p class="eyebrow">Aviso legal</p>
         <p>A carona é gratuita e espontânea. É proibido cobrar, inclusive dividir a gasolina. Também é proibido pedir voto, falar de candidato ou levar material de campanha. A carona vale para ir ao local de votação e para voltar. Em caso de dúvida, consulte a <a href="https://www.tse.jus.br/" target="_blank" rel="noopener noreferrer">Justiça Eleitoral<span class="sr-only"> (abre em nova aba)</span></a>.</p>

@@ -1,6 +1,6 @@
 import {
   $, api, closeDialog, createTurnstile, describeError, isoToTime, NO_TURNSTILE_MESSAGE, openDialog,
-  setBusy, showMessage, spokenTime, titleCase,
+  setBusy, showMessage, spokenTime, titleCase, copyText, safeHref, guardClosed,
 } from "./common.js";
 import { initPlacePicker } from "./places.js";
 
@@ -54,8 +54,14 @@ form.addEventListener("submit", async (event) => {
     $("municipio-busca").focus();
     return;
   }
+  const resolved = picker.resolve();
+  if (!resolved.ok) {
+    showMessage(error, "Confira a zona e a seção, ou escolha o local na lista, antes de buscar.");
+    $("zona").focus();
+    return;
+  }
   const params = new URLSearchParams({ municipio: municipio.cd });
-  const local = picker.local();
+  const local = resolved.local;
   if (local) params.set("localId", local.id);
   const bairro = $("bairro").value.trim();
   if (bairro) params.set("bairro", bairro);
@@ -86,68 +92,120 @@ const contactDialog = $("dialogo-contato");
 const ciente = $("ciente");
 const contactError = $("erro-contato");
 const waLink = $("link-whatsapp");
-let contactOfferId = null;
-let contactBusy = false;
-let contactDone = false;
+const revealButton = $("revelar-contato");
+const copyButton = $("copiar-contato");
+const summary = $("resumo-contato");
+summary.setAttribute("aria-live", "polite");
 let contactTurnstile = null;
+// Each open gets its own session; late responses from an older one are dropped.
+let contactSession = 0;
+let contactOffer = null;
+let contactBusy = false;
 
-async function tryReveal() {
-  if (contactBusy || contactDone || !contactOfferId) return;
-  const token = contactTurnstile?.token();
-  if (!ciente.checked) return;
-  if (!token) {
-    showMessage(contactError, "");
-    $("resumo-contato").setAttribute("aria-busy", "true");
-    return;
+function updateRevealState() {
+  revealButton.disabled = contactBusy || !ciente.checked || !contactTurnstile?.token();
+}
+
+function resetContactView() {
+  waLink.hidden = true;
+  waLink.removeAttribute("href");
+  copyButton.hidden = true;
+  copyButton.onclick = null;
+  revealButton.hidden = false;
+}
+
+function renderContact(result) {
+  const { tipo, valor, link, aviso } = result;
+  revealButton.hidden = true;
+  const note = aviso ? ` ${aviso}` : "";
+  if (tipo === "whatsapp") {
+    const href = safeHref(link, ["https://wa.me/"]);
+    summary.textContent = `WhatsApp: ${valor}.${note}`;
+    if (href) {
+      waLink.href = href;
+      waLink.textContent = "Abrir conversa no WhatsApp";
+      waLink.target = "_blank";
+      waLink.hidden = false;
+      waLink.focus();
+    }
+  } else if (tipo === "whatsapp_usuario") {
+    summary.textContent = `Usuário do WhatsApp: ${valor}. Abra o WhatsApp e procure por ${valor}.${note}`;
+    copyButton.hidden = false;
+    copyButton.textContent = "Copiar usuário";
+    copyButton.onclick = async () => {
+      copyButton.textContent = (await copyText(valor)) ? "Usuário copiado" : "Copie manualmente";
+    };
+    copyButton.focus();
+  } else if (tipo === "email") {
+    const href = safeHref(link, ["mailto:"]);
+    summary.textContent = `E-mail: ${valor}.${note}`;
+    if (href) {
+      waLink.href = href;
+      waLink.textContent = "Escrever e-mail";
+      waLink.removeAttribute("target");
+      waLink.hidden = false;
+      waLink.focus();
+    }
+  } else {
+    summary.textContent = `Contato: ${valor}.${note}`;
   }
+}
+
+async function reveal() {
+  const session = contactSession;
+  const offerId = contactOffer;
+  const token = contactTurnstile?.token();
+  if (contactBusy || !offerId || !ciente.checked) return;
+  if (!token) return showMessage(contactError, NO_TURNSTILE_MESSAGE);
   contactBusy = true;
+  updateRevealState();
   showMessage(contactError, "");
   try {
-    const result = await api(`/api/ofertas/${contactOfferId}/contato`, {
+    const result = await api(`/api/ofertas/${offerId}/contato`, {
       method: "POST",
       body: { turnstile: token, ciente: true },
     });
-    contactDone = true;
-    waLink.href = result.waLink;
-    waLink.target = "_blank";
-    waLink.hidden = false;
-    $("resumo-contato").textContent = `WhatsApp: ${result.whatsapp}. ${result.aviso}`;
-    waLink.focus();
+    if (session !== contactSession) return;
+    renderContact(result);
   } catch (failure) {
+    if (session !== contactSession) return;
     showMessage(contactError, describeError(failure));
     contactTurnstile.reset();
   } finally {
-    contactBusy = false;
-    $("resumo-contato").removeAttribute("aria-busy");
+    if (session === contactSession) {
+      contactBusy = false;
+      updateRevealState();
+    }
   }
 }
 
 function openContact(button) {
-  contactOfferId = button.dataset.id;
-  contactDone = false;
+  contactSession += 1;
+  contactOffer = button.dataset.id;
   contactBusy = false;
   ciente.checked = false;
-  waLink.hidden = true;
+  resetContactView();
   showMessage(contactError, "");
-  $("resumo-contato").setAttribute("aria-live", "polite");
-  $("resumo-contato").textContent =
-    `Carona até ${titleCase(button.dataset.local || "")}. Marque o aviso e aguarde a verificação para ver o contato.`;
+  summary.textContent =
+    `Carona até ${titleCase(button.dataset.local || "")}. Marque o aviso, aguarde a verificação e toque em Ver contato.`;
   openDialog(contactDialog, button);
   if (contactTurnstile) contactTurnstile.reset();
-  else contactTurnstile = createTurnstile($("turnstile"), "contato", () => tryReveal());
+  else contactTurnstile = createTurnstile($("turnstile"), "contato", updateRevealState);
+  updateRevealState();
 }
 
-ciente.addEventListener("change", () => {
-  if (ciente.checked && !contactTurnstile?.token()) {
-    showMessage(contactError, "");
-    $("resumo-contato").textContent = "Aguarde a verificação de segurança terminar. O contato aparece em seguida.";
-  }
-  tryReveal();
-});
+ciente.addEventListener("change", updateRevealState);
+revealButton.addEventListener("click", reveal);
 $("fechar-contato").addEventListener("click", () => closeDialog(contactDialog));
 contactDialog.addEventListener("close", () => {
-  waLink.hidden = true;
-  contactDone = false;
+  contactSession += 1;
+  contactOffer = null;
+  contactBusy = false;
+  ciente.checked = false;
+  resetContactView();
+  summary.textContent = "";
+  contactTurnstile?.reset();
+  updateRevealState();
 });
 
 // ---- Report dialog -------------------------------------------------
@@ -198,3 +256,5 @@ list.addEventListener("click", (event) => {
   if (button.dataset.acao === "contato") openContact(button);
   else if (button.dataset.acao === "denunciar") openReport(button);
 });
+
+guardClosed(document.querySelector("main .stack"));

@@ -61,6 +61,39 @@ export function loadConfig() {
   return configPromise;
 }
 
+/** Returns `url` only when it starts with one of the allowed prefixes; otherwise null. */
+export function safeHref(url, prefixes) {
+  return typeof url === "string" && prefixes.some((prefix) => url.startsWith(prefix)) ? url : null;
+}
+
+export const CLOSED_MESSAGE =
+  "A eleição passou. Obrigado por ajudar alguém a votar. Os dados foram apagados.";
+
+/** When the site is closed, replaces `target`'s content with a thank-you message. */
+export async function guardClosed(target) {
+  try {
+    const status = await api("/api/status");
+    if (status.encerrado) showClosed(target);
+    return Boolean(status.encerrado);
+  } catch (failure) {
+    if (failure instanceof ApiFailure && failure.code === "encerrado") showClosed(target);
+    return false;
+  }
+}
+
+export function showClosed(target) {
+  if (!target) return;
+  const box = document.createElement("section");
+  box.className = "panel";
+  box.setAttribute("role", "status");
+  const heading = document.createElement("h2");
+  heading.textContent = "Obrigado!";
+  const text = document.createElement("p");
+  text.textContent = CLOSED_MESSAGE;
+  box.append(heading, text);
+  target.replaceChildren(box);
+}
+
 // ---- Time (election day, BRT) ---------------------------------------
 
 /** "09:40" -> "2026-10-25T09:40:00-03:00" */

@@ -1,6 +1,6 @@
 import {
   $, api, ApiFailure, closeDialog, describeError, focusField, clearInvalid, isoToTime, openDialog,
-  setBusy, showMessage, timeToIso, titleCase,
+  setBusy, showMessage, timeToIso, titleCase, guardClosed,
 } from "./common.js";
 import { loadMunicipios } from "./places.js";
 
@@ -13,7 +13,9 @@ const errorBox = $("erro-gerenciar");
 
 function showView(offer, municipioName) {
   $("ver-nome").textContent = offer.nome;
-  $("ver-whatsapp").textContent = offer.whatsapp;
+  const kinds = { whatsapp: "WhatsApp (número)", whatsapp_usuario: "WhatsApp (usuário)", email: "E-mail" };
+  $("ver-contato-tipo").textContent = kinds[offer.contatoTipo] || "Contato";
+  $("ver-whatsapp").textContent = offer.contato;
   $("ver-municipio").textContent = municipioName;
   $("ver-local").textContent = titleCase(offer.localNome);
   $("ver-bairro").textContent = offer.bairroSaida;
@@ -106,3 +108,4 @@ $("confirmar-cancelamento").addEventListener("click", async () => {
 });
 
 load();
+guardClosed(document.querySelector("main .stack"));
