@@ -429,7 +429,8 @@ p {
   color: var(--green-text);
 }
 
-.action h2 {
+.action h2,
+.action h3 {
   margin: 0;
   font-family: var(--font-display);
   font-size: clamp(1.9rem, 5vw, 2.35rem);
@@ -570,14 +571,33 @@ p {
 fieldset {
   display: grid;
   gap: 1rem;
-  margin: 0;
-  border: 0;
-  padding: 0;
   min-inline-size: 0;
 }
 
+/* Only reset the browser's fieldset box; a .panel.form keeps the panel's border and padding. */
+.fields,
+fieldset {
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.panel.form > fieldset:not(:first-child),
+.panel.form > .place-picker:not(:first-child) {
+  margin-top: 0.75rem;
+}
+
+/* The banner's offset shadow eats into the stack gap. */
+.stack > .transit-banner + .panel {
+  margin-top: 0.45rem;
+}
+
+legend + * {
+  margin-top: 0.4rem;
+}
+
 legend {
-  margin-bottom: 0.15rem;
+  margin-bottom: 0.6rem;
   padding: 0;
   font-family: var(--font-display);
   font-size: 1.45rem;
@@ -1306,6 +1326,44 @@ dialog p {
 
 .hero .deadline-banner {
   margin-top: 1.35rem;
+}
+
+.hero-cta {
+  margin-top: 1.5rem;
+}
+
+.hero .route-note {
+  max-width: 38rem;
+  margin: 1.5rem 0 0;
+  padding: 0.8rem 1rem;
+  border-left: 6px solid var(--accent);
+  background: rgba(0, 0, 0, 0.22);
+  font-weight: 500;
+}
+
+.rides-hero {
+  --focus: #ffe403;
+  background: #017016;
+  color: #ffffff;
+}
+
+.rides-hero .eyebrow {
+  color: #ffe403;
+}
+
+.hero-title {
+  max-width: 16ch;
+  margin: 0.55rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 9vw, 5.6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 0.86;
+  text-transform: uppercase;
+}
+
+.hero-title .accent {
+  color: var(--accent);
 }
 
 .route-note a {
