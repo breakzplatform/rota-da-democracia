@@ -110,7 +110,7 @@ Só os dados da oferta de carona: primeiro nome ou apelido, WhatsApp, ponto de e
 
 Fonte: regra do próprio site (página de privacidade).
 
-## Esse site é de alguma campanha ou candidato? Tem ligação com candidato ou partido?
+## Esse site é de alguma campanha ou candidato?
 
 Não. É uma iniciativa voluntária e apartidária, sem vínculo com candidato, partido, campanha ou governo. Não pedimos voto e não falamos de candidato. Os dados dos locais de votação vêm do TSE (Dados Abertos).
 
