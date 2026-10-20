@@ -38,7 +38,7 @@ Fonte: [TSE, Temas Selecionados: transporte de eleitor](https://temasselecionado
 
 ## O site confirma ou garante a carona?
 
-Não. O site só aproxima quem oferece de quem procura. A carona é combinada e confirmada entre as pessoas, pelo WhatsApp. Combine horário e ponto de encontro com antecedência e tenha sempre um plano B, como o ônibus gratuito.
+Não. O site só aproxima quem oferece de quem procura. A carona é combinada e confirmada entre as pessoas, pelo contato combinado (e-mail, WhatsApp, Instagram, Bluesky ou outro aplicativo de mensagem). Combine horário e ponto de encontro com antecedência e tenha sempre um plano B, como o ônibus gratuito.
 
 Fonte: regra do próprio site.
 
@@ -106,7 +106,7 @@ Fonte: [TSE: Manual do Eleitor 2026, capítulo 2](https://www.tse.jus.br/eleicoe
 
 ## Que dados vocês guardam e quando são apagados?
 
-Só os dados da oferta de carona: primeiro nome ou apelido, WhatsApp, ponto de encontro (bairro e referência, não o endereço de casa), horário, vagas, local de votação e, se você quiser, uma observação. De quem procura carona não guardamos nada, só um código criptografado do IP para limitar abusos. Tudo é apagado automaticamente no domingo, 25 de outubro, às 17h, quando a votação termina (horário de Brasília), e o site passa a mostrar uma página de agradecimento. A geolocalização, quando você usa "perto de mim", fica só no seu celular e nunca sai dele. Veja a página de privacidade.
+Só os dados da oferta de carona: primeiro nome ou apelido, um contato (e-mail, @usuário do WhatsApp, Instagram, Bluesky, outro link de mensagem (Telegram, Signal…) ou número do WhatsApp), ponto de encontro (bairro e referência, não o endereço de casa), horário, vagas, local de votação e, se você quiser, uma observação. Recomendamos o e-mail ou o @usuário do WhatsApp, que não mostram o seu número. De quem procura carona não guardamos nada, só um código criptografado do IP para limitar abusos. Tudo é apagado automaticamente no domingo, 25 de outubro, às 17h, quando a votação termina (horário de Brasília), e o site passa a mostrar uma página de agradecimento. A geolocalização, quando você usa "perto de mim", fica só no seu celular e nunca sai dele. Veja a página de privacidade.
 
 Fonte: regra do próprio site (página de privacidade).
 

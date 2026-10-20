@@ -27,6 +27,7 @@ interface OfferReportRow extends ReportStats {
   oculta: number;
   contato_tipo: ContactType;
   contato: string;
+  contato_rotulo: string | null;
 }
 
 interface GroupReportRow extends ReportStats {
@@ -73,7 +74,7 @@ async function listPending(request: Request, env: Env): Promise<Response> {
   const detalhe = new URL(request.url).searchParams.get("detalhe") === "1";
   const [offers, groups] = await Promise.all([
     env.DB.prepare(
-      `SELECT o.id, o.municipio, o.nome, o.ponto_encontro, o.local_nome, o.nota, o.oculta, o.contato_tipo, o.contato,
+      `SELECT o.id, o.municipio, o.nome, o.ponto_encontro, o.local_nome, o.nota, o.oculta, o.contato_tipo, o.contato, o.contato_rotulo,
          ${STATS}
        FROM offers o JOIN reports r ON r.offer_id = o.id
        GROUP BY o.id HAVING pendentes > 0`,
@@ -92,7 +93,11 @@ async function listPending(request: Request, env: Env): Promise<Response> {
       texto: offerSummary(row),
       oculta: row.oculta === 1,
       ...stats(row),
-      ...(detalhe ? { contatoTipo: row.contato_tipo, contato: displayContact(row.contato_tipo, row.contato) } : {}),
+      ...(detalhe ? {
+            contatoTipo: row.contato_tipo,
+            contato: displayContact(row.contato_tipo, row.contato),
+            ...(row.contato_rotulo ? { contatoRotulo: row.contato_rotulo } : {}),
+          } : {}),
     })),
     ...groups.results.map((row) => ({
       tipo: "grupo" as const,

@@ -142,6 +142,27 @@ function renderContact(result) {
       waLink.hidden = false;
       waLink.focus();
     }
+  } else if (tipo === "instagram" || tipo === "bluesky") {
+    const network = tipo === "instagram" ? "Instagram" : "Bluesky";
+    const href = safeHref(link, tipo === "instagram" ? ["https://ig.me/m/"] : ["https://bsky.app/profile/"]);
+    summary.textContent = `${network}: ${valor}.${note}`;
+    if (href) {
+      waLink.href = href;
+      waLink.textContent = tipo === "instagram" ? "Mandar mensagem no Instagram" : "Abrir perfil no Bluesky e mandar mensagem";
+      waLink.target = "_blank";
+      waLink.hidden = false;
+      waLink.focus();
+    }
+  } else if (tipo === "outro") {
+    const href = safeHref(link, ["https://"]);
+    summary.textContent = `${result.rotulo || "Link"}: ${valor}.${note}`;
+    if (href) {
+      waLink.href = href;
+      waLink.textContent = `Abrir ${result.rotulo || "link"}`;
+      waLink.target = "_blank";
+      waLink.hidden = false;
+      waLink.focus();
+    }
   } else {
     summary.textContent = `Contato: ${valor}.${note}`;
   }

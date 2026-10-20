@@ -15,8 +15,8 @@ const errorBox = $("erro-gerenciar");
 
 function showView(offer, municipioName) {
   $("ver-nome").textContent = offer.nome;
-  const kinds = { whatsapp: "WhatsApp (número)", whatsapp_usuario: "WhatsApp (usuário)", email: "E-mail" };
-  $("ver-contato-tipo").textContent = kinds[offer.contatoTipo] || "Contato";
+  const kinds = { whatsapp: "WhatsApp (número)", whatsapp_usuario: "WhatsApp (usuário)", email: "E-mail", instagram: "Instagram", bluesky: "Bluesky" };
+  $("ver-contato-tipo").textContent = offer.contatoRotulo || kinds[offer.contatoTipo] || "Contato";
   $("ver-whatsapp").textContent = offer.contato;
   $("ver-municipio").textContent = municipioName;
   $("ver-local").textContent = titleCase(offer.localNome);

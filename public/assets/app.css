@@ -134,6 +134,27 @@
   margin-top: 0;
 }
 
+.badge-recomendado {
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.45rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.75em;
+  font-weight: 700;
+}
+
+.contact-type > .hint {
+  margin: 0.5rem 0 0;
+}
+
+.contact-warning {
+  margin: 0.7rem 0 0;
+  padding: 0.6rem 0.8rem;
+  border-left: 4px solid #b42318;
+  background: color-mix(in srgb, #b42318 10%, transparent);
+  font-weight: 600;
+}
+
 .contact-type > .field {
   margin-top: 0.9rem;
 }

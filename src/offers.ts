@@ -6,6 +6,7 @@ import {
   contactLink,
   displayContact,
   isContactType,
+  LINK_LABEL_MAX,
   normalizeContact,
   type ContactType,
 } from "./contact";
@@ -43,6 +44,7 @@ interface OfferRow {
   nome: string;
   contato_tipo: ContactType;
   contato: string;
+  contato_rotulo: string | null;
   municipio: string;
   local_id: string;
   local_nome: string;
@@ -98,6 +100,7 @@ function ownerView(row: OfferRow) {
     ...publicView(row),
     contatoTipo: row.contato_tipo,
     contato: displayContact(row.contato_tipo, row.contato),
+    ...(row.contato_rotulo ? { contatoRotulo: row.contato_rotulo } : {}),
     municipio: row.municipio,
     vagas: row.vagas,
     denuncias: row.denuncias,
@@ -150,10 +153,12 @@ export async function createOffer(request: Request, env: Env, deps: Deps): Promi
   const nome = requiredText(body, "nome", LIMITS.nome, "nome");
   const contatoTipo = body.contatoTipo;
   if (!isContactType(contatoTipo)) {
-    throw invalid("contatoTipo", "Escolha como as pessoas vão falar com você: WhatsApp, usuário do WhatsApp ou e-mail.");
+    throw invalid("contatoTipo", "Escolha como as pessoas vão falar com você: e-mail, usuário do WhatsApp, Instagram, Bluesky, outro link ou número do WhatsApp.");
   }
   const contato = typeof body.contato === "string" ? normalizeContact(contatoTipo, body.contato) : null;
   if (!contato) throw invalid("contato", CONTACT_ERRORS[contatoTipo]);
+  const contatoRotulo =
+    contatoTipo === "outro" ? requiredText(body, "contatoRotulo", LINK_LABEL_MAX, "nome do aplicativo") : null;
   if (!isMunicipioCode(body.municipio)) throw invalid("municipio", "Escolha o município.");
   const municipio = body.municipio;
   const localId = body.localId;
@@ -172,6 +177,7 @@ export async function createOffer(request: Request, env: Env, deps: Deps): Promi
     ["bairroSaida", bairroSaida],
     ["nota", nota],
     ["contato", contatoTipo === "whatsapp" ? null : contato],
+    ["contatoRotulo", contatoRotulo],
   ]);
 
   const ipHash = await hashIp(clientIp(request), env.IP_SALT);
@@ -190,10 +196,10 @@ export async function createOffer(request: Request, env: Env, deps: Deps): Promi
 
     const timestamp = now.toISOString();
     const inserted = await env.DB.prepare(
-      `INSERT INTO offers (id, token_hash, nome, contato_tipo, contato, municipio, local_id, local_nome, ponto_encontro,
+      `INSERT INTO offers (id, token_hash, nome, contato_tipo, contato, contato_rotulo, municipio, local_id, local_nome, ponto_encontro,
          bairro_saida, bairro_busca, saida, vagas, vagas_livres, nota, acessivel, aceite, sem_vinculo,
          combina_whatsapp, veiculo_particular, sem_pagamento, maior_habilitado, um_trajeto, declarado_em, created_at, updated_at)
-       SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, 1, 1, 1, 1, 1, ?, ?, ?
+       SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, 1, 1, 1, 1, 1, ?, ?, ?
        WHERE ${NOT_PURGED}`,
     )
       .bind(
@@ -202,6 +208,7 @@ export async function createOffer(request: Request, env: Env, deps: Deps): Promi
         nome,
         contatoTipo,
         contato,
+        contatoRotulo,
         municipio,
         local.id,
         local.nome,
@@ -288,6 +295,7 @@ export async function revealContact(request: Request, env: Env, deps: Deps, id: 
   return json({
     tipo: row.contato_tipo,
     valor: displayContact(row.contato_tipo, row.contato),
+    ...(row.contato_rotulo ? { rotulo: row.contato_rotulo } : {}),
     ...(link ? { link } : {}),
     aviso: CONFIRMATION_NOTICE,
   });

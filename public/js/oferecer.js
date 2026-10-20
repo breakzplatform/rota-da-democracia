@@ -9,10 +9,14 @@ const picker = initPlacePicker();
 const form = $("form-oferta");
 const errorBox = $("erro-oferta");
 
+const REVEAL_NOTE = "O contato não aparece na lista. Só aparece para quem pede a vaga, depois de uma checagem contra robôs.";
 const CONTACT_KINDS = {
-  whatsapp: { label: "Número do WhatsApp", type: "tel", mode: "tel", complete: "tel", placeholder: "(81) 9 0000-0000", help: "Com DDD. O contato não aparece na lista. Só aparece para quem pede a vaga, depois de uma checagem contra robôs." },
-  whatsapp_usuario: { label: "Usuário do WhatsApp", type: "text", mode: "text", complete: "off", placeholder: "@maria.silva", help: "O nome de usuário que você criou no WhatsApp. Só aparece para quem pede a vaga, depois de uma checagem contra robôs." },
-  email: { label: "E-mail", type: "email", mode: "email", complete: "email", placeholder: "maria@exemplo.com", help: "Só aparece para quem pede a vaga, depois de uma checagem contra robôs." },
+  email: { label: "E-mail", type: "email", mode: "email", complete: "email", placeholder: "maria@exemplo.com", help: REVEAL_NOTE },
+  whatsapp_usuario: { label: "Usuário do WhatsApp", type: "text", mode: "text", complete: "off", placeholder: "@maria.silva", help: `O nome de usuário que você criou no WhatsApp. ${REVEAL_NOTE}` },
+  instagram: { label: "Usuário do Instagram", type: "text", mode: "text", complete: "off", placeholder: "@maria.silva", help: `A pessoa vai abrir uma mensagem direta para você no Instagram. ${REVEAL_NOTE}` },
+  bluesky: { label: "Usuário do Bluesky", type: "text", mode: "text", complete: "off", placeholder: "@maria.bsky.social", help: `Como maria.bsky.social ou o seu domínio. A pessoa abre o seu perfil e manda mensagem por lá. ${REVEAL_NOTE}` },
+  outro: { label: "Link para falar com você", type: "url", mode: "url", complete: "off", placeholder: "https://t.me/maria", help: `Link https de Telegram (t.me), Signal (signal.me), Messenger (m.me), Matrix (matrix.to) ou Discord. ${REVEAL_NOTE}` },
+  whatsapp: { label: "Número do WhatsApp", type: "tel", mode: "tel", complete: "tel", placeholder: "(81) 9 0000-0000", help: `Com DDD. ${REVEAL_NOTE}` },
 };
 const contactInput = $("contato");
 const selectedKind = () => document.querySelector('input[name="contatoTipo"]:checked').value;
@@ -25,6 +29,10 @@ function applyKind() {
   contactInput.value = "";
   $("contato-rotulo").textContent = kind.label;
   $("contato-ajuda").textContent = kind.help;
+  $("aviso-numero").hidden = selectedKind() !== "whatsapp";
+  const isLink = selectedKind() === "outro";
+  $("campo-rotulo").hidden = !isLink;
+  $("contatoRotulo").required = isLink;
 }
 document.querySelectorAll('input[name="contatoTipo"]').forEach((radio) => radio.addEventListener("change", applyKind));
 contactInput.addEventListener("input", () => {
@@ -34,7 +42,7 @@ applyKind();
 
 const turnstile = createTurnstile($("turnstile"), "oferecer");
 
-const FIELD_IDS = { municipio: "municipio-busca", localId: "local-busca", contatoTipo: "contatoTipo-whatsapp" };
+const FIELD_IDS = { municipio: "municipio-busca", localId: "local-busca", contatoTipo: "contatoTipo-email", contatoRotulo: "contatoRotulo" };
 const DECLARATIONS = ["aceite", "semVinculo", "combinaWhatsapp", "veiculoParticular", "semPagamento", "maiorHabilitado", "umTrajeto"];
 
 function fail(message, field) {
@@ -58,6 +66,7 @@ form.addEventListener("submit", async (event) => {
     nome: $("nome").value.trim(),
     contatoTipo: selectedKind(),
     contato: contactInput.value.trim(),
+    ...(selectedKind() === "outro" ? { contatoRotulo: $("contatoRotulo").value.trim() } : {}),
     municipio: municipio.cd,
     localId: local.id,
     pontoEncontro: $("pontoEncontro").value.trim(),

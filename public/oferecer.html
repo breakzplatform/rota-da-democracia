@@ -60,13 +60,23 @@
         </div>
         <fieldset class="contact-type">
           <legend>Como a pessoa fala com você</legend>
-          <label class="check"><input type="radio" name="contatoTipo" id="contatoTipo-whatsapp" value="whatsapp" checked><span>Número do WhatsApp</span></label>
-          <label class="check"><input type="radio" name="contatoTipo" id="contatoTipo-whatsapp_usuario" value="whatsapp_usuario"><span>@usuário do WhatsApp</span></label>
-          <label class="check"><input type="radio" name="contatoTipo" id="contatoTipo-email" value="email"><span>E-mail</span></label>
+          <label class="check"><input type="radio" name="contatoTipo" id="contatoTipo-email" value="email" checked><span>E-mail <strong class="badge-recomendado">Recomendado</strong></span></label>
+          <label class="check"><input type="radio" name="contatoTipo" id="contatoTipo-whatsapp_usuario" value="whatsapp_usuario"><span>@usuário do WhatsApp <strong class="badge-recomendado">Recomendado</strong></span></label>
+          <label class="check"><input type="radio" name="contatoTipo" id="contatoTipo-instagram" value="instagram"><span>Instagram (mensagem direta)</span></label>
+          <label class="check"><input type="radio" name="contatoTipo" id="contatoTipo-bluesky" value="bluesky"><span>Bluesky (mensagem direta)</span></label>
+          <label class="check"><input type="radio" name="contatoTipo" id="contatoTipo-outro" value="outro"><span>Outro link (Telegram, Signal…)</span></label>
+          <label class="check"><input type="radio" name="contatoTipo" id="contatoTipo-whatsapp" value="whatsapp"><span>Número do WhatsApp</span></label>
+          <p class="hint">E-mail e @usuário do WhatsApp não mostram o seu número.</p>
+          <p id="aviso-numero" class="contact-warning" role="status" hidden>Não recomendado: seu número fica visível para quem pedir a vaga e pode ser salvo. Prefira o @usuário do WhatsApp ou o e-mail.</p>
+          <div class="field" id="campo-rotulo" hidden>
+            <label for="contatoRotulo">Qual aplicativo</label>
+            <input id="contatoRotulo" name="contatoRotulo" maxlength="20" autocomplete="off" placeholder="Telegram" aria-describedby="rotulo-ajuda">
+            <p id="rotulo-ajuda" class="hint">Até 20 caracteres, como Telegram ou Signal.</p>
+          </div>
           <div class="field">
-            <label for="contato" id="contato-rotulo">Número do WhatsApp</label>
-            <input id="contato" name="contato" type="tel" inputmode="tel" autocomplete="tel" maxlength="100" required placeholder="(81) 9 0000-0000" aria-describedby="contato-ajuda">
-            <p id="contato-ajuda" class="hint">Com DDD. O contato não aparece na lista. Só aparece para quem pede a vaga, depois de uma checagem contra robôs.</p>
+            <label for="contato" id="contato-rotulo">E-mail</label>
+            <input id="contato" name="contato" type="email" inputmode="email" autocomplete="email" maxlength="100" required placeholder="maria@exemplo.com" aria-describedby="contato-ajuda">
+            <p id="contato-ajuda" class="hint">O contato não aparece na lista. Só aparece para quem pede a vaga, depois de uma checagem contra robôs.</p>
           </div>
         </fieldset>
         <div id="seletor-local" class="place-picker"><p class="hint">O seletor de local precisa de JavaScript.</p></div>

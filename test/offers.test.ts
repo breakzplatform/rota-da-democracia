@@ -445,10 +445,109 @@ describe("contact types", () => {
     ["email", "vote13@exemplo.com"],
     ["email", "lula@exemplo.com"],
     ["email", "maria@pt.org.br"],
+    ["instagram", "@lula.oficial"],
+    ["bluesky", "bolsonaro.bsky.social"],
   ])("screens %s contacts for campaign content (%s)", async (contatoTipo, contato) => {
     const response = await call("POST", "/api/ofertas", { body: validOffer({ contatoTipo, contato }) });
     expect(response.status).toBe(422);
     expect(await readJson(response)).toMatchObject({ error: "conteudo_de_campanha", campo: "contato" });
+  });
+});
+
+describe("social and link contacts", () => {
+  async function reveal(id: string) {
+    const response = await call("POST", `/api/ofertas/${id}/contato`, { body: { turnstile: TURNSTILE.contato, ciente: true } });
+    expect(response.status).toBe(200);
+    return readJson<Record<string, unknown>>(response);
+  }
+
+  async function rejected(body: Record<string, unknown>, campo = "contato") {
+    const response = await call("POST", "/api/ofertas", { body: validOffer(body) });
+    expect(response.status).toBe(400);
+    expect(await readJson(response)).toMatchObject({ error: "campo_invalido", campo });
+  }
+
+  it("Instagram: normalized, revealed with @ and an ig.me DM link", async () => {
+    const { id, token } = await createOffer({ contatoTipo: "instagram", contato: " https://www.instagram.com/Maria.Silva_81/ " });
+    const row = await env.DB.prepare("SELECT contato FROM offers WHERE id = ?").bind(id).first();
+    expect(row).toEqual({ contato: "maria.silva_81" });
+    expect(await reveal(id)).toMatchObject({ tipo: "instagram", valor: "@maria.silva_81", link: "https://ig.me/m/maria.silva_81" });
+    const owner = await readJson(await call("GET", `/api/ofertas/${id}`, { token: token }));
+    expect(owner).toMatchObject({ contatoTipo: "instagram", contato: "@maria.silva_81" });
+  });
+
+  it.each(["", "@", ".maria", "maria.", "ma..ria", "maria silva", "maria-silva", "a".repeat(31)])(
+    "rejects the Instagram handle %j",
+    (contato) => rejected({ contatoTipo: "instagram", contato }),
+  );
+
+  it("Bluesky: normalized, revealed with @ and a profile link", async () => {
+    const { id } = await createOffer({ contatoTipo: "bluesky", contato: "@Maria.BSKY.social" });
+    expect(await reveal(id)).toMatchObject({
+      tipo: "bluesky",
+      valor: "@maria.bsky.social",
+      link: "https://bsky.app/profile/maria.bsky.social",
+    });
+    const custom = await createOffer({ contatoTipo: "bluesky", contato: "https://bsky.app/profile/maria.dev.br" });
+    expect(await reveal(custom.id)).toMatchObject({ valor: "@maria.dev.br" });
+  });
+
+  it.each(["maria", "maria.", "-maria.bsky.social", "maria..bsky.social", "maria.123", "maria_silva.bsky.social", "maria silva.bsky.social"])(
+    "rejects the Bluesky handle %j",
+    (contato) => rejected({ contatoTipo: "bluesky", contato }),
+  );
+
+  it("other link: stores label and URL, reveals both", async () => {
+    const { id, token } = await createOffer({ contatoTipo: "outro", contatoRotulo: " Telegram ", contato: "https://T.me/maria_81" });
+    const row = await env.DB.prepare("SELECT contato, contato_rotulo FROM offers WHERE id = ?").bind(id).first();
+    expect(row).toEqual({ contato: "https://t.me/maria_81", contato_rotulo: "Telegram" });
+    expect(await reveal(id)).toMatchObject({
+      tipo: "outro",
+      rotulo: "Telegram",
+      valor: "https://t.me/maria_81",
+      link: "https://t.me/maria_81",
+    });
+    const owner = await readJson(await call("GET", `/api/ofertas/${id}`, { token: token }));
+    expect(owner).toMatchObject({ contatoTipo: "outro", contatoRotulo: "Telegram", contato: "https://t.me/maria_81" });
+  });
+
+  it.each([
+    "https://signal.me/#eu/abc123",
+    "https://matrix.to/#/@maria:matrix.org",
+    "https://discord.gg/abc123",
+    "https://discord.com/invite/abc123",
+    "https://m.me/maria",
+  ])("accepts the link %j", async (contato) => {
+    const response = await call("POST", "/api/ofertas", { body: validOffer({ contatoTipo: "outro", contatoRotulo: "App", contato }) });
+    expect(response.status).toBe(201);
+  });
+
+  it.each([
+    "javascript:alert(1)",
+    "http://t.me/maria",
+    "https://evil.example/maria",
+    "https://t.me.evil.example/maria",
+    "https://maria@t.me/maria",
+    "https://user:pass@t.me/maria",
+    "https://t.me:8443/maria",
+    "https://discord.com/channels/1",
+    "https://t.me/",
+    "t.me/maria",
+    `https://t.me/${"a".repeat(200)}`,
+  ])("rejects the link %j", (contato) => rejected({ contatoTipo: "outro", contatoRotulo: "Telegram", contato }));
+
+  it("requires a short label for other links", async () => {
+    await rejected({ contatoTipo: "outro", contato: "https://t.me/maria" }, "contatoRotulo");
+    await rejected({ contatoTipo: "outro", contatoRotulo: "a".repeat(21), contato: "https://t.me/maria" }, "contatoRotulo");
+  });
+
+  it.each([
+    ["contato", "Telegram", "https://t.me/lula13"],
+    ["contatoRotulo", "Vote 13", "https://t.me/maria"],
+  ])("screens the other link's %s for campaign content", async (campo, contatoRotulo, contato) => {
+    const response = await call("POST", "/api/ofertas", { body: validOffer({ contatoTipo: "outro", contatoRotulo, contato }) });
+    expect(response.status).toBe(422);
+    expect(await readJson(response)).toMatchObject({ error: "conteudo_de_campanha", campo });
   });
 });
 
