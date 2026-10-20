@@ -26,6 +26,46 @@ class HoursTests(unittest.TestCase):
         self.assertEqual(hours.log_key('folder/o03220ac0101500020088-log.jez'), ('AC', '01015', 2, 88))
         self.assertIsNone(hours.log_key('o03220ac0101500020088-bu.dat'))
 
+    def test_abroad_paper_log_and_local_clock(self):
+        self.assertEqual(hours.log_key('o03220zz3042200010651-logsa.jez'), ('ZZ', '30422', 1, 651))
+        self.assertEqual(hours.clock_shift('ZZ', '30422'), 0)
+        with tempfile.TemporaryDirectory() as directory:
+            work = Path(directory)
+            archive_path = work / 'ZZ.zip'
+            with zipfile.ZipFile(archive_path, 'w') as archive:
+                archive.writestr('o03220zz3042200010651-logsa.jez', b'not a vote log')
+            with patch.object(hours, 'unpack_log', side_effect=AssertionError('Paper parsed')):
+                result = hours.extract_state('ZZ', work, archive_path, {}, work / 'ZZ.json')
+            self.assertEqual(result['paper'], ['30422/1-651'])
+            self.assertEqual(result['sections'], {})
+
+    def test_abroad_never_publishes(self):
+        for publish_only in (False, True):
+            with self.subTest(publish_only=publish_only), tempfile.TemporaryDirectory() as directory:
+                work = Path(directory)
+                hours.write_json(work / 'ZZ.json', {'state': 'ZZ'})
+                arguments = ['build-hours.py', '--states', 'ZZ', '--work-dir', directory]
+                if publish_only:
+                    arguments.append('--publish-only')
+                with patch('sys.argv', arguments), patch.object(hours.DiskBudget, 'check'), \
+                        patch.object(hours, 'process_state', return_value={'state': 'ZZ'}), \
+                        patch.object(hours, 'publish', side_effect=AssertionError('Published ZZ')):
+                    hours.main()
+
+    def test_abroad_cannot_mix_with_domestic_states(self):
+        with patch('sys.argv', ['build-hours.py', '--states', 'ZZ', 'AC']), \
+                patch.object(hours, 'process_state', side_effect=AssertionError('Processed mixed states')), \
+                patch('sys.stderr', new_callable=io.StringIO) as message, self.assertRaises(SystemExit) as error:
+            hours.main()
+        self.assertEqual(error.exception.code, 2)
+        self.assertIn('cannot be mixed', message.getvalue())
+
+    def test_abroad_counts_local_hours_without_conversion(self):
+        raw = FIXTURE.read_bytes().replace(b'06:', b'08:').replace(b'07:', b'09:').replace(b'15:', b'17:')
+        result = hours.parse_log(raw, ('ZZ', '01015', 2, 88))
+        self.assertEqual(result['shift'], 0)
+        self.assertEqual(result['hours'], [2, 1, 0, 0, 0, 0, 1, 0, 1])
+
     def test_clock_exceptions(self):
         self.assertEqual(hours.clock_shift('AM', '02917'), 2)
         self.assertEqual(hours.clock_shift('AM', '02550'), 1)

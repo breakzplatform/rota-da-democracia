@@ -18,6 +18,7 @@ import urllib.request
 import zipfile
 
 STATES = 'AC AL AM AP BA CE DF ES GO MA MG MS MT PA PB PE PI PR RJ RN RO RR RS SC SE SP TO'.split()
+ABROAD = 'ZZ'
 URL = 'https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes2026/arqurnatot/bu_imgbu_logjez_rdv_vscmr_2026_1t_{}.zip'
 SOURCE = 'https://dadosabertos.tse.jus.br/dataset/resultados-2026-arquivos-transmitidos-para-totalizacao'
 VOTE = 'O voto do eleitor foi computado'
@@ -26,7 +27,7 @@ VERSION = 1
 GIB = 1024 ** 3
 # TRE-AM's 2026 voting-clock list, including Amatura; see docs/hourly-turnout.md.
 AM_TWO_HOURS = {'02917', '02054', '02135', '02291', '02313', '02020', '02399', '98370', '02496', '02755', '98477'}
-NAME = re.compile(r'o\d{5}([a-z]{2})(\d{5})(\d{4})(\d{4})(?:-log\.jez|\.logjez)$', re.I)
+NAME = re.compile(r'o\d{5}([a-z]{2})(\d{5})(\d{4})(\d{4})(?:-log(?:sa)?\.jez|\.logjez)$', re.I)
 MAX_LOG = 64 * 1024 * 1024
 
 
@@ -35,6 +36,8 @@ def log_key(name):
     if not match:
         return None
     state, municipality, zone, section = match.groups()
+    if name.lower().endswith('-logsa.jez') and state.upper() != ABROAD:
+        return None
     return state.upper(), municipality, int(zone), int(section)
 
 
@@ -279,6 +282,7 @@ def extract_state(state, work, path, metadata, result_path):
     sections = {}
     errors = []
     empty = []
+    paper = []
     formats = Counter()
     first_hours = Counter()
     samples = []
@@ -287,11 +291,15 @@ def extract_state(state, work, path, metadata, result_path):
         for entry in archive.infolist():
             key = log_key(entry.filename)
             if not key:
-                if entry.filename.lower().endswith(('.logjez', '-log.jez')):
+                if entry.filename.lower().endswith(('.logjez', '-log.jez')) or (
+                        state == ABROAD and entry.filename.lower().endswith('-logsa.jez')):
                     raise ValueError(f'Unrecognized log name: {entry.filename}')
                 continue
             if key[0] != state or entry.file_size > MAX_LOG:
                 raise ValueError(f'Unexpected log: {entry.filename}')
+            if state == ABROAD and entry.filename.lower().endswith('-logsa.jez'):
+                paper.append(f'{key[1]}/{key[2]}-{key[3]}')
+                continue
             raw = archive.read(entry)
             formats[raw[:6].hex()] += 1
             try:
@@ -317,10 +325,12 @@ def extract_state(state, work, path, metadata, result_path):
                 sample_path.write_bytes(raw)
                 samples.append(dict(file=entry.filename, key=section_key, **result))
                 sampled_shifts.add(result['shift'])
-    if not sections:
+    if not sections and not paper:
         raise ValueError(f'No usable logs for {state}')
     result = dict(version=VERSION, state=state, source=metadata, sections=sections,
                   errors=errors, empty=empty, formats=dict(formats), firstHours=dict(first_hours), samples=samples)
+    if state == ABROAD:
+        result['paper'] = sorted(set(paper))
     write_json(result_path, result)
     path.unlink()
     print(f'{state}: {len(sections)} sections, {len(errors)} rejected, {len(empty)} empty; ZIP deleted', flush=True)
@@ -385,11 +395,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--work-dir', type=Path, default=Path.home() / 'scratch-urna-logs')
     parser.add_argument('--data-dir', type=Path, default=Path(__file__).resolve().parents[1] / 'public/data')
-    parser.add_argument('--states', nargs='+', choices=STATES, default=STATES)
+    parser.add_argument('--states', nargs='+', choices=STATES + [ABROAD], default=STATES)
     parser.add_argument('--workers', type=int, choices=range(1, 4), default=2)
     parser.add_argument('--connections', type=int, choices=range(1, 9), default=4)
     parser.add_argument('--publish-only', action='store_true')
     args = parser.parse_args()
+    if ABROAD in args.states and set(args.states) != {ABROAD}:
+        parser.error('ZZ cannot be mixed with domestic states')
     args.work_dir.mkdir(parents=True, exist_ok=True)
     # One coordinator owns reservations and result files, including across invocations.
     import fcntl
@@ -402,7 +414,8 @@ def main():
         else:
             with ThreadPoolExecutor(max_workers=args.workers) as executor:
                 results = list(executor.map(lambda state: process_state(state, args.work_dir, budget, args.connections), args.states))
-        publish(results, args.data_dir)
+        if ABROAD not in args.states:
+            publish(results, args.data_dir)
 
 
 if __name__ == '__main__':
