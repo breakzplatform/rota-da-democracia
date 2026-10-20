@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sua oferta · Rota da Democracia</title>
+  <meta name="description" content="Edite ou cancele a carona que você publicou. O link é pessoal.">
+  <meta name="theme-color" content="#ffe403" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0c1416" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="Sua oferta · Rota da Democracia">
+  <meta property="og:description" content="Edite ou cancele a carona que você publicou. O link é pessoal.">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/site.css">
+  
+</head>
+<body>
+<a class="skip" href="#conteudo">Ir para o conteúdo</a>
+<noscript><p class="noscript">O texto desta página está visível. A busca de municípios e o envio dos formulários precisam de JavaScript.</p></noscript>
+<p class="affiliation-top">Iniciativa voluntária e apartidária. Este site não tem relação com nenhum candidato, partido ou campanha.</p>
+  <div class="color-bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+  <header class="site-header">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">Rota da<br>Democracia</span>
+    </a>
+    <div class="nav">
+      <input type="checkbox" id="nav-open" class="nav-check" aria-label="Abrir menu">
+      <label for="nav-open" class="nav-toggle">Menu</label>
+      <div class="nav-panel">
+        <nav class="nav-links" aria-label="Seções">
+          <a href="/">Início</a><a href="/buscar.html">Preciso de carona</a><a href="/oferecer.html">Posso dar carona</a><a href="/como-chegar.html">Como chego</a>
+        </nav>
+        <a class="btn btn-primary btn-header" href="/oferecer.html">Dar carona</a>
+      </div>
+    </div>
+  </header>
+<main id="conteudo">
+    <section class="band" aria-labelledby="titulo">
+      <div class="wrap">
+        <p class="eyebrow">Seu link</p>
+        <h1 id="titulo">Sua oferta</h1>
+        <p class="lede">Este endereço é só de quem publicou. Dá para mudar horário, vagas, ponto de encontro e a nota, ou cancelar.</p>
+      </div>
+    </section>
+    <div class="wrap stack">
+      <form id="form-gerenciar" class="panel form" method="post">
+        <p id="estado-gerenciar" class="status" role="status">Abra o link que você guardou ao publicar. Os dados da oferta aparecem aqui.</p>
+        <input type="hidden" id="oferta-id">
+        <input type="hidden" id="token" name="token">
+        <dl class="resumo" id="gerenciar-resumo">
+          <div><dt>Nome</dt><dd id="ver-nome">-</dd></div>
+          <div><dt>WhatsApp</dt><dd id="ver-whatsapp">-</dd></div>
+          <div><dt>Município</dt><dd id="ver-municipio">-</dd></div>
+          <div><dt>Local</dt><dd id="ver-local">-</dd></div>
+          <div><dt>Bairro de saída</dt><dd id="ver-bairro">-</dd></div>
+        </dl>
+        <div class="row-2">
+          <div class="field">
+            <label for="saida">Horário de saída</label>
+            <input id="saida" name="saida" type="time" required min="09:00" max="17:00" data-date="2026-10-25" data-tz="-03:00">
+          </div>
+          <div class="field">
+            <label for="vagasLivres">Vagas livres</label>
+            <select id="vagasLivres" name="vagasLivres" required>
+              <option value="">Quantas</option>
+              <option value="0">Lotada, sai da busca</option>
+              <option value="1">1 vaga</option>
+              <option value="2">2 vagas</option>
+              <option value="3">3 vagas</option>
+              <option value="4">4 vagas</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="pontoEncontro">Ponto de encontro</label>
+          <input id="pontoEncontro" name="pontoEncontro" maxlength="80" required>
+        </div>
+        <div class="field">
+          <label for="nota">Nota</label>
+          <textarea id="nota" name="nota" maxlength="200" rows="4"></textarea>
+          <p class="hint">Até 200 caracteres.</p>
+        </div>
+        <p id="erro-gerenciar" class="form-error" role="alert" hidden></p>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="salvar-oferta">Salvar alterações</button>
+          <button type="button" class="btn" id="cancelar-oferta">Cancelar oferta</button>
+        </div>
+      </form>
+      <section id="oferta-cancelada" class="panel" hidden>
+        <h2>Oferta cancelada</h2>
+        <p>Ela saiu da busca. O link privado para de funcionar.</p>
+      </section>
+    </div>
+  </main>
+  <dialog id="dialogo-cancelar" aria-labelledby="titulo-cancelar">
+    <h2 id="titulo-cancelar">Cancelar esta oferta?</h2>
+    <p>Ela some da busca. Não dá para desfazer.</p>
+    <div class="dialog-actions">
+      <button type="button" class="btn btn-primary" id="confirmar-cancelamento">Cancelar oferta</button>
+      <button type="button" class="btn" id="fechar-cancelamento">Voltar</button>
+    </div>
+  </dialog>
+<footer class="site-footer">
+  <p class="affiliation-top">Iniciativa voluntária e apartidária. Este site não tem relação com nenhum candidato, partido ou campanha.</p>
+  <div class="color-bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+
+    <div class="wrap footer-grid">
+      <a class="brand" href="/">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-text">Rota da<br>Democracia</span>
+      </a>
+      <nav class="footer-links" aria-label="Rodapé">
+        <a href="/privacidade.html">Privacidade</a>
+        <a href="/sobre.html">Sobre</a>
+      </nav>
+      <p class="fine">Locais de votação: <a href="https://www.tse.jus.br/" target="_blank" rel="noopener noreferrer">Tribunal Superior Eleitoral<span class="sr-only"> (abre em nova aba)</span></a>, licença CC-BY. Ofertas e denúncias são apagadas na segunda, 26 de outubro de 2026, ao meio-dia (horário de Brasília).</p>
+    </div>
+  </footer>
+  <script type="module" src="/js/gerenciar.js"></script>
+</body>
+</html>

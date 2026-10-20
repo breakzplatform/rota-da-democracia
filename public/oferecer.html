@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Posso dar carona · Rota da Democracia</title>
+  <meta name="description" content="Ofereça uma carona gratuita até um local de votação no domingo, 25 de outubro de 2026.">
+  <meta name="theme-color" content="#ffe403" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0c1416" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="Posso dar carona · Rota da Democracia">
+  <meta property="og:description" content="Ofereça uma carona gratuita até um local de votação no domingo, 25 de outubro de 2026.">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/site.css">
+  
+</head>
+<body>
+<a class="skip" href="#conteudo">Ir para o conteúdo</a>
+<noscript><p class="noscript">O texto desta página está visível. A busca de municípios e o envio dos formulários precisam de JavaScript.</p></noscript>
+<p class="affiliation-top">Iniciativa voluntária e apartidária. Este site não tem relação com nenhum candidato, partido ou campanha.</p>
+  <div class="color-bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+  <header class="site-header">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">Rota da<br>Democracia</span>
+    </a>
+    <div class="nav">
+      <input type="checkbox" id="nav-open" class="nav-check" aria-label="Abrir menu">
+      <label for="nav-open" class="nav-toggle">Menu</label>
+      <div class="nav-panel">
+        <nav class="nav-links" aria-label="Seções">
+          <a href="/">Início</a><a href="/buscar.html">Preciso de carona</a><a href="/oferecer.html" aria-current="page">Posso dar carona</a><a href="/como-chegar.html">Como chego</a>
+        </nav>
+        <a class="btn btn-primary btn-header" href="/buscar.html">Achar carona</a>
+      </div>
+    </div>
+  </header>
+<main id="conteudo">
+    <section class="band" aria-labelledby="titulo">
+      <div class="wrap">
+        <p class="eyebrow">Oferecer</p>
+        <h1 id="titulo">Posso dar carona</h1>
+        <p class="lede">A vaga é de graça. Quem precisar combina com você pelo WhatsApp, no horário de saída.</p>
+      </div>
+    </section>
+    <div class="wrap stack">
+      <aside class="transit-banner"><p>Antes de pedir carona: o ônibus é de graça no domingo. <a href="/como-chegar.html">Veja como chegar</a></p></aside>
+
+      <form id="form-oferta" class="panel form" method="post">
+        <div class="field">
+          <label for="nome">Seu nome</label>
+          <input id="nome" name="nome" maxlength="30" autocomplete="nickname" required placeholder="Primeiro nome ou apelido">
+          <p class="hint">Até 30 caracteres. Pode ser só o primeiro nome.</p>
+        </div>
+        <div class="field">
+          <label for="whatsapp">WhatsApp</label>
+          <input id="whatsapp" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" required placeholder="(81) 98888-1200">
+          <p id="whatsapp-ajuda" class="hint">Com DDD. O número não aparece na lista. Só quem pede a vaga vê, depois de uma verificação.</p>
+        </div>
+        <div class="field">
+            <label for="uf">Estado</label>
+            <select id="uf" name="uf" required>
+              <option value="">Escolha o estado</option>
+              <option value="AC">AC</option>
+              <option value="AL">AL</option>
+              <option value="AM">AM</option>
+              <option value="AP">AP</option>
+              <option value="BA">BA</option>
+              <option value="CE">CE</option>
+              <option value="DF">DF</option>
+              <option value="ES">ES</option>
+              <option value="GO">GO</option>
+              <option value="MA">MA</option>
+              <option value="MG">MG</option>
+              <option value="MS">MS</option>
+              <option value="MT">MT</option>
+              <option value="PA">PA</option>
+              <option value="PB">PB</option>
+              <option value="PE">PE</option>
+              <option value="PI">PI</option>
+              <option value="PR">PR</option>
+              <option value="RJ">RJ</option>
+              <option value="RN">RN</option>
+              <option value="RO">RO</option>
+              <option value="RR">RR</option>
+              <option value="RS">RS</option>
+              <option value="SC">SC</option>
+              <option value="SE">SE</option>
+              <option value="SP">SP</option>
+              <option value="TO">TO</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="municipio-busca">Município</label>
+            <input id="municipio-busca" type="search" value="" autocomplete="off" required placeholder="Digite o nome" role="combobox" aria-expanded="false" aria-controls="municipio-lista" aria-autocomplete="list">
+            <input type="hidden" id="municipio" name="municipio" value="">
+            <!-- Options: li > button[data-cd][data-uf][data-nome]. -->
+            <ul id="municipio-lista" class="listbox" role="listbox" hidden></ul>
+          </div>
+          <fieldset>
+            <legend>Local de votação</legend>
+            <div class="row-2">
+              <div class="field">
+                <label for="zona">Zona</label>
+                <input id="zona" name="zona" inputmode="numeric" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="secao">Seção</label>
+                <input id="secao" name="secao" inputmode="numeric" autocomplete="off">
+              </div>
+            </div>
+            <button type="button" class="btn" id="achar-secao">Achar local pela seção</button>
+            <div class="field">
+              <label for="local-busca">Ou busque pelo nome</label>
+              <input id="local-busca" type="search" autocomplete="off" placeholder="Nome da escola, igreja, clube" role="combobox" aria-expanded="false" aria-controls="lista-locais" aria-autocomplete="list">
+              <!-- Options: li > button[data-local-id]. -->
+              <ul id="lista-locais" class="listbox" role="listbox" hidden></ul>
+            </div>
+            <p id="local-escolhido" class="hint">O local escolhido aparece aqui.</p>
+            <input type="hidden" id="local-id" name="localId" value="">
+          </fieldset>
+        <div class="field">
+          <label for="bairroSaida">Bairro de saída</label>
+          <input id="bairroSaida" name="bairroSaida" maxlength="40" required autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="pontoEncontro">Ponto de encontro</label>
+          <input id="pontoEncontro" name="pontoEncontro" maxlength="80" required autocomplete="off" placeholder="Praça, terminal, esquina">
+          <p class="hint">Um ponto público no bairro. Não coloque o endereço da sua casa.</p>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label for="saida">Horário de saída</label>
+            <input id="saida" name="saida" type="time" required min="09:00" max="17:00" data-date="2026-10-25" data-tz="-03:00">
+            <p class="hint">Horário de Brasília, entre 9h e 17h.</p>
+          </div>
+          <div class="field">
+            <label for="vagas">Vagas</label>
+            <select id="vagas" name="vagas" required>
+              <option value="">Quantas</option>
+              <option value="1">1 vaga</option>
+              <option value="2">2 vagas</option>
+              <option value="3">3 vagas</option>
+              <option value="4">4 vagas</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="nota">Nota <span class="sr-only">(opcional)</span></label>
+          <textarea id="nota" name="nota" maxlength="200" rows="4"></textarea>
+          <p id="nota-ajuda" class="hint">Opcional. Até 200 caracteres. Sem candidato e sem pedido de voto.</p>
+        </div>
+        <label class="check">
+          <input type="checkbox" id="acessivel" name="acessivel" value="true">
+          <span>Consigo levar alguém com mobilidade reduzida.</span>
+        </label>
+        <fieldset class="declarations">
+          <legend>Declarações</legend>
+          <label class="check">
+            <input type="checkbox" id="aceite" name="aceite" value="true" required>
+            <span>Li e aceito as regras: carona gratuita, sem pedir voto e sem material de campanha</span>
+          </label>
+          <label class="check">
+            <input type="checkbox" id="semVinculo" name="semVinculo" value="true" required>
+            <span>Declaro que não tenho vínculo com candidato, partido ou campanha</span>
+          </label>
+          <label class="check">
+            <input type="checkbox" id="combinaWhatsapp" name="combinaWhatsapp" value="true" required>
+            <span>Só vou levar quem combinar antes comigo pelo WhatsApp: não pego desconhecidos</span>
+          </label>
+          <label class="check">
+            <input type="checkbox" id="veiculoParticular" name="veiculoParticular" value="true" required>
+            <span>O carro é meu ou da minha família, de uso particular: não é táxi, carro de aplicativo, van, ônibus nem veículo fretado, de empresa ou de órgão público, e não terá adesivo, bandeira ou qualquer propaganda</span>
+          </label>
+          <label class="check">
+            <input type="checkbox" id="semPagamento" name="semPagamento" value="true" required>
+            <span>Não recebo nada de ninguém para dar esta carona (dinheiro, combustível ou outro benefício), e não é caravana nem transporte em grupo organizado</span>
+          </label>
+          <label class="check">
+            <input type="checkbox" id="maiorHabilitado" name="maiorHabilitado" value="true" required>
+            <span>Sou maior de 18 anos e tenho carteira de motorista válida</span>
+          </label>
+        </fieldset>
+        <div id="turnstile" class="turnstile" data-turnstile></div>
+        <p id="erro-oferta" class="form-error" role="alert" hidden></p>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Publicar oferta</button>
+        </div>
+      </form>
+      <section id="oferta-criada" class="panel" aria-labelledby="titulo-criada" hidden>
+        <h2 id="titulo-criada">Guarde este link</h2>
+        <p>Só quem tem o link consegue editar ou cancelar a oferta. Ele não aparece na busca.</p>
+        <p><a id="oferta-link" class="link-break" href="#">O link privado aparece aqui.</a></p>
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary" id="copiar-link">Copiar link</button>
+        </div>
+        <h3 class="offer-name">Texto para compartilhar</h3>
+        <p id="texto-compartilhar" class="copy-block">Ofereço carona gratuita até o Colégio Estadual Machado de Assis no domingo, 25 de outubro. Saída 9h40, na Praça de Casa Forte. Sem cobrança e sem pedido de voto.</p>
+        <div class="form-actions">
+          <button type="button" class="btn" id="copiar-texto">Copiar texto</button>
+        </div>
+      </section>
+      <p class="guarantee">A carona só é confirmada entre as pessoas, pelo WhatsApp. O site não confirma nem garante caronas.</p>
+      <aside class="legal" id="aviso-legal" aria-label="Aviso legal">
+        <p class="eyebrow">Aviso legal</p>
+        <p>A carona é gratuita e espontânea. É proibido cobrar, inclusive dividir a gasolina. Também é proibido pedir voto, falar de candidato ou levar material de campanha. A carona vale para ir ao local de votação e para voltar. Em caso de dúvida, consulte a <a href="https://www.tse.jus.br/" target="_blank" rel="noopener noreferrer">Justiça Eleitoral<span class="sr-only"> (abre em nova aba)</span></a>.</p>
+      </aside>
+    </div>
+  </main>
+<footer class="site-footer">
+  <p class="affiliation-top">Iniciativa voluntária e apartidária. Este site não tem relação com nenhum candidato, partido ou campanha.</p>
+  <div class="color-bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+
+    <div class="wrap footer-grid">
+      <a class="brand" href="/">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-text">Rota da<br>Democracia</span>
+      </a>
+      <nav class="footer-links" aria-label="Rodapé">
+        <a href="/privacidade.html">Privacidade</a>
+        <a href="/sobre.html">Sobre</a>
+      </nav>
+      <p class="fine">Locais de votação: <a href="https://www.tse.jus.br/" target="_blank" rel="noopener noreferrer">Tribunal Superior Eleitoral<span class="sr-only"> (abre em nova aba)</span></a>, licença CC-BY. Ofertas e denúncias são apagadas na segunda, 26 de outubro de 2026, ao meio-dia (horário de Brasília).</p>
+    </div>
+  </footer>
+  <script type="module" src="/js/oferecer.js"></script>
+</body>
+</html>
