@@ -34,27 +34,6 @@
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0c1416;
-    --paper: #172226;
-    --paper-2: #213238;
-    --ink: #f3f0e8;
-    --muted: #b7c8c6;
-    --field: #c80000;
-    --on-field: #ffffff;
-    --on-field-muted: #ffe4e1;
-    --accent: #ffe403;
-    --link: #ff5a57;
-    --brand: #ff5a57;
-    --blue-text: #9db6ff;
-    --green-text: #3ddc55;
-    --line: #f3f0e8;
-    --focus: #ffe403;
-    color-scheme: dark;
-  }
-}
-
 *,
 *::before,
 *::after {
