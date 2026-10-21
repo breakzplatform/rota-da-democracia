@@ -1387,3 +1387,23 @@ dialog p {
     font-size: 0.9rem;
   }
 }
+
+/* Room for the button's offset shadow above and below the justice block. */
+.justice-hero {
+  padding-bottom: 3rem;
+}
+
+.justice-hero .btn,
+.panel#transporte-justica-eleitoral .btn {
+  margin-top: 1.5rem;
+}
+
+.panel#transporte-justica-eleitoral .btn {
+  margin-bottom: 0.5rem;
+}
+
+/* The stack normally overlaps the band above; the legal notice should not. */
+.justice-hero + .stack {
+  margin-top: 0;
+  padding-top: 2rem;
+}
