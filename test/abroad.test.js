@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bandText, brasiliaTime, formatBand, MAX_RESULTS, quietBand, searchAbroad } from '../public/js/abroad.js';
+import { bandText, brasiliaTime, formatBand, mapsSearchUrl, votingWindowText, MAX_RESULTS, quietBand, searchAbroad } from '../public/js/abroad.js';
 import fixture from './fixtures/exterior.json';
 
 describe('brasiliaTime', () => {
@@ -85,6 +85,25 @@ describe('formatBand', () => {
 describe('formatBand with an unknown time zone', () => {
   it('returns the local band only instead of throwing', () => {
     expect(formatBand({ start: 13, end: 15 }, 'Mars/Olympus')).toEqual({ local: '13h–15h', brasilia: null });
+  });
+});
+
+describe('votingWindowText', () => {
+  it('converts the 8h-17h local window to Brasilia on 25/10', () => {
+    expect(votingWindowText('Asia/Tokyo')).toBe('Votação: 8h–17h (local) · sáb. 24/10, 20h–dom. 25/10, 5h (Brasília)');
+    expect(votingWindowText('Europe/Lisbon')).toBe('Votação: 8h–17h (local) · dom. 25/10, 5h–14h (Brasília)');
+    expect(votingWindowText('America/Los_Angeles')).toBe('Votação: 8h–17h (local) · 12h–21h (Brasília)');
+    expect(votingWindowText('Mars/Olympus')).toBe('Votação: 8h–17h (local)');
+    expect(votingWindowText('Asia/Kolkata')).toBe('Votação: 8h–17h (local) · sáb. 24/10, 23h30–dom. 25/10, 8h30 (Brasília)');
+  });
+});
+
+describe('mapsSearchUrl', () => {
+  it('searches the address with its city and country, encoded', () => {
+    const place = { endereco: 'DALLAS - 2000 EAST SPRING CREEK PARKWAY', cidadeLocal: 'Dallas' };
+    expect(mapsSearchUrl(place, 'Estados Unidos')).toBe(
+      'https://www.google.com/maps/search/?api=1&query=DALLAS%20-%202000%20EAST%20SPRING%20CREEK%20PARKWAY%2C%20Dallas%2C%20Estados%20Unidos',
+    );
   });
 });
 

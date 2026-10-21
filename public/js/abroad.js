@@ -137,6 +137,16 @@ function indexOf(data) {
   return index;
 }
 
+export function votingWindowText(tz) {
+  const { local, brasilia } = formatBand({ start: 8, end: 17 }, tz);
+  return brasilia ? `Votação: ${local} (local) · ${brasilia} (Brasília)` : `Votação: ${local} (local)`;
+}
+
+export function mapsSearchUrl(place, countryName) {
+  const query = `${place.endereco}, ${place.cidadeLocal}, ${countryName}`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
+
 /**
  * Ranked matches, at most MAX_RESULTS. A digits-only query is an exact section number:
  * `{type: "secao", section, country, city, place}` or `{type: "semsecao", section}` when unknown.

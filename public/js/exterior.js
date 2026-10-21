@@ -1,5 +1,5 @@
 import { $ } from "./common.js";
-import { bandText, formatBand, quietBand, searchAbroad } from "./abroad.js";
+import { bandText, formatBand, mapsSearchUrl, quietBand, searchAbroad, votingWindowText } from "./abroad.js";
 import { renderQuandoIr, validHours } from "./hours.js";
 
 const PLACE_KEY = /^\d{1,6}\/\d{1,4}-\d{1,6}$/;
@@ -27,11 +27,8 @@ const placeKey = (city, place) => `${city.cd}/${place.id}`;
 const plural = (count, one, many) => `${count} ${count === 1 ? one : many}`;
 
 function bandSummary(place) {
-  if (!validHours(place.horas)) return { text: place.cedula.length === place.secoes.length ? PAPER : NO_DATA };
-  const band = quietBand(place.horas);
-  if (!band) return { text: FEW_DATA };
-  const { local, brasilia } = formatBand(band, place.tz);
-  return { band, brasilia, text: brasilia ? `${local} (local) · ${brasilia} (Brasília)` : `${local} (local)` };
+  const band = validHours(place.horas) ? quietBand(place.horas) : null;
+  return band ? { band, brasilia: formatBand(band, place.tz).brasilia } : {};
 }
 
 function sectionNote(place, section) {
@@ -39,7 +36,7 @@ function sectionNote(place, section) {
   return place.semDado.includes(section) ? NO_DATA : null;
 }
 
-function renderDetail(container, place, focusSection) {
+function renderDetail(container, country, place, focusSection) {
   container.replaceChildren();
   const summary = bandSummary(place);
   const note = sectionNote(place, focusSection);
@@ -49,13 +46,13 @@ function renderDetail(container, place, focusSection) {
       ? `${bandText(summary.band)}.${summary.brasilia ? ` Em Brasília: ${summary.brasilia}.` : ""}`
       : `${FEW_DATA}: não dá para indicar uma faixa.`));
     const chart = element("section", "quando-ir");
-    chart.setAttribute("aria-label", `Movimento no 1º turno em ${place.nome}, na hora local`);
+    chart.setAttribute("aria-label", "Quando ir");
     renderQuandoIr(chart, {
       hours: place.horas,
       warning: noteText,
-      scopeText: "Soma das seções com dado",
+      scopeText: `Horário local de ${place.cidadeLocal} · soma das seções com dado`,
       clockLabel: "no horário local",
-      recommend: false,
+      recommend: Boolean(summary.band),
     });
     container.append(chart);
   } else {
@@ -81,6 +78,13 @@ function renderDetail(container, place, focusSection) {
     if (place.semDado.length) fact("Sem dado", `${place.semDado.join(", ")}. ${NO_DATA}.`);
   }
   container.append(facts);
+  const actions = element("div", "place-actions");
+  const map = element("a", "btn btn-primary", "Abrir no Maps");
+  map.href = mapsSearchUrl(place, country.nome);
+  map.target = "_blank";
+  map.rel = "noopener noreferrer";
+  actions.append(map);
+  container.append(actions);
 }
 
 function summaryRow(...children) {
@@ -93,23 +97,22 @@ function summaryRow(...children) {
 
 function buildPlace(country, city, place) {
   const details = element("details", "abroad-place");
-  const summary = bandSummary(place);
   const heading = summaryRow(
     element("span", "abroad-place-name", place.nome),
-    element("span", summary.band ? "abroad-place-band" : "abroad-place-band is-empty", summary.text),
+    element("span", "abroad-place-band", votingWindowText(place.tz)),
   );
   const body = element("div", "abroad-place-body");
   details.append(heading, body);
   let focusSection = null;
   details.addEventListener("toggle", () => {
-    if (details.open && !body.hasChildNodes()) renderDetail(body, place, focusSection);
+    if (details.open && !body.hasChildNodes()) renderDetail(body, country, place, focusSection);
   });
   placeNodes.set(placeKey(city, place), {
     country,
     details,
     show(section) {
       focusSection = section;
-      renderDetail(body, place, focusSection);
+      renderDetail(body, country, place, focusSection);
     },
   });
   return details;

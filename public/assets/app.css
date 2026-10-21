@@ -526,7 +526,7 @@
 
 .abroad-country,
 .abroad-place,
-.abroad-city h3 {
+.abroad-city > h3 {
   scroll-margin-top: 5.5rem;
 }
 
@@ -603,7 +603,7 @@
   margin-top: 0.85rem;
 }
 
-.abroad-city h3 {
+.abroad-city > h3 {
   margin: 0;
   font-family: var(--font-mono);
   font-size: 0.8rem;
@@ -636,10 +636,6 @@
   line-height: 1.35;
 }
 
-.abroad-place-band.is-empty {
-  color: var(--muted);
-}
-
 .abroad-place-body {
   display: grid;
   gap: 1rem;
@@ -648,6 +644,10 @@
 
 .abroad-place-body .quando-ir {
   margin-bottom: 0;
+}
+
+.abroad-place-body a:not(.btn) {
+  color: var(--link);
 }
 
 .abroad-place-body .resumo {
@@ -675,7 +675,7 @@
 @media (min-width: 60rem) {
   .abroad-country,
   .abroad-place,
-  .abroad-city h3 {
+  .abroad-city > h3 {
     scroll-margin-top: 6.75rem;
   }
 }
