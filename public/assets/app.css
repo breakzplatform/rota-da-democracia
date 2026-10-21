@@ -35,8 +35,13 @@
 
 .step-exterior {
   flex: 0 1 auto;
-  margin-left: auto;
   white-space: nowrap;
+}
+
+@media (min-width: 40rem) {
+  .step-exterior {
+    margin-left: auto;
+  }
 }
 
 .step-title:focus {
