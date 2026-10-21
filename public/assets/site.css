@@ -410,6 +410,13 @@ p {
 .icon-car { --glyph: url("icons/car.svg"); }
 .icon-key { --glyph: url("icons/key.svg"); }
 .icon-bus { --glyph: url("icons/bus.svg"); }
+.icon-whatsapp { --glyph: url("icons/whatsapp.svg"); }
+
+.btn .icon {
+  flex: none;
+  width: 1.35rem;
+  height: 1.35rem;
+}
 
 .action-kicker {
   margin: 0;
@@ -1328,8 +1335,16 @@ dialog p {
   margin-top: 1.35rem;
 }
 
-.hero-cta {
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
   margin-top: 1.5rem;
+}
+
+.btn-whatsapp {
+  background: #017016;
+  color: #ffffff;
 }
 
 .hero .route-note {
