@@ -34,13 +34,33 @@
 }
 
 .step-exterior {
+  display: none;
   flex: 0 1 auto;
+  margin-left: auto;
   white-space: nowrap;
+}
+
+.exterior-cta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.exterior-cta span {
+  font-weight: 700;
+  text-decoration: underline;
 }
 
 @media (min-width: 40rem) {
   .step-exterior {
-    margin-left: auto;
+    display: inline-flex;
+  }
+
+  .exterior-cta {
+    display: none;
   }
 }
 

@@ -221,6 +221,21 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {}, ci
   const body = h("div", { class: "picker-body" });
   mount.replaceChildren(status, body);
 
+  // On phones the abroad link leaves step 1 for a box under the form, shown only until the form is touched.
+  let abroad = null;
+  if (!cityOnly) {
+    abroad = h("a", { class: "panel exterior-cta", href: "/exterior" },
+      h("strong", { text: "Vota no exterior?" }),
+      h("span", { text: "Toque aqui" }));
+    (mount.closest("form") || mount).after(abroad);
+  }
+  const dismissAbroad = () => {
+    abroad?.remove();
+    abroad = null;
+  };
+  mount.addEventListener("input", dismissAbroad);
+  mount.addEventListener("change", dismissAbroad);
+
   const state = { municipio: null, shard: null, local: null, section: null, uf: "", cityText: "", view: "cidade" };
   let municipiosCache = [];
   let geoToken = 0;
@@ -245,6 +260,7 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {}, ci
     geoToken += 1;
     clearTimeout(nameTimer);
     state.view = view;
+    if (view !== "cidade") dismissAbroad();
     const render = VIEWS[view];
     const heading = render();
     if (focus && heading) {
