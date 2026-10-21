@@ -14,7 +14,7 @@ Qualquer pessoa maior de 18 anos com carteira de motorista válida, em carro pr�
 
 1. Li e aceito as regras: carona gratuita, sem pedir voto e sem material de campanha.
 2. Não tenho vínculo com candidato, partido ou campanha.
-3. Só levo quem combinar antes comigo pelo WhatsApp, não pego desconhecidos.
+3. Só levo quem combinar antes comigo pelo contato que deixei, não pego desconhecidos.
 4. O carro é meu ou da minha família, de uso particular: não é táxi, carro de aplicativo, van, ônibus nem veículo fretado, de empresa ou de órgão público, e não tem adesivo, bandeira ou propaganda.
 5. Não recebo nada de ninguém para dar a carona (dinheiro, combustível ou outro benefício), e não é caravana nem transporte em grupo organizado.
 6. Sou maior de 18 anos e tenho carteira de motorista válida.
