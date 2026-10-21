@@ -7,6 +7,9 @@ import {
   clockShift,
   googleMapsTransitUrl,
   googleMapsDrivingUrl,
+  googleMapsWalkingUrl,
+  googleMapsBicyclingUrl,
+  googleMapsArrivalUrl,
   routeHint,
   aggregateHours,
   aggregateChangeStatus,
@@ -70,10 +73,21 @@ const picker = initPlacePicker({
   onPlace: showPlace,
 });
 
+function resetUntimed(local, addressText) {
+  for (const [id, mode] of [["rota-google", "transit"], ["rota-pe", "walking"], ["rota-bike", "bicycling"], ["rota-carro", "driving"]]) {
+    $(id).href = googleMapsArrivalUrl(local, addressText, null, 0, mode);
+  }
+  if (plan) plan.hour = null;
+  const planoHorario = $("plano-horario");
+  if (planoHorario) planoHorario.textContent = "Horário em que vou sair: ______";
+  const dicaRota = $("dica-rota");
+  if (dicaRota) dicaRota.textContent = routeHint(null);
+}
+
 function showPlace(local, shard, initialSection = null) {
   if (!local) {
     result.hidden = true;
-    status.textContent = "O endereço aparece aqui depois da busca.";
+    status.textContent = "";
     if (quandoIrEl) {
       quandoIrEl.hidden = true;
       quandoIrEl.replaceChildren();
@@ -87,13 +101,7 @@ function showPlace(local, shard, initialSection = null) {
   const municipio = picker.municipio();
   const hasCoords = local.lat !== null && local.lon !== null;
   const addressText = `${titleCase(local.nome)}, ${titleCase(local.endereco)}, ${titleCase(shard.nome)} - ${shard.uf}`;
-  const destination = hasCoords ? `${local.lat},${local.lon}` : addressText;
 
-  const dir = (mode) => `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=${mode}`;
-  $("rota-google").href = dir("transit");
-  $("rota-pe").href = dir("walking");
-  $("rota-bike").href = dir("bicycling");
-  $("rota-carro").href = dir("driving");
   $("rota-waze").href = hasCoords
     ? `https://waze.com/ul?ll=${local.lat},${local.lon}&navigate=yes`
     : `https://waze.com/ul?q=${encodeURIComponent(addressText)}&navigate=yes`;
@@ -106,10 +114,7 @@ function showPlace(local, shard, initialSection = null) {
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressText)}`;
 
   plan = { name: titleCase(local.nome), address: `${titleCase(local.endereco)}, ${titleCase(shard.nome)} - ${shard.uf}`, hour: null };
-  const planoHorario = $("plano-horario");
-  if (planoHorario) planoHorario.textContent = "Horário em que vou sair: ______";
-  const dicaRota = $("dica-rota");
-  if (dicaRota) dicaRota.textContent = routeHint(null);
+  resetUntimed(local, addressText);
 
   result.hidden = false;
   status.textContent = `Local encontrado: ${titleCase(local.nome)}.`;
@@ -149,6 +154,8 @@ function setupQuandoIrFlow({ local, shard, addressText, data, changes, initialSe
     if (planoHorario) planoHorario.textContent = `Chegar ao local às ${localH}h`;
     $("rota-google").href = googleMapsTransitUrl(local, addressText, h, shift);
     $("rota-carro").href = googleMapsDrivingUrl(local, addressText, h, shift);
+    $("rota-pe").href = googleMapsWalkingUrl(local, addressText, h, shift);
+    $("rota-bike").href = googleMapsBicyclingUrl(local, addressText, h, shift);
     const dicaRota = $("dica-rota");
     if (dicaRota) dicaRota.textContent = routeHint(h, shift);
   }
@@ -173,6 +180,7 @@ function setupQuandoIrFlow({ local, shard, addressText, data, changes, initialSe
     if (!validHours(hours)) {
       quandoIrEl.hidden = true;
       quandoIrEl.replaceChildren();
+      resetUntimed(local, addressText);
       return;
     }
 

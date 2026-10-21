@@ -11,6 +11,8 @@ import {
   destinationEpoch,
   googleMapsTransitUrl,
   googleMapsDrivingUrl,
+  googleMapsWalkingUrl,
+  googleMapsBicyclingUrl,
   hoursChart,
   icsTimes,
   movementLabel,
@@ -288,10 +290,25 @@ describe('clock shift, destination epoch, and Google Maps URL building', () => {
     expect(noronhaUrl).toBe('https://www.google.com/maps/dir//-3.854,-32.423/data=!4m6!4m5!2m3!6e1!7e2!8j1792922400!3e3');
   });
 
-  it('retains api=1 link without arrival time when coordinates are missing', () => {
+  it('puts the address in the path with the arrival time when coordinates are missing', () => {
     const noCoordsPlace = { lat: null, lon: null };
-    const url = googleMapsTransitUrl(noCoordsPlace, 'Escola Municipal, Rio Branco - AC', 9, 2);
-    expect(url).toBe('https://www.google.com/maps/dir/?api=1&destination=Escola%20Municipal%2C%20Rio%20Branco%20-%20AC&travelmode=transit');
+    const address = 'Casa de Detenção, Vilhena - RO';
+    const path = encodeURIComponent(address);
+    expect(googleMapsTransitUrl(noCoordsPlace, address, 9, 1)).toBe(`https://www.google.com/maps/dir//${path}/data=!4m6!4m5!2m3!6e1!7e2!8j${destinationEpoch(9, 1)}!3e3`);
+    expect(googleMapsDrivingUrl(noCoordsPlace, address, 9, 1)).toBe(`https://www.google.com/maps/dir//${path}/data=!4m6!4m5!2m3!6e1!7e2!8j${destinationEpoch(9, 1)}!3e0`);
+  });
+
+  it('builds walking and bicycling URLs with the same arrival epoch', () => {
+    const recife = { lat: -8.05, lon: -34.9 };
+    const epoch = destinationEpoch(9, 0);
+    expect(googleMapsWalkingUrl(recife, 'Recife, PE', 9, 0)).toBe(`https://www.google.com/maps/dir//-8.05,-34.9/data=!4m6!4m5!2m3!6e1!7e2!8j${epoch}!3e2`);
+    expect(googleMapsBicyclingUrl(recife, 'Recife, PE', 9, 0)).toBe(`https://www.google.com/maps/dir//-8.05,-34.9/data=!4m6!4m5!2m3!6e1!7e2!8j${epoch}!3e1`);
+    expect(googleMapsWalkingUrl({ lat: null, lon: null }, 'Rua A, 1', 9, 0)).toContain('/dir//Rua%20A%2C%201/data=');
+  });
+
+  it('uses the untimed api=1 link only when there is no hour', () => {
+    expect(googleMapsWalkingUrl({ lat: null, lon: null }, 'Rua A, 1', null)).toBe('https://www.google.com/maps/dir/?api=1&destination=Rua%20A%2C%201&travelmode=walking');
+    expect(googleMapsBicyclingUrl({ lat: -8.05, lon: -34.9 }, 'Recife, PE', undefined)).toBe('https://www.google.com/maps/dir/?api=1&destination=-8.05%2C-34.9&travelmode=bicycling');
   });
 
   it('builds Google Maps driving URL with the same arrival epoch', () => {
@@ -303,8 +320,8 @@ describe('clock shift, destination epoch, and Google Maps URL building', () => {
     expect(googleMapsDrivingUrl(noronhaPlace, 'Fernando de Noronha, PE', 9, -1)).toBe('https://www.google.com/maps/dir//-3.854,-32.423/data=!4m6!4m5!2m3!6e1!7e2!8j1792922400!3e0');
   });
 
-  it('falls back to the api=1 driving link without coordinates or hour', () => {
-    expect(googleMapsDrivingUrl({ lat: null, lon: null }, 'Escola Municipal, Rio Branco - AC', 9, 2)).toBe('https://www.google.com/maps/dir/?api=1&destination=Escola%20Municipal%2C%20Rio%20Branco%20-%20AC&travelmode=driving');
+  it('falls back to the api=1 driving link only without an hour', () => {
+    expect(googleMapsDrivingUrl({ lat: null, lon: null }, 'Escola Municipal, Rio Branco - AC', null)).toBe('https://www.google.com/maps/dir/?api=1&destination=Escola%20Municipal%2C%20Rio%20Branco%20-%20AC&travelmode=driving');
     expect(googleMapsDrivingUrl({ lat: -8.05, lon: -34.9 }, 'Recife, PE', null)).toBe('https://www.google.com/maps/dir/?api=1&destination=-8.05%2C-34.9&travelmode=driving');
   });
 

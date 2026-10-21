@@ -150,17 +150,19 @@ export function destinationEpoch(hour, shift = 0) {
 const MAPS_MODES = {
   transit: { travelmode: 'transit', code: '3e3' },
   driving: { travelmode: 'driving', code: '3e0' },
+  walking: { travelmode: 'walking', code: '3e2' },
+  bicycling: { travelmode: 'bicycling', code: '3e1' },
 };
 
 export function googleMapsArrivalUrl(local, addressText, hour, shift = 0, mode = 'transit') {
   const { travelmode, code } = MAPS_MODES[mode];
   const hasCoords = local && local.lat !== null && local.lat !== undefined && local.lon !== null && local.lon !== undefined;
-  if (!hasCoords || hour === undefined || hour === null) {
+  if (hour === undefined || hour === null) {
     const destination = hasCoords ? `${local.lat},${local.lon}` : addressText;
     return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}&travelmode=${travelmode}`;
   }
-  const epoch = destinationEpoch(hour, shift);
-  return `https://www.google.com/maps/dir//${local.lat},${local.lon}/data=!4m6!4m5!2m3!6e1!7e2!8j${epoch}!${code}`;
+  const destination = hasCoords ? `${local.lat},${local.lon}` : encodeURIComponent(addressText);
+  return `https://www.google.com/maps/dir//${destination}/data=!4m6!4m5!2m3!6e1!7e2!8j${destinationEpoch(hour, shift)}!${code}`;
 }
 
 export function googleMapsTransitUrl(local, addressText, hour, shift = 0) {
@@ -169,6 +171,14 @@ export function googleMapsTransitUrl(local, addressText, hour, shift = 0) {
 
 export function googleMapsDrivingUrl(local, addressText, hour, shift = 0) {
   return googleMapsArrivalUrl(local, addressText, hour, shift, 'driving');
+}
+
+export function googleMapsWalkingUrl(local, addressText, hour, shift = 0) {
+  return googleMapsArrivalUrl(local, addressText, hour, shift, 'walking');
+}
+
+export function googleMapsBicyclingUrl(local, addressText, hour, shift = 0) {
+  return googleMapsArrivalUrl(local, addressText, hour, shift, 'bicycling');
 }
 
 export function routeHint(hour, shift = 0) {
