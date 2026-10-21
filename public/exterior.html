@@ -49,14 +49,21 @@
       </div>
     </section>
     <div class="wrap stack">
-      <section class="panel abroad-search" aria-labelledby="titulo-busca">
+      <section class="panel form" aria-labelledby="titulo-busca">
         <h2 id="titulo-busca">Ache seu local</h2>
         <div class="field">
           <label for="busca-exterior">Cidade, país ou número da seção</label>
           <input id="busca-exterior" type="search" aria-describedby="estado-exterior" aria-controls="resultados-exterior" autocomplete="off" inputmode="search" enterkeyhint="search" spellcheck="false" disabled>
         </div>
-        <p id="estado-exterior" class="status" role="status" aria-atomic="true">Carregando os locais.</p>
         <div id="resultados-exterior"></div>
+        <p id="estado-exterior" class="status" role="status" aria-atomic="true">Carregando os locais.</p>
+      </section>
+      <section class="panel" aria-labelledby="titulo-lista">
+        <h2 id="titulo-lista">Todos os locais</h2>
+        <p class="hint">Abra um país ou território e depois um local para ver o gráfico e o endereço.</p>
+        <div id="lista-exterior">
+          <p class="hint">A lista de locais precisa de JavaScript.</p>
+        </div>
       </section>
       <section class="panel" aria-labelledby="titulo-como-ler">
         <h2 id="titulo-como-ler">Como ler estes dados</h2>
@@ -69,17 +76,6 @@
           <li>Na Ásia e na Oceania, a votação acontece na noite de sábado, 24/10, pelo horário de Brasília. Quando isso ocorre, o dia aparece junto da hora.</li>
           <li>Seções de cédula não têm registro de horário e aparecem como "Sem dado: votação em cédula".</li>
         </ul>
-      </section>
-      <section class="panel abroad-panel" aria-labelledby="titulo-lista">
-        <h2 id="titulo-lista">Todos os locais</h2>
-        <p class="hint">Abra um país ou território e depois um local para ver o gráfico e o endereço.</p>
-        <div id="lista-exterior" class="abroad-list">
-          <p class="hint">A lista de locais precisa de JavaScript.</p>
-        </div>
-      </section>
-      <section class="panel" aria-labelledby="titulo-fonte">
-        <h2 id="titulo-fonte">Fonte</h2>
-        <p id="fonte-exterior">Fonte: <a href="https://dadosabertos.tse.jus.br/" target="_blank" rel="noopener noreferrer">TSE — Dados Abertos<span class="sr-only"> (abre em nova aba)</span></a>, licença CC-BY 4.0.</p>
       </section>
       <aside class="legal" id="aviso-legal" aria-label="Aviso legal">
         <p class="eyebrow">Aviso legal</p>
@@ -103,7 +99,7 @@
         <a href="/sobre">Sobre</a>
         <a href="https://github.com/breakzplatform/rota-da-democracia" target="_blank" rel="noopener noreferrer">Código aberto (GPL-3.0)<span class="sr-only"> (abre em nova aba)</span></a>
       </nav>
-      <p class="fine">Locais de votação: <a href="https://www.tse.jus.br/" target="_blank" rel="noopener noreferrer">Tribunal Superior Eleitoral<span class="sr-only"> (abre em nova aba)</span></a>, licença CC-BY. Ofertas, grupos e denúncias são apagados no domingo, 25 de outubro de 2026, às 17h, quando a votação termina (horário de Brasília).</p>
+      <p class="fine">Dados do TSE: <a href="https://www.tse.jus.br/" target="_blank" rel="noopener noreferrer">Tribunal Superior Eleitoral<span class="sr-only"> (abre em nova aba)</span></a>, licença CC-BY. Ofertas, grupos e denúncias são apagados no domingo, 25 de outubro de 2026, às 17h, quando a votação termina (horário de Brasília).</p>
     </div>
   </footer>
   <script type="module" src="/js/exterior.js"></script>

@@ -320,9 +320,13 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {}, ci
       input.value = state.cityText;
       const list = h("ul", { id: "municipio-lista", class: "listbox", role: "listbox", hidden: true });
       const note = h("p", { class: "hint", role: "status", text: cityOnly && state.municipio ? `Cidade escolhida: ${cityLabel()}` : "" });
+      const head = cityOnly
+        ? [progress, heading]
+        : [h("div", { class: "step-head" },
+            h("div", { class: "step-head-text" }, progress, heading),
+            h("a", { class: "btn step-exterior", href: "/exterior", text: "Voto no exterior" }))];
       body.replaceChildren(
-        progress,
-        heading,
+        ...head,
         h("div", { class: "field" }, h("label", { for: "uf", text: "Estado" }), ufSelect),
         h("div", { class: "field" }, h("label", { for: "municipio-busca", text: "Cidade" }), input, list),
         note,

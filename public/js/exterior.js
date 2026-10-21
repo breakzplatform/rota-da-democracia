@@ -1,6 +1,6 @@
-import { $, safeHref } from "./common.js";
+import { $ } from "./common.js";
 import { bandText, formatBand, quietBand, searchAbroad } from "./abroad.js";
-import { hoursChart, validHours } from "./hours.js";
+import { renderQuandoIr, validHours } from "./hours.js";
 
 const PLACE_KEY = /^\d{1,6}\/\d{1,4}-\d{1,6}$/;
 const SECTION = /^\d{1,6}$/;
@@ -43,23 +43,34 @@ function renderDetail(container, place, focusSection) {
   container.replaceChildren();
   const summary = bandSummary(place);
   const note = sectionNote(place, focusSection);
-  if (note) container.append(element("p", "hours-warning", `Seção ${focusSection}: ${note}.`));
+  const noteText = note ? `Seção ${focusSection}: ${note}.` : null;
   if (validHours(place.horas)) {
-    container.append(element("p", "abroad-band", summary.band
+    container.append(element("p", "chosen", summary.band
       ? `${bandText(summary.band)}.${summary.brasilia ? ` Em Brasília: ${summary.brasilia}.` : ""}`
       : `${FEW_DATA}: não dá para indicar uma faixa.`));
-    const chart = hoursChart(place.horas, 1, place.secoes.join(", "), undefined, "na hora local", true);
+    const chart = element("section", "quando-ir");
     chart.setAttribute("aria-label", `Movimento no 1º turno em ${place.nome}, na hora local`);
-    chart.querySelector(".hint").textContent = "Soma das seções com dado · 04/10/2026, hora local. Não mede fila.";
+    renderQuandoIr(chart, {
+      hours: place.horas,
+      warning: noteText,
+      scopeText: "Soma das seções com dado",
+      clockLabel: "no horário local",
+      recommend: false,
+    });
     container.append(chart);
   } else {
+    if (noteText) container.append(element("p", "hours-warning", noteText));
     const parts = [`${NO_DATA}.`];
     if (place.cedula.length) parts.push(`${PAPER} (${plural(place.cedula.length, "seção", "seções")}: ${place.cedula.join(", ")}).`);
     if (place.semDado.length) parts.push(`Sem registro das urnas: ${place.semDado.join(", ")}.`);
-    container.append(element("p", "abroad-band", parts.join(" ")));
+    container.append(element("p", "chosen", parts.join(" ")));
   }
-  const facts = element("dl", "abroad-facts");
-  const fact = (label, value) => facts.append(element("dt", "", label), element("dd", "", value));
+  const facts = element("dl", "resumo");
+  const fact = (label, value) => {
+    const row = element("div");
+    row.append(element("dt", "", label), element("dd", "", value));
+    facts.append(row);
+  };
   fact("Endereço", place.endereco);
   fact("Cidade", place.cidadeLocal);
   fact("Fuso", `Horário local de ${place.cidadeLocal} (${place.tz})`);
@@ -140,22 +151,23 @@ function reveal(node, focusTarget = node) {
   focusTarget.focus();
 }
 
-function revealPlace(key, section = null) {
+function revealPlace(key, section = null, focus = true) {
   const entry = placeNodes.get(key);
   if (!entry) return;
   countryNodes.get(entry.country).open = true;
   entry.details.open = true;
   entry.show(section);
-  reveal(entry.details, entry.details.querySelector("summary"));
+  if (focus) reveal(entry.details, entry.details.querySelector("summary"));
+  else entry.details.scrollIntoView({ block: "start" });
   if (section === null) setUrl("local", key);
   else setUrl("secao", String(section));
 }
 
 function resultButton(label, detail, onClick) {
   const item = element("li");
-  const button = element("button", "abroad-result");
+  const button = element("button");
   button.type = "button";
-  button.append(element("span", "abroad-result-label", label), element("span", "hint", detail));
+  button.append(element("span", "", label), element("span", "hint", detail));
   button.addEventListener("click", onClick);
   item.append(button);
   return item;
@@ -183,7 +195,7 @@ function renderResults(data, query) {
     return;
   }
   status.textContent = `${plural(found.length, "resultado", "resultados")}.`;
-  const list = element("ul", "abroad-results");
+  const list = element("ul", "nearby-list");
   for (const hit of found) {
     if (hit.type === "pais") {
       list.append(resultButton(hit.country.nome, "País ou território", () => {
@@ -210,31 +222,12 @@ function applyUrl(data) {
   const local = params.get("local");
   const section = params.get("secao");
   if (local && PLACE_KEY.test(local)) {
-    revealPlace(local);
+    revealPlace(local, null, false);
   } else if (section && SECTION.test(section)) {
     const [hit] = searchAbroad(data, section);
-    if (hit?.type === "secao") revealPlace(placeKey(hit.city, hit.place), hit.section);
+    if (hit?.type === "secao") revealPlace(placeKey(hit.city, hit.place), hit.section, false);
     else if (hit) showEmpty(`Não achamos a seção ${hit.section}. Confira o número no título ou no e-Título.`);
   }
-}
-
-function showSources(fonte) {
-  const holder = $("fonte-exterior");
-  const links = [["locais", "Locais de votação"], ["horas", "Registros das urnas"]];
-  const added = links.flatMap(([key, label]) => {
-    const href = safeHref(fonte?.[key], ["https://"]);
-    if (!href) return [];
-    const anchor = element("a", "", label);
-    anchor.href = href;
-    anchor.target = "_blank";
-    anchor.rel = "noopener noreferrer";
-    anchor.append(element("span", "sr-only", " (abre em nova aba)"));
-    return [anchor];
-  });
-  if (!added.length) return;
-  holder.replaceChildren("Fontes, do TSE — Dados Abertos: ");
-  added.forEach((anchor, index) => holder.append(index ? ", " : "", anchor));
-  holder.append(`. Licença ${fonte.licenca ?? "CC-BY 4.0"}.`);
 }
 
 async function init() {
@@ -243,7 +236,6 @@ async function init() {
     if (!response.ok) throw new Error("exterior");
     const data = await response.json();
     buildListing(data);
-    showSources(data.fonte);
     search.disabled = false;
     status.textContent = "";
     search.addEventListener("input", () => renderResults(data, search.value));
