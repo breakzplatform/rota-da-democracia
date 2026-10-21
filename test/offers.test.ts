@@ -76,7 +76,7 @@ describe("POST /api/ofertas", () => {
     });
   });
 
-  const declarations = ["aceite", "semVinculo", "combinaWhatsapp", "veiculoParticular", "semPagamento", "maiorHabilitado", "umTrajeto"];
+  const declarations = ["aceite", "maiorHabilitado", "semVinculo", "combinaWhatsapp", "veiculoParticular", "semPagamento", "umTrajeto"];
 
   it.each(declarations)("requires the %s declaration to be exactly true", async (field) => {
     for (const value of [undefined, false, "true", 1]) {
@@ -99,6 +99,12 @@ describe("POST /api/ofertas", () => {
     const response = await call("POST", "/api/ofertas", { body: validOffer({ umTrajeto: undefined }) });
     const body = await expectError(response, 400, "campo_invalido", "umTrajeto");
     expect(body.message).toContain("só no seu trajeto, uma ida e uma volta");
+  });
+
+  it("asks for the age and licence declaration right after the rules", async () => {
+    const response = await call("POST", "/api/ofertas", { body: validOffer({ maiorHabilitado: false, semVinculo: false, combinaWhatsapp: false }) });
+    const body = await expectError(response, 400, "campo_invalido", "maiorHabilitado");
+    expect(body.message).toContain("18 anos ou mais e carteira de motorista válida");
   });
 
   it("accepts offers until 07:59, before polls open, and refuses them after", async () => {

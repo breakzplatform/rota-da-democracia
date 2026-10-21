@@ -43,7 +43,7 @@ applyKind();
 const turnstile = createTurnstile($("turnstile"), "oferecer");
 
 const FIELD_IDS = { municipio: "municipio-busca", localId: "local-busca", contatoTipo: "contatoTipo-email", contatoRotulo: "contatoRotulo" };
-const DECLARATIONS = ["aceite", "semVinculo", "combinaWhatsapp", "veiculoParticular", "semPagamento", "maiorHabilitado", "umTrajeto"];
+const DECLARATIONS = ["aceite", "maiorHabilitado", "semVinculo", "combinaWhatsapp", "veiculoParticular", "semPagamento", "umTrajeto"];
 
 function fail(message, field) {
   showMessage(errorBox, message);

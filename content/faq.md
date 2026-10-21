@@ -13,11 +13,11 @@ Fonte: [Lei 6.091/1974](https://www.planalto.gov.br/ccivil_03/leis/l6091.htm) ·
 Qualquer pessoa maior de 18 anos com carteira de motorista válida, em carro próprio ou da família. Para publicar uma oferta, você marca sete declarações:
 
 1. Li e aceito as regras: carona gratuita, sem pedir voto e sem material de campanha.
-2. Não tenho vínculo com candidato, partido ou campanha.
-3. Só levo quem combinar antes comigo pelo contato que deixei, não pego desconhecidos.
-4. O carro é meu ou da minha família, de uso particular: não é táxi, carro de aplicativo, van, ônibus nem veículo fretado, de empresa ou de órgão público, e não tem adesivo, bandeira ou propaganda.
-5. Não recebo nada de ninguém para dar a carona (dinheiro, combustível ou outro benefício), e não é caravana nem transporte em grupo organizado.
-6. Sou maior de 18 anos e tenho carteira de motorista válida.
+2. Sou maior de 18 anos e tenho carteira de motorista válida.
+3. Não tenho vínculo com candidato, partido ou campanha.
+4. Só levo quem combinar antes comigo pelo contato que deixei, não pego desconhecidos.
+5. O carro é meu ou da minha família, de uso particular: não é táxi, carro de aplicativo, van, ônibus nem veículo fretado, de empresa ou de órgão público, e não tem adesivo, bandeira ou propaganda.
+6. Não recebo nada de ninguém para dar a carona (dinheiro, combustível ou outro benefício), e não é caravana nem transporte em grupo organizado.
 7. Vou dar carona só no meu trajeto, uma ida e uma volta: não vou ficar indo e voltando para levar várias pessoas.
 
 Elas existem para você e para quem pega a carona ficarem do lado certo da lei. Quem quer uma carona também marca um aviso: a carona é gratuita, combinada direto com quem oferece, e não se fala de candidato.

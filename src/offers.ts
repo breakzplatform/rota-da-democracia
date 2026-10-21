@@ -137,11 +137,11 @@ async function authorize(env: Env, id: string, token: unknown): Promise<OfferRow
 
 const DECLARATIONS = [
   ["aceite", "Para oferecer carona, é preciso aceitar as regras: carona gratuita, sem pedir voto e sem material de campanha."],
+  ["maiorHabilitado", "Para oferecer carona, é preciso confirmar que você tem 18 anos ou mais e carteira de motorista válida."],
   ["semVinculo", "Para oferecer carona, é preciso declarar que você não tem vínculo com candidato, partido ou campanha."],
   ["combinaWhatsapp", "Para oferecer carona, é preciso confirmar que só vai levar quem combinar antes com você pelo contato que deixou."],
   ["veiculoParticular", "Para oferecer carona, é preciso confirmar que o carro é particular, seu ou da sua família, e sem propaganda."],
   ["semPagamento", "Para oferecer carona, é preciso confirmar que você não recebe nada por ela e que não é caravana."],
-  ["maiorHabilitado", "Para oferecer carona, é preciso confirmar que você tem mais de 18 anos e carteira de motorista válida."],
   ["umTrajeto", "Para oferecer carona, é preciso confirmar que vai dar carona só no seu trajeto, uma ida e uma volta, sem ficar indo e voltando para levar várias pessoas."],
 ] as const;
 
