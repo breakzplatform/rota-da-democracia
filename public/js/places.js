@@ -212,10 +212,11 @@ function h(tag, attrs = {}, ...children) {
 }
 
 /**
- * Renders the picker into #seletor-local. Options: onMunicipio(entry|null, shard|null), onPlace(local|null, shard).
+ * Renders the picker into #seletor-local. Options: onMunicipio(entry|null, shard|null), onPlace(local|null, shard),
+ * abroad (link to /exterior; off where it makes no sense, such as offering a ride).
  * Returns { municipio(), shard(), local(), resolve() }.
  */
-export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {}, cityOnly = false } = {}) {
+export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {}, cityOnly = false, abroad: showAbroad = !cityOnly } = {}) {
   const mount = $("seletor-local");
   const status = h("p", { class: "sr-only", role: "status", "aria-live": "polite" });
   const body = h("div", { class: "picker-body" });
@@ -223,7 +224,7 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {}, ci
 
   // On phones the abroad link leaves step 1 for a box under the form, shown only until the form is touched.
   let abroad = null;
-  if (!cityOnly) {
+  if (showAbroad) {
     abroad = h("a", { class: "panel exterior-cta", href: "/exterior" },
       h("strong", { text: "Vota no exterior?" }),
       h("span", { text: "Toque aqui" }));
@@ -336,7 +337,7 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {}, ci
       input.value = state.cityText;
       const list = h("ul", { id: "municipio-lista", class: "listbox", role: "listbox", hidden: true });
       const note = h("p", { class: "hint", role: "status", text: cityOnly && state.municipio ? `Cidade escolhida: ${cityLabel()}` : "" });
-      const head = cityOnly
+      const head = !showAbroad
         ? [progress, heading]
         : [h("div", { class: "step-head" },
             h("div", { class: "step-head-text" }, progress, heading),

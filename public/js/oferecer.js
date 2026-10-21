@@ -5,7 +5,7 @@ import {
 import { initPlacePicker } from "./places.js";
 
 updateSignupDeadline();
-const picker = initPlacePicker();
+const picker = initPlacePicker({ abroad: false });
 const form = $("form-oferta");
 const errorBox = $("erro-oferta");
 
