@@ -4,7 +4,7 @@ import {
 } from "./common.js";
 import { initPlacePicker } from "./places.js";
 
-const picker = initPlacePicker();
+const picker = initPlacePicker({ abroad: false });
 const form = $("form-busca");
 const list = $("lista-ofertas");
 const status = $("estado-ofertas");
