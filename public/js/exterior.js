@@ -1,5 +1,5 @@
 import { $ } from "./common.js";
-import { bandText, formatBand, mapsSearchUrl, quietBand, searchAbroad, votingWindowText } from "./abroad.js";
+import { mapsSearchUrl, quietBand, searchAbroad, votingWindowText } from "./abroad.js";
 import { renderQuandoIr, validHours } from "./hours.js";
 
 const PLACE_KEY = /^\d{1,6}\/\d{1,4}-\d{1,6}$/;
@@ -26,11 +26,6 @@ function element(tag, className, text) {
 const placeKey = (city, place) => `${city.cd}/${place.id}`;
 const plural = (count, one, many) => `${count} ${count === 1 ? one : many}`;
 
-function bandSummary(place) {
-  const band = validHours(place.horas) ? quietBand(place.horas) : null;
-  return band ? { band, brasilia: formatBand(band, place.tz).brasilia } : {};
-}
-
 function sectionNote(place, section) {
   if (place.cedula.includes(section)) return PAPER;
   return place.semDado.includes(section) ? NO_DATA : null;
@@ -38,13 +33,11 @@ function sectionNote(place, section) {
 
 function renderDetail(container, country, place, focusSection) {
   container.replaceChildren();
-  const summary = bandSummary(place);
   const note = sectionNote(place, focusSection);
   const noteText = note ? `Seção ${focusSection}: ${note}.` : null;
   if (validHours(place.horas)) {
-    container.append(element("p", "chosen", summary.band
-      ? `${bandText(summary.band)}.${summary.brasilia ? ` Em Brasília: ${summary.brasilia}.` : ""}`
-      : `${FEW_DATA}: não dá para indicar uma faixa.`));
+    const recommend = quietBand(place.horas) !== null;
+    if (!recommend) container.append(element("p", "chosen", `${FEW_DATA}: não dá para indicar uma faixa.`));
     const chart = element("section", "quando-ir");
     chart.setAttribute("aria-label", "Quando ir");
     renderQuandoIr(chart, {
@@ -52,7 +45,7 @@ function renderDetail(container, country, place, focusSection) {
       warning: noteText,
       scopeText: `Horário local de ${place.cidadeLocal} · soma das seções com dado`,
       clockLabel: "no horário local",
-      recommend: Boolean(summary.band),
+      recommend,
     });
     container.append(chart);
   } else {

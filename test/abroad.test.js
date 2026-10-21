@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bandText, brasiliaTime, formatBand, mapsSearchUrl, votingWindowText, MAX_RESULTS, quietBand, searchAbroad } from '../public/js/abroad.js';
+import { brasiliaTime, formatBand, mapsSearchUrl, votingWindowText, MAX_RESULTS, quietBand, searchAbroad } from '../public/js/abroad.js';
 import fixture from './fixtures/exterior.json';
 
 describe('brasiliaTime', () => {
@@ -51,11 +51,6 @@ describe('quietBand', () => {
   it('marks a flat profile', () => {
     expect(quietBand([100, 105, 110, 120, 100, 100, 105, 100, 50]).flat).toBe(true);
     expect(quietBand([100, 130, 110, 120, 100, 100, 105, 100, 50]).flat).toBe(false);
-  });
-
-  it('names the band in local time', () => {
-    expect(bandText({ start: 13, end: 15, flat: false })).toBe('Faixa mais tranquila: 13h–15h (hora local)');
-    expect(bandText({ start: 13, end: 15, flat: true })).toBe('Movimento parecido o dia todo; a faixa mais tranquila foi 13h–15h');
   });
 });
 

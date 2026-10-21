@@ -60,13 +60,6 @@ export function quietBand(hours) {
   return { start: low + 8, end: high + 9, flat: Math.max(...open) <= FLAT_TOLERANCE * min };
 }
 
-export function bandText(band) {
-  const range = `${band.start}h–${band.end}h`;
-  return band.flat
-    ? `Movimento parecido o dia todo; a faixa mais tranquila foi ${range}`
-    : `Faixa mais tranquila: ${range} (hora local)`;
-}
-
 function dayLabel(dayDelta) {
   const [year, month, day] = ELECTION_DAY.split("-").map(Number);
   const date = new Date(Date.UTC(year, month - 1, day + dayDelta));
