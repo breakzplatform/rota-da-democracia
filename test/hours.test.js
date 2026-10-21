@@ -490,4 +490,34 @@ describe('renderQuandoIr interactive component', () => {
       delete globalThis.document;
     }
   });
+
+  it('omits the recommendation when recommend is false', () => {
+    const doc = createMockDocument();
+    globalThis.document = doc;
+    try {
+      const container = doc.createElement('div');
+      const hours = [20, 40, 10, 50, 30, 80, 25, 15, 60];
+      let selectedHour = null;
+
+      renderQuandoIr(container, {
+        hours,
+        recommend: false,
+        onSelectHour(h) { selectedHour = h; },
+      });
+
+      expect(container.querySelector('.quando-ir-calm')).toBeNull();
+      expect(container.querySelectorAll('.chip').length).toBe(0);
+      expect(container.querySelector('.quando-ir-notice')).toBeNull();
+      expect(container.querySelector('.quando-ir-live')).toBeNull();
+      const barButtons = container.querySelectorAll('.hours-bar-btn');
+      expect(barButtons.length).toBe(9);
+      expect(barButtons.some((btn) => btn.classList.contains('is-selected'))).toBe(false);
+
+      barButtons[7].click();
+      expect(selectedHour).toBeNull();
+      expect(barButtons.some((btn) => btn.classList.contains('is-selected'))).toBe(false);
+    } finally {
+      delete globalThis.document;
+    }
+  });
 });

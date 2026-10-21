@@ -274,6 +274,8 @@ export function renderQuandoIr(container, {
   sections = null,
   currentSection = null,
   shift = 0,
+  clockLabel = null,
+  recommend = true,
   onSelectSection = () => {},
   onSelectHour = () => {},
 }) {
@@ -322,35 +324,40 @@ export function renderQuandoIr(container, {
   const calmHoursList = calmestHours(hours, 3);
   let activeHour = selectedHour !== undefined && selectedHour !== null ? selectedHour : calmHoursList[0];
 
-  const calmContainer = element('div', 'quando-ir-calm');
-  calmContainer.append(element('span', 'quando-ir-calm-label', 'Horas mais tranquilas:'));
-  const chipsWrap = element('div', 'quando-ir-chips');
   const chipButtons = [];
+  let liveText = null;
+  let closingNotice = null;
+  if (recommend) {
+    const calmContainer = element('div', 'quando-ir-calm');
+    calmContainer.append(element('span', 'quando-ir-calm-label', 'Horas mais tranquilas:'));
+    const chipsWrap = element('div', 'quando-ir-chips');
 
-  for (const h of calmHoursList) {
-    const localH = h - shift;
-    const chip = element('button', 'chip', `${localH}h`);
-    chip.type = 'button';
-    chip.setAttribute('aria-pressed', h === activeHour ? 'true' : 'false');
-    if (h === activeHour) chip.classList.add('is-selected');
-    chip.addEventListener('click', () => {
-      selectHour(h);
-    });
-    chipButtons.push({ hour: h, node: chip });
-    chipsWrap.append(chip);
+    for (const h of calmHoursList) {
+      const localH = h - shift;
+      const chip = element('button', 'chip', `${localH}h`);
+      chip.type = 'button';
+      chip.setAttribute('aria-pressed', h === activeHour ? 'true' : 'false');
+      if (h === activeHour) chip.classList.add('is-selected');
+      chip.addEventListener('click', () => {
+        selectHour(h);
+      });
+      chipButtons.push({ hour: h, node: chip });
+      chipsWrap.append(chip);
+    }
+    calmContainer.append(chipsWrap);
+    container.append(calmContainer);
+
+    liveText = element('span', 'quando-ir-live-text');
+    const liveLabel = element('p', 'quando-ir-live');
+    liveLabel.setAttribute('aria-live', 'polite');
+    liveLabel.append(liveText);
+    container.append(liveLabel);
+
+    closingNotice = element('p', 'quando-ir-notice', closingWarning(shift));
+    container.append(closingNotice);
   }
-  calmContainer.append(chipsWrap);
-  container.append(calmContainer);
 
   const maximum = Math.max(...hours);
-  const liveLabel = element('p', 'quando-ir-live');
-  liveLabel.setAttribute('aria-live', 'polite');
-  const liveText = element('span', 'quando-ir-live-text');
-  liveLabel.append(liveText);
-  container.append(liveLabel);
-
-  const closingNotice = element('p', 'quando-ir-notice', closingWarning(shift));
-  container.append(closingNotice);
 
   const chartList = element('div', 'hours-bars');
   chartList.setAttribute('role', 'region');
@@ -363,8 +370,8 @@ export function renderQuandoIr(container, {
     const col = element('div', 'hours-column');
     const btn = element('button', 'hours-bar-btn');
     btn.type = 'button';
-    btn.setAttribute('aria-pressed', hour === activeHour ? 'true' : 'false');
-    if (hour === activeHour) btn.classList.add('is-selected');
+    btn.setAttribute('aria-pressed', recommend && hour === activeHour ? 'true' : 'false');
+    if (recommend && hour === activeHour) btn.classList.add('is-selected');
 
     const srLabel = `${localHour}h${hour === 16 ? ' em diante, incluindo votos após as 17h' : ` às ${localHour + 1}h`}: ${count} votos`;
     btn.append(element('span', 'sr-only', srLabel));
@@ -391,7 +398,7 @@ export function renderQuandoIr(container, {
   });
   container.append(chartList);
 
-  const timeZoneName = shift !== 0 ? 'no horário local' : 'no horário de Brasília';
+  const timeZoneName = clockLabel ?? (shift !== 0 ? 'no horário local' : 'no horário de Brasília');
   container.append(element('p', 'hint', `Votos registrados por hora no 1º turno (04/10), ${timeZoneName}. Não mede o tempo de fila.`));
   const credit = element('p', 'hint');
   const link = element('a', '', 'TSE — arquivos transmitidos para totalização');
@@ -402,6 +409,7 @@ export function renderQuandoIr(container, {
   container.append(credit);
 
   function updateDisplay() {
+    if (!recommend || !liveText || !closingNotice) return;
     const count = hours[activeHour - 8];
     const localHour = activeHour - shift;
     liveText.textContent = movementLabel(localHour, count, hours);
@@ -421,12 +429,13 @@ export function renderQuandoIr(container, {
   }
 
   function selectHour(h) {
+    if (!recommend) return;
     activeHour = h;
     updateDisplay();
     onSelectHour(h);
   }
 
-  updateDisplay();
+  if (recommend) updateDisplay();
 }
 
 export function hoursChart(hours, zone, section, changed, clockLabel = 'no horário de Brasília', compact = false) {
