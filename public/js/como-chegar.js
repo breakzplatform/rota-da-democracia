@@ -19,6 +19,9 @@ import {
   calmestHours,
 } from "./hours.js";
 
+// The form has no submit action; Enter in any picker field must not reload the page.
+$("form-local").addEventListener("submit", (event) => event.preventDefault());
+
 const result = $("resultado-local");
 const status = $("estado-local");
 const quandoIrEl = $("quando-ir");

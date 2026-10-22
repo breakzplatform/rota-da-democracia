@@ -453,15 +453,24 @@ export function initPlacePicker({ onMunicipio = () => {}, onPlace = () => {}, ci
       const input = h("input", { id: "busca-local-nome", type: "search", autocomplete: "off", placeholder: "Nome da escola, igreja, clube ou bairro" });
       const error = errorLine();
       const results = h("div", { "aria-live": "polite" });
+      const search = () => {
+        showError(error, "");
+        if (foldText(input.value).length < 2) return results.replaceChildren();
+        const shard = shardOrMessage(error);
+        if (!shard) return;
+        results.replaceChildren(placeButtons(searchPlaces(shard, input.value, 10).map((local) => ({ local }))));
+      };
       input.addEventListener("input", () => {
         clearTimeout(nameTimer);
-        nameTimer = setTimeout(() => {
-          showError(error, "");
-          if (foldText(input.value).length < 2) return results.replaceChildren();
-          const shard = shardOrMessage(error);
-          if (!shard) return;
-          results.replaceChildren(placeButtons(searchPlaces(shard, input.value, 10).map((local) => ({ local }))));
-        }, 200);
+        nameTimer = setTimeout(search, 200);
+      });
+      // The picker sits inside the page's form: without this, Enter submits it and the
+      // page reloads back at the state and city step.
+      input.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter") return;
+        event.preventDefault();
+        clearTimeout(nameTimer);
+        search();
       });
       body.replaceChildren(
         progress,
