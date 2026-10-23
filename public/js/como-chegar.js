@@ -1,5 +1,6 @@
 import { $, copyText, titleCase, safeHref } from "./common.js";
 import { initPlacePicker } from "./places.js";
+import { drawHourStory, shareImage, SITE_URL } from "./instagram.js";
 import {
   buildIcs,
   loadHours,
@@ -68,6 +69,32 @@ $("compartilhar-plano").addEventListener("click", async () => {
 
 $("imprimir-plano").addEventListener("click", () => window.print());
 
+// The story is drawn as soon as the hour is known: Safari only allows share()
+// shortly after the tap, too short for drawing and encoding the PNG.
+let story = null;
+
+function prepareStory(hour, shift) {
+  const button = $("story-hora");
+  if (hour === null) {
+    story = null;
+    button.hidden = true;
+    return;
+  }
+  story = drawHourStory({ hour: hour - shift, localTime: Boolean(shift), place: plan.name });
+  story.catch(() => {});
+  button.hidden = false;
+}
+
+$("story-hora").addEventListener("click", async () => {
+  if (!story) return;
+  const caption = `Minha hora mais tranquila pra votar no domingo, 25/10. Veja a da sua seção, com a rota chegando nesse horário: ${SITE_URL}`;
+  try {
+    $("estado-plano").textContent = await shareImage(await story, "minha-hora-de-votar.png", caption);
+  } catch {
+    $("estado-plano").textContent = "Não foi possível gerar a imagem.";
+  }
+});
+
 const picker = initPlacePicker({
   onMunicipio(entry) {
     result.hidden = true;
@@ -81,6 +108,7 @@ function resetUntimed(local, addressText) {
     $(id).href = googleMapsArrivalUrl(local, addressText, null, 0, mode);
   }
   if (plan) plan.hour = null;
+  prepareStory(null, 0);
   const planoHorario = $("plano-horario");
   if (planoHorario) planoHorario.textContent = "Horário em que vou sair: ______";
   const dicaRota = $("dica-rota");
@@ -210,6 +238,7 @@ function setupQuandoIrFlow({ local, shard, addressText, data, changes, initialSe
     const calmest = calmestHours(hours, 3);
     const chosen = targetHour !== null ? targetHour : calmest[0];
     applyHour(chosen);
+    prepareStory(calmest[0], shift);
   }
 
   refresh();
