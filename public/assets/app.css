@@ -772,6 +772,13 @@
   filter: brightness(0) invert(1) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.7));
 }
 
+@media (min-width: 60rem) {
+  .tv-brand {
+    top: 1.75rem;
+    right: 2rem;
+  }
+}
+
 .tv-video figcaption {
   margin-top: 0.6rem;
   color: var(--muted);
