@@ -704,3 +704,53 @@
     scroll-margin-top: 6.75rem;
   }
 }
+
+/* ---- Na TV and Instagram kit ---------------------------------------- */
+
+.tv-video {
+  margin: 1rem 0 0;
+}
+
+.tv-video video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  background: var(--ink);
+  border: 3px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.tv-video figcaption {
+  margin-top: 0.6rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.share-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(max(9.5rem, calc((100% - 3rem) / 4)), 1fr));
+  align-items: end;
+  gap: 1.25rem 1rem;
+  margin: 1.1rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.share-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.share-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 3px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.share-card .btn {
+  width: 100%;
+}
