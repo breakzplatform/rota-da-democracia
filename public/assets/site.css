@@ -411,6 +411,7 @@ p {
 .icon-key { --glyph: url("icons/key.svg"); }
 .icon-bus { --glyph: url("icons/bus.svg"); }
 .icon-whatsapp { --glyph: url("icons/whatsapp.svg"); }
+.icon-instagram { --glyph: url("icons/instagram.svg"); }
 
 .btn .icon {
   flex: none;
@@ -1344,6 +1345,11 @@ dialog p {
 
 .btn-whatsapp {
   background: #017016;
+  color: #ffffff;
+}
+
+.btn-instagram {
+  background: linear-gradient(45deg, #8a1fa0, #b8135a 55%, #a33f00);
   color: #ffffff;
 }
 

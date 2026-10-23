@@ -1,6 +1,5 @@
 import { handleApi } from "./app";
 import { cleanup } from "./cleanup";
-import { fetchWithRange } from "./range";
 import { defaultDeps, type Deps, type Env } from "./env";
 
 export default {
@@ -10,7 +9,6 @@ export default {
       const deps: Deps = { ...defaultDeps, defer: (task) => ctx.waitUntil(task) };
       return handleApi(request, env, deps);
     }
-    if (pathname.startsWith("/media/")) return fetchWithRange(request, env.ASSETS);
     return env.ASSETS.fetch(request);
   },
 
