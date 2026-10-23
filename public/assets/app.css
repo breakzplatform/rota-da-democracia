@@ -765,13 +765,11 @@
 
 .tv-brand {
   position: absolute;
-  right: 0.75rem;
-  bottom: 0.75rem;
-  width: clamp(5.5rem, 22%, 9rem);
+  top: 0.9rem;
+  right: 1rem;
+  width: clamp(7rem, 30%, 13rem);
   height: auto;
-  padding: 0.4rem 0.6rem;
-  border-radius: 0.4rem;
-  background: #ffffff;
+  filter: brightness(0) invert(1) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.7));
 }
 
 .tv-video figcaption {
