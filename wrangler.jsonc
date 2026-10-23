@@ -7,7 +7,7 @@
   "assets": {
     "directory": "public",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*"]
+    "run_worker_first": ["/api/*", "/media/*"]
   },
   "d1_databases": [
     { "binding": "DB", "database_name": "carona", "database_id": "d93e5145-639c-49e4-bc1d-c2c1dd23ab71", "migrations_dir": "migrations" }
