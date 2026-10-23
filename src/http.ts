@@ -9,6 +9,7 @@ const SECURITY_HEADERS: Readonly<Record<string, string>> = {
   "Referrer-Policy": "no-referrer",
   "Cross-Origin-Resource-Policy": "same-origin",
   "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'",
+  "X-Robots-Tag": "noindex, nofollow",
 };
 
 export function json(body: unknown, status = 200, cache: CachePolicy = "no-store"): Response {

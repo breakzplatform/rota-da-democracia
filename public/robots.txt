@@ -1,2 +1,6 @@
 User-agent: *
-Disallow: /
+Allow: /
+Disallow: /api/
+Disallow: /gerenciar
+
+Sitemap: https://rotadademocracia.online/sitemap.xml
